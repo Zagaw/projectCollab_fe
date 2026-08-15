@@ -6,6 +6,11 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import StudentDashboard from './components/dashboard/StudentDashboard';
+import LecturerDashboard from './components/dashboard/LecturerDashboard';
+import TeamLeaderDashboard from './components/dashboard/TeamLeaderDashboard';
+import AdminDashboard from './components/dashboard/AdminDashboard';
+import RoleBasedRoute from './components/common/RoleBasedRoute';
 
 function App() {
   return (
@@ -34,13 +39,19 @@ function App() {
           }}
         />
         <Routes>
+          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route 
             path="/dashboard" 
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <RoleBasedRoute 
+                student={<StudentDashboard />}
+                lecturer={<LecturerDashboard />}
+                teamLeader={<TeamLeaderDashboard />}
+                admin={<AdminDashboard />}
+              />
               </ProtectedRoute>
             } 
           />

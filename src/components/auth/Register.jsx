@@ -13,6 +13,7 @@ const Register = () => {
     lastName: '',
     studentId: '',
     phone: '',
+    role: 'STUDENT', // Default role
   });
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
@@ -29,6 +30,13 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
 
+    // Validation
+    if (formData.password.length < 8) {
+      toast.error('Password must be at least 8 characters long');
+      setLoading(false);
+      return;
+    }
+
     try {
       await register(formData);
       toast.success('Account created successfully!');
@@ -44,7 +52,7 @@ const Register = () => {
   return (
     <AuthLayout 
       title="Create Account" 
-      subtitle="Join Collabra and start collaborating with your team"
+      subtitle="Join Collabora and start collaborating with your team"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
@@ -159,6 +167,46 @@ const Register = () => {
           </div>
         </div>
 
+        {/* Role Selection */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Register as *
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setFormData({...formData, role: 'STUDENT'})}
+              className={`px-4 py-3 rounded-lg border-2 transition duration-200 flex items-center justify-center gap-2 ${
+                formData.role === 'STUDENT'
+                  ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
+                  : 'border-gray-300 hover:border-indigo-300 text-gray-600'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              Student
+            </button>
+            <button
+              type="button"
+              onClick={() => setFormData({...formData, role: 'LECTURER'})}
+              className={`px-4 py-3 rounded-lg border-2 transition duration-200 flex items-center justify-center gap-2 ${
+                formData.role === 'LECTURER'
+                  ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
+                  : 'border-gray-300 hover:border-indigo-300 text-gray-600'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              </svg>
+              Lecturer
+            </button>
+          </div>
+          <p className="mt-2 text-xs text-gray-500">
+            Lecturers need to be verified by the system administrator.
+          </p>
+        </div>
+
         <button
           type="submit"
           disabled={loading}
@@ -182,6 +230,10 @@ const Register = () => {
           <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
             Sign in
           </Link>
+        </p>
+
+        <p className="text-center text-xs text-gray-500">
+          By creating an account, you agree to our Terms of Service and Privacy Policy.
         </p>
       </form>
     </AuthLayout>
