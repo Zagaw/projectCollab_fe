@@ -25,13 +25,31 @@ const Login = () => {
     setLoading(true);
 
     try {
-      await login(formData.email, formData.password);
+      const userData = await login(formData.email, formData.password);
       toast.success('Welcome back!');
-      navigate('/dashboard');
+      
+      // Redirect based on role
+      switch (userData.role) {
+        case 'STUDENT':
+        case 'TEAM_LEADER':
+          navigate('/student/dashboard', { replace: true });
+          break;
+        case 'LECTURER':
+          if (userData.status === 'PENDING_VERIFICATION') {
+            navigate('/pending-verification', { replace: true });
+          } else {
+            navigate('/lecturer/dashboard', { replace: true });
+          }
+          break;
+        case 'ADMIN':
+          navigate('/admin/dashboard', { replace: true });
+          break;
+        default:
+          navigate('/dashboard', { replace: true });
+      }
     } catch (error) {
-      const message = error.response?.data?.message || 'Login failed. Please try again.';
+      const message = error.response?.data?.error || 'Login failed. Please try again.';
       toast.error(message);
-    } finally {
       setLoading(false);
     }
   };
