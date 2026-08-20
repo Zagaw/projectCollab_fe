@@ -67,6 +67,7 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
+         
           <Route path="/register" element={<Register />} />
           <Route path="/pending-verification" element={<PendingVerification />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
