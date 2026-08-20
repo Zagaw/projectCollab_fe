@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
 import api from '../api/axios';
 
 const AuthContext = createContext(null);
@@ -6,8 +6,13 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
+    // Only run once
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
     
@@ -15,7 +20,6 @@ export const AuthProvider = ({ children }) => {
       try {
         const userData = JSON.parse(storedUser);
         setUser(userData);
-        // Set default axios header
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       } catch (error) {
         console.error('Error parsing user data:', error);
@@ -69,6 +73,19 @@ export const AuthProvider = ({ children }) => {
     setUser(updatedUser);
   };
 
+  // Helper methods
+  const isStudent = () => {
+    return user?.role === 'STUDENT' || user?.role === 'TEAM_LEADER';
+  };
+
+  const isLecturer = () => {
+    return user?.role === 'LECTURER';
+  };
+
+  const isAdmin = () => {
+    return user?.role === 'ADMIN';
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -76,7 +93,10 @@ export const AuthProvider = ({ children }) => {
       login, 
       register, 
       logout,
-      updateUser 
+      updateUser,
+      isStudent,
+      isLecturer,
+      isAdmin
     }}>
       {children}
     </AuthContext.Provider>

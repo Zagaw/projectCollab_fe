@@ -14,19 +14,22 @@ const RoleBasedRoute = ({ student, lecturer, teamLeader, admin }) => {
   }
 
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" replace />;
   }
 
   // Map user role to component
-  const roleComponents = {
+  const roleMap = {
     'STUDENT': student,
     'LECTURER': lecturer,
-    'TEAM_LEADER': teamLeader,
+    'TEAM_LEADER': teamLeader || student,
     'ADMIN': admin
   };
 
-  // Get component based on user role, fallback to student if not found
-  const Component = roleComponents[user.role] || student;
+  const Component = roleMap[user.role];
+
+  if (!Component) {
+    return <Navigate to="/login" replace />;
+  }
 
   return Component;
 };

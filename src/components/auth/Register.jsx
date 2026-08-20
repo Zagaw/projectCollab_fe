@@ -37,17 +37,38 @@ const Register = () => {
     }
 
     try {
-      await register(formData);
-      toast.success('Account created successfully!');
-      navigate('/dashboard');
+      const userData = await register(formData);
+      
+      // Check if lecturer registration is pending
+      if (userData.role === 'LECTURER' && userData.status === 'PENDING_VERIFICATION') {
+        toast.success('Account created! Please wait for admin approval.');
+        navigate('/pending-verification', { replace: true });
+      } else {
+        toast.success('Account created successfully!');
+        // Redirect based on role
+        switch (userData.role) {
+          case 'STUDENT':
+          case 'TEAM_LEADER':
+            navigate('/student/dashboard', { replace: true });
+            break;
+          case 'LECTURER':
+            navigate('/lecturer/dashboard', { replace: true });
+            break;
+          case 'ADMIN':
+            navigate('/admin/dashboard', { replace: true });
+            break;
+          default:
+            navigate('/dashboard', { replace: true });
+        }
+      }
     } catch (error) {
       const message =
           error.response?.data?.message ||
           error.message ||
           'Registration failed. Please try again.';
 
+      const message = error.response?.data?.error || 'Registration failed. Please try again.';
       toast.error(message);
-    } finally {
       setLoading(false);
     }
   };
