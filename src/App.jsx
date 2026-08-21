@@ -36,6 +36,7 @@ import PendingLecturers from './components/admin/PendingLecturers';
 
 // Protected Route
 import ProtectedRoute from './components/common/ProtectedRoute';
+import ProfilePage from './components/profile/ProfilePage';
 
 function App() {
   return (
@@ -83,7 +84,7 @@ function App() {
             <Route path="projects" element={<div>My Projects</div>} />
             <Route path="teams" element={<div>My Teams</div>} />
             <Route path="invitations" element={<InvitationList />} />
-            <Route path="profile" element={<div>Profile</div>} />
+            <Route path="profile" element={<ProfilePage/>} />
           </Route>
 
           {/* Lecturer Routes */}
@@ -101,7 +102,7 @@ function App() {
             <Route path="teams/create" element={<TeamCreate />} />
             <Route path="teams/:teamId" element={<TeamDetails />} />
             <Route path="invitations" element={<InvitationList />} />
-            <Route path="profile" element={<div>Profile</div>} />
+            <Route path="profile" element={<ProfilePage/>} />
           </Route>
 
           {/* Admin Routes */}
@@ -115,7 +116,7 @@ function App() {
             <Route path="pending-lecturers" element={<PendingLecturers />} />
             <Route path="users" element={<div>Manage Users</div>} />
             <Route path="projects" element={<div>All Projects</div>} />
-            <Route path="profile" element={<div>Profile</div>} />
+            <Route path="profile" element={<ProfilePage/>} />
           </Route>
 
           {/* Catch all - redirect to login */}
