@@ -17,6 +17,12 @@ const StudentLayout = () => {
   const navItems = [
     { name: 'Dashboard', icon: '📊', path: '/student/dashboard' },
     { name: 'My Projects', icon: '📁', path: '/student/projects' },
+    
+    { name: 'Files', icon: '📤', path: '/student/File' }, // Added Files link here
+    { name: 'Comments', icon: '💬', path: '/student/comments' }, // Added Files link here
+    { name: 'Discussions', icon: '📢', path: '/student/discussions' }, // Added Files link here
+    { name: 'Meetings', icon: '🤝', path: '/student/meetings' }, // Added Files link here
+
     { name: 'My Teams', icon: '👥', path: '/student/teams' },
     { name: 'Invitations', icon: '📨', path: '/student/invitations' },
     { name: 'Profile', icon: '👤', path: '/student/profile' },
