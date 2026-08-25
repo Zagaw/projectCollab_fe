@@ -19,6 +19,8 @@ const StudentLayout = () => {
     { name: 'My Projects', icon: '📁', path: '/student/projects' },
     { name: 'My Teams', icon: '👥', path: '/student/teams' },
     { name: 'Invitations', icon: '📨', path: '/student/invitations' },
+    { name: 'Milestones', icon: '🎯', path: '/student/milestones' },
+    { name: 'My Tasks', icon: '✅', path: '/student/tasks' },
     { name: 'Profile', icon: '👤', path: '/student/profile' },
   ];
 

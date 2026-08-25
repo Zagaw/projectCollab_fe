@@ -13,6 +13,16 @@ const TeamDetails = () => {
   const [loading, setLoading] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
 
+  // FIX: Determine base path from current route
+  const pathname = window.location.pathname;
+  const isLecturerRoute = pathname.includes('/lecturer');
+  const isTeamLeaderRoute = pathname.includes('/teamleader');
+  const isStudentRoute = pathname.includes('/student');
+  
+  const basePath = isLecturerRoute ? '/lecturer' : 
+                   isTeamLeaderRoute ? '/teamleader' : 
+                   isStudentRoute ? '/student' : '/lecturer';
+
   useEffect(() => {
     fetchTeamDetails();
   }, [teamId]);
@@ -51,6 +61,19 @@ const TeamDetails = () => {
     }
   };
 
+  // FIX: Handle back navigation based on current route
+  const handleBack = () => {
+    if (isLecturerRoute) {
+      navigate(`/lecturer/projects/${team?.projectId}`);
+    } else if (isTeamLeaderRoute) {
+      navigate('/teamleader/teams');
+    } else if (isStudentRoute) {
+      navigate('/student/teams');
+    } else {
+      navigate(-1);
+    }
+  };
+
   if (loading) return <LoadingSpinner />;
   if (!team) return <div>Team not found</div>;
 
@@ -60,22 +83,25 @@ const TeamDetails = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
           <button
-            onClick={() => navigate(`/lecturer/projects/${team.projectId}`)}
+            onClick={handleBack}
             className="text-sm text-indigo-600 hover:text-indigo-700 mb-2 inline-block"
-            >
-            ← Back to Project: {team.projectTitle}
-            </button>
+          >
+            ← Back
+          </button>
           <h1 className="text-2xl font-bold text-gray-900">{team.name}</h1>
           <p className="text-gray-600">
             Project: {team.projectTitle} • {team.totalMembers || 0} members
           </p>
         </div>
-        <button
-          onClick={() => setShowInviteModal(true)}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-        >
-          + Invite Member
-        </button>
+        {/* Only show Invite Member button for Lecturer or Team Leader */}
+        {(isLecturerRoute || isTeamLeaderRoute) && (
+          <button
+            onClick={() => setShowInviteModal(true)}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          >
+            + Invite Member
+          </button>
+        )}
       </div>
 
       {/* Team Info */}
@@ -164,7 +190,7 @@ const TeamDetails = () => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex gap-2">
-                        {member.status === 'ACTIVE' && team.teamLeader?.userId !== member.userId && (
+                        {(isLecturerRoute || isTeamLeaderRoute) && member.status === 'ACTIVE' && team.teamLeader?.userId !== member.userId && (
                           <>
                             <button
                               onClick={() => handleAssignLeader(member.userId)}
@@ -180,7 +206,7 @@ const TeamDetails = () => {
                             </button>
                           </>
                         )}
-                        {member.status === 'PENDING' && (
+                        {(isLecturerRoute || isTeamLeaderRoute) && member.status === 'PENDING' && (
                           <button
                             onClick={() => handleRemoveMember(member.teamMemberId)}
                             className="px-3 py-1 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition"

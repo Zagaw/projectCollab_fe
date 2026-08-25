@@ -3,7 +3,7 @@ import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
-const LecturerLayout = () => {
+const TeamLeaderLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -15,12 +15,13 @@ const LecturerLayout = () => {
   };
 
   const navItems = [
-    { name: 'Dashboard', icon: '📊', path: '/lecturer/dashboard' },
-    { name: 'My Projects', icon: '📁', path: '/lecturer/projects' },
-    { name: 'Create Project', icon: '➕', path: '/lecturer/projects/create' },
-    { name: 'Milestones', icon: '🎯', path: '/lecturer/milestones' },
-    { name: 'Tasks', icon: '✅', path: '/lecturer/tasks' },
-    { name: 'Profile', icon: '👤', path: '/lecturer/profile' },
+    { name: 'Dashboard', icon: '📊', path: '/teamleader/dashboard' },
+    { name: 'My Teams', icon: '👥', path: '/teamleader/teams' },
+    { name: 'Milestones', icon: '🎯', path: '/teamleader/milestones' },
+    { name: 'Create Milestone', icon: '➕', path: '/teamleader/milestones/create' },
+    { name: 'My Tasks', icon: '✅', path: '/teamleader/tasks' },
+    { name: 'Create Task', icon: '➕', path: '/teamleader/tasks/create' },
+    { name: 'Profile', icon: '👤', path: '/teamleader/profile' },
   ];
 
   return (
@@ -38,13 +39,13 @@ const LecturerLayout = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <Link to="/lecturer/dashboard" className="flex items-center ml-2">
+              <Link to="/teamleader/dashboard" className="flex items-center ml-2">
                 <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-lg">C</span>
                 </div>
                 <span className="ml-2 text-xl font-bold text-gray-900">Collabora</span>
-                <span className="ml-2 px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                  Lecturer
+                <span className="ml-2 px-2 py-1 bg-purple-100 text-purple-700 text-xs font-medium rounded-full">
+                  Team Leader
                 </span>
               </Link>
             </div>
@@ -64,7 +65,6 @@ const LecturerLayout = () => {
       </nav>
 
       <div className="flex">
-        {/* Sidebar */}
         <aside className={`${isSidebarOpen ? 'block' : 'hidden'} lg:block w-64 bg-white shadow-lg min-h-screen border-r border-gray-200`}>
           <nav className="mt-5 px-2">
             {navItems.map((item) => (
@@ -77,18 +77,9 @@ const LecturerLayout = () => {
                 {item.name}
               </Link>
             ))}
-            <hr className="my-4 border-gray-200" />
-            <Link
-              to="/lecturer/profile"
-              className="group flex items-center px-4 py-3 text-sm font-medium rounded-lg text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
-            >
-              <span className="mr-3 text-xl">⚙️</span>
-              Settings
-            </Link>
           </nav>
         </aside>
 
-        {/* Main Content */}
         <main className="flex-1 p-6">
           <Outlet />
         </main>
@@ -97,4 +88,4 @@ const LecturerLayout = () => {
   );
 };
 
-export default LecturerLayout;
+export default TeamLeaderLayout;

@@ -49,8 +49,10 @@ const Register = () => {
         // Redirect based on role
         switch (userData.role) {
           case 'STUDENT':
-          case 'TEAM_LEADER':
             navigate('/student/dashboard', { replace: true });
+            break;
+          case 'TEAM_LEADER':
+            navigate('/teamleader/dashboard', { replace: true });
             break;
           case 'LECTURER':
             navigate('/lecturer/dashboard', { replace: true });

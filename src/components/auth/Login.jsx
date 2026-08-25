@@ -31,8 +31,10 @@ const Login = () => {
       // Redirect based on role
       switch (userData.role) {
         case 'STUDENT':
-        case 'TEAM_LEADER':
           navigate('/student/dashboard', { replace: true });
+          break;
+        case 'TEAM_LEADER':
+          navigate('/teamleader/dashboard', { replace: true });
           break;
         case 'LECTURER':
           if (userData.status === 'PENDING_VERIFICATION') {
