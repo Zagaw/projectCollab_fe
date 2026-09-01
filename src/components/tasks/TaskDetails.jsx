@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import taskApi from '../../api/taskApi';
+import commentApi from '../../api/commentApi';
+import CommentList from '../comments/CommentList';
 import TaskStatusBadge from './TaskStatusBadge';
 import TaskPriorityBadge from './TaskPriorityBadge';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -10,12 +12,24 @@ const TaskDetails = () => {
   const { taskId } = useParams();
   const navigate = useNavigate();
   const [task, setTask] = useState(null);
+  const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [commentsLoading, setCommentsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({});
 
+  // Determine base path
+  const pathname = window.location.pathname;
+  const isLecturerRoute = pathname.includes('/lecturer');
+  const isTeamLeaderRoute = pathname.includes('/teamleader');
+  const isStudentRoute = pathname.includes('/student');
+  const basePath = isLecturerRoute ? '/lecturer' : 
+                   isTeamLeaderRoute ? '/teamleader' : 
+                   isStudentRoute ? '/student' : '/teamleader';
+
   useEffect(() => {
     fetchTaskDetails();
+    fetchComments();
   }, [taskId]);
 
   const fetchTaskDetails = async () => {
@@ -28,6 +42,20 @@ const TaskDetails = () => {
       toast.error('Failed to load task details');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ✅ NEW: Fetch comments for this task
+  const fetchComments = async () => {
+    try {
+      setCommentsLoading(true);
+      const response = await commentApi.getCommentsForTask(taskId);
+      setComments(response.data || []);
+    } catch (error) {
+      toast.error('Failed to load comments');
+      setComments([]);
+    } finally {
+      setCommentsLoading(false);
     }
   };
 
@@ -67,6 +95,32 @@ const TaskDetails = () => {
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to delete task');
     }
+  };
+
+  // ✅ NEW: Handle comment added to task
+  const handleCommentAdded = async (formData) => {
+    try {
+      const response = await commentApi.addCommentToTask(taskId, formData);
+      toast.success('Comment added!');
+      // Refresh comments
+      await fetchComments();
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to add comment');
+      throw error;
+    }
+  };
+
+  // ✅ NEW: Handle comment updated
+  const handleCommentUpdated = (updatedComment) => {
+    setComments(comments.map(c => 
+      c.commentId === updatedComment.commentId ? updatedComment : c
+    ));
+  };
+
+  // ✅ NEW: Handle comment deleted
+  const handleCommentDeleted = (commentId) => {
+    setComments(comments.filter(c => c.commentId !== commentId));
   };
 
   if (loading) return <LoadingSpinner />;
@@ -177,7 +231,7 @@ const TaskDetails = () => {
         </div>
       ) : (
         // View Mode
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
             <h3 className="font-semibold text-gray-900 mb-3">Description</h3>
             <p className="text-gray-600">{task.description || 'No description provided'}</p>
@@ -258,6 +312,24 @@ const TaskDetails = () => {
           </div>
         </div>
       )}
+
+      {/* ✅ NEW: Comments Section */}
+      <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Comments ({comments.length})
+          </h3>
+        </div>
+        <CommentList
+          entityType="task"
+          entityId={taskId}
+          comments={comments}
+          onCommentAdded={handleCommentAdded}
+          onCommentUpdated={handleCommentUpdated}
+          onCommentDeleted={handleCommentDeleted}
+          isLoading={commentsLoading}
+        />
+      </div>
     </div>
   );
 };

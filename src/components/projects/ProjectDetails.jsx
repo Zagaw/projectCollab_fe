@@ -3,6 +3,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import projectApi from '../../api/projectApi';
 import teamApi from '../../api/teamApi';
 import TeamList from '../teams/TeamList';
+import CommentList from '../comments/CommentList';
+import commentApi from '../../api/commentApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import toast from 'react-hot-toast';
 
@@ -11,11 +13,14 @@ const ProjectDetails = () => {
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [teams, setTeams] = useState([]);
+  const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [commentsLoading, setCommentsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
     fetchProjectDetails();
+    fetchComments();
   }, [projectId]);
 
   const fetchProjectDetails = async () => {
@@ -34,6 +39,18 @@ const ProjectDetails = () => {
     }
   };
 
+  const fetchComments = async () => {
+    try {
+      setCommentsLoading(true);
+      const response = await commentApi.getCommentsForProject(projectId);
+      setComments(response.data);
+    } catch (error) {
+      toast.error('Failed to load comments');
+    } finally {
+      setCommentsLoading(false);
+    }
+  };
+
   const handleStatusUpdate = async (status) => {
     try {
       await projectApi.updateProjectStatus(projectId, status);
@@ -42,6 +59,28 @@ const ProjectDetails = () => {
     } catch (error) {
       toast.error('Failed to update project status');
     }
+  };
+
+  // ✅ FIXED: Use addCommentToProject instead of addCommentToTask
+  const handleCommentAdded = async (formData) => {
+    try {
+      const response = await commentApi.addCommentToProject(projectId, formData);
+      toast.success('Comment added!');
+      return response.data;
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to add comment');
+      throw error;
+    }
+  };
+
+  const handleCommentUpdated = (updatedComment) => {
+    setComments(comments.map(c => 
+      c.commentId === updatedComment.commentId ? updatedComment : c
+    ));
+  };
+
+  const handleCommentDeleted = (commentId) => {
+    setComments(comments.filter(c => c.commentId !== commentId));
   };
 
   if (loading) return <LoadingSpinner />;
@@ -90,17 +129,17 @@ const ProjectDetails = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200 mb-6">
         <nav className="flex gap-6">
-          {['overview', 'teams'].map((tab) => (
+          {['overview', 'teams', 'comments'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`pb-2 px-1 text-sm font-medium transition ${
+              className={`pb-2 px-1 text-sm font-medium transition capitalize ${
                 activeTab === tab
                   ? 'text-indigo-600 border-b-2 border-indigo-600'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {tab}
             </button>
           ))}
         </nav>
@@ -178,6 +217,20 @@ const ProjectDetails = () => {
 
       {activeTab === 'teams' && (
         <TeamList teams={teams} projectId={projectId} onTeamUpdate={fetchProjectDetails} />
+      )}
+
+      {activeTab === 'comments' && (
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <CommentList
+            entityType="project"
+            entityId={projectId}
+            comments={comments}
+            onCommentAdded={handleCommentAdded}
+            onCommentUpdated={handleCommentUpdated}
+            onCommentDeleted={handleCommentDeleted}
+            isLoading={commentsLoading}
+          />
+        </div>
       )}
     </div>
   );

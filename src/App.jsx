@@ -59,6 +59,8 @@ import ProfilePage from './components/profile/ProfilePage';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import RoleBasedRoute from './components/common/RoleBasedRoute';
 
+import CommentList from './components/comments/CommentList';
+
 function App() {
   return (
     <Router>
