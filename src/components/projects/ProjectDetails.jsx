@@ -7,6 +7,7 @@ import CommentList from '../comments/CommentList';
 import commentApi from '../../api/commentApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import toast from 'react-hot-toast';
+import DiscussionList from '../discussions/DiscussionList';
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
@@ -129,7 +130,7 @@ const ProjectDetails = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200 mb-6">
         <nav className="flex gap-6">
-          {['overview', 'teams', 'comments'].map((tab) => (
+          {['overview', 'teams', 'comments', 'discussions'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -229,6 +230,16 @@ const ProjectDetails = () => {
             onCommentUpdated={handleCommentUpdated}
             onCommentDeleted={handleCommentDeleted}
             isLoading={commentsLoading}
+          />
+        </div>
+      )}
+
+      
+      {activeTab === 'discussions' && (
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <DiscussionList 
+            projectId={projectId} 
+            projectTitle={project.title}
           />
         </div>
       )}

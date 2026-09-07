@@ -178,6 +178,10 @@ const CommentItem = ({
             files={comment.files}
             onDelete={handleFileDelete}
             showDelete={isOwner}
+            onVersionUpdated={() => {
+            // Refresh comment to get updated file info
+            onUpdate(comment);
+            }}
           />
         )}
 

@@ -60,6 +60,9 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import RoleBasedRoute from './components/common/RoleBasedRoute';
 
 import CommentList from './components/comments/CommentList';
+import DiscussionList from './components/discussions/DiscussionList';
+import DiscussionCreate from './components/discussions/DiscussionCreate';
+import DiscussionDetails from './components/discussions/DiscussionDetails';
 
 function App() {
   return (
@@ -127,6 +130,8 @@ function App() {
             <Route path="tasks" element={<TaskBoard />} />
             <Route path="tasks/:taskId" element={<TaskDetails />} />
             <Route path="invitations" element={<InvitationList />} />
+            <Route path="discussions" element={<DiscussionList />} />
+            <Route path="discussions/:discussionId" element={<DiscussionDetails />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 
@@ -151,6 +156,9 @@ function App() {
             <Route path="tasks" element={<TaskBoard />} />
             <Route path="tasks/create" element={<TeamLeaderTaskCreate />} />
             <Route path="tasks/:taskId" element={<TaskDetails />} />
+            <Route path="discussions" element={<DiscussionList />} />
+            <Route path="discussions/create" element={<DiscussionCreate />} />
+            <Route path="discussions/:discussionId" element={<DiscussionDetails />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 
@@ -180,6 +188,9 @@ function App() {
             <Route path="tasks" element={<TaskBoard />} />
             <Route path="tasks/create" element={<TaskCreate />} />
             <Route path="tasks/:taskId" element={<TaskDetails />} />
+            <Route path="discussions" element={<DiscussionList />} />
+            <Route path="discussions/create" element={<DiscussionCreate />} />
+            <Route path="discussions/:discussionId" element={<DiscussionDetails />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 
