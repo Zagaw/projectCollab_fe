@@ -64,6 +64,9 @@ import DiscussionList from './components/discussions/DiscussionList';
 import DiscussionCreate from './components/discussions/DiscussionCreate';
 import DiscussionDetails from './components/discussions/DiscussionDetails';
 
+import StudentProjectList from './components/projects/StudentProjectList';
+import StudentProjectDetails from './components/projects/StudentProjectDetails';
+
 function App() {
   return (
     <Router>
@@ -123,7 +126,8 @@ function App() {
           }>
             <Route index element={<Navigate to="/student/dashboard" replace />} />
             <Route path="dashboard" element={<StudentDashboard />} />
-            <Route path="projects" element={<StudentProjects />} />
+            <Route path="projects" element={<StudentProjectList />} />
+            <Route path="projects/:projectId" element={<StudentProjectDetails />} />
             <Route path="teams" element={<StudentTeamList />} />
             <Route path="teams/:teamId" element={<TeamDetails />} />
             <Route path="milestones" element={<StudentMilestoneView />} />
@@ -148,6 +152,9 @@ function App() {
           }>
             <Route index element={<Navigate to="/teamleader/dashboard" replace />} />
             <Route path="dashboard" element={<TeamLeaderDashboard />} />
+            <Route path="projects" element={<StudentProjectList />} />
+            <Route path="projects/:projectId" element={<StudentProjectDetails />} />
+            <Route path="invitations" element={<InvitationList />} />
             <Route path="teams" element={<StudentTeamList />} />
             <Route path="teams/:teamId" element={<TeamDetails />} />
             <Route path="milestones" element={<StudentMilestoneView />} />

@@ -19,13 +19,11 @@ const StudentMilestoneView = () => {
   const [loading, setLoading] = useState(true);
   const [isTeamLeader, setIsTeamLeader] = useState(false);
 
-  // FIX: Determine base path based on current route
+  // Determine base path
   const pathname = window.location.pathname;
   const isLecturerRoute = pathname.includes('/lecturer');
   const isTeamLeaderRoute = pathname.includes('/teamleader');
   const isStudentRoute = pathname.includes('/student');
-  
-  // Use the current path prefix
   const basePath = isLecturerRoute ? '/lecturer' : 
                    isTeamLeaderRoute ? '/teamleader' : 
                    isStudentRoute ? '/student' : '/teamleader';
@@ -79,6 +77,10 @@ const StudentMilestoneView = () => {
   };
 
   const handleComplete = async (milestoneId) => {
+    if (!isTeamLeader) {
+      toast.error('Only team leaders can mark milestones as complete');
+      return;
+    }
     try {
       await milestoneApi.updateMilestoneStatus(milestoneId, true);
       toast.success('Milestone marked as completed!');
@@ -89,6 +91,10 @@ const StudentMilestoneView = () => {
   };
 
   const handleDelete = async (milestoneId) => {
+    if (!isTeamLeader) {
+      toast.error('Only team leaders can delete milestones');
+      return;
+    }
     if (!window.confirm('Are you sure you want to delete this milestone?')) return;
     
     try {
@@ -100,12 +106,12 @@ const StudentMilestoneView = () => {
     }
   };
 
-  // FIX: Navigate to details using current basePath
+  // ✅ FIX: View details - always available for all members
   const handleViewDetails = (milestoneId) => {
     navigate(`${basePath}/milestones/${milestoneId}`);
   };
 
-  // FIX: Navigate to create using current basePath
+  // Create milestone - only for team leaders
   const handleCreateMilestone = () => {
     navigate(`${basePath}/milestones/create?teamId=${selectedTeamId}`);
   };
@@ -185,6 +191,7 @@ const StudentMilestoneView = () => {
               onComplete={handleComplete}
               onDelete={handleDelete}
               onViewDetails={handleViewDetails}
+              // ✅ FIX: Show actions only for team leaders, BUT view details is always available
               showActions={isTeamLeader}
             />
           ))}

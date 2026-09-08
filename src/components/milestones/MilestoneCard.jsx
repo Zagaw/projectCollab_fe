@@ -60,31 +60,35 @@ const MilestoneCard = ({ milestone, onComplete, onDelete, onViewDetails, showAct
         )}
       </div>
 
-      {/* Actions */}
-      {showActions && (
-        <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
-          <button
-            onClick={() => onViewDetails && onViewDetails(milestone.milestoneId)}
-            className="px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
-          >
-            View Details
-          </button>
-          {!milestone.isCompleted && (
+      {/* ✅ FIX: View Details button is ALWAYS visible for everyone */}
+      <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
+        <button
+          onClick={() => onViewDetails && onViewDetails(milestone.milestoneId)}
+          className="flex-1 px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
+        >
+          View Details
+        </button>
+        
+        {/* Actions only for team leaders */}
+        {showActions && (
+          <>
+            {!milestone.isCompleted && (
+              <button
+                onClick={() => onComplete(milestone.milestoneId)}
+                className="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition"
+              >
+                Mark Complete
+              </button>
+            )}
             <button
-              onClick={() => onComplete(milestone.milestoneId)}
-              className="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition"
+              onClick={() => onDelete(milestone.milestoneId)}
+              className="px-3 py-1.5 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition"
             >
-              Mark Complete
+              Delete
             </button>
-          )}
-          <button
-            onClick={() => onDelete(milestone.milestoneId)}
-            className="px-3 py-1.5 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition"
-          >
-            Delete
-          </button>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

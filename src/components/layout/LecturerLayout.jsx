@@ -20,7 +20,6 @@ const LecturerLayout = () => {
     { name: 'Create Project', icon: '➕', path: '/lecturer/projects/create' },
     { name: 'Milestones', icon: '🎯', path: '/lecturer/milestones' },
     { name: 'Tasks', icon: '✅', path: '/lecturer/tasks' },
-    { name: 'Discussions', icon: '💬', path: '/lecturer/discussions' },
     { name: 'Profile', icon: '👤', path: '/lecturer/profile' },
   ];
 

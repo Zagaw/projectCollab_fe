@@ -16,12 +16,13 @@ const TeamLeaderLayout = () => {
 
   const navItems = [
     { name: 'Dashboard', icon: '📊', path: '/teamleader/dashboard' },
+    { name: 'My Projects', icon: '📁', path: '/teamleader/projects' },
     { name: 'My Teams', icon: '👥', path: '/teamleader/teams' },
+    { name: 'Invitations', icon: '📨', path: '/teamleader/invitations' },
     { name: 'Milestones', icon: '🎯', path: '/teamleader/milestones' },
     { name: 'Create Milestone', icon: '➕', path: '/teamleader/milestones/create' },
     { name: 'My Tasks', icon: '✅', path: '/teamleader/tasks' },
     { name: 'Create Task', icon: '➕', path: '/teamleader/tasks/create' },
-    { name: 'Discussions', icon: '💬', path: '/teamleader/discussions' },
     { name: 'Profile', icon: '👤', path: '/teamleader/profile' },
   ];
 
