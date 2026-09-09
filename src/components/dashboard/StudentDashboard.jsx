@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import taskApi from '../../api/taskApi';
 import invitationApi from '../../api/invitationApi';
 import TaskCard from '../tasks/TaskCard';
@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalTasks: 0,
@@ -18,6 +19,7 @@ const StudentDashboard = () => {
     pendingInvitations: 0
   });
   const [recentTasks, setRecentTasks] = useState([]);
+  const [upcomingDeadlines, setUpcomingDeadlines] = useState([]);
   const [pendingInvitations, setPendingInvitations] = useState([]);
 
   useEffect(() => {
@@ -27,23 +29,27 @@ const StudentDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      
-      // Fetch tasks assigned to student
-      const tasksRes = await taskApi.getMyTasks();
+
+      const [tasksRes, invitesRes] = await Promise.all([
+        taskApi.getMyTasks(),
+        invitationApi.getMyInvitations()
+      ]);
       const tasks = tasksRes.data || [];
-      
-      // Fetch pending invitations
-      const invitesRes = await invitationApi.getMyInvitations();
       const invites = invitesRes.data || [];
-      
-      // Calculate stats
+
+      const now = new Date();
       const completed = tasks.filter(t => t.status === 'COMPLETED').length;
       const inProgress = tasks.filter(t => t.status === 'IN_PROGRESS' || t.status === 'REVIEW').length;
-      const overdue = tasks.filter(t => 
-        t.status !== 'COMPLETED' && 
-        t.deadline && new Date(t.deadline) < new Date()
+      const overdue = tasks.filter(t =>
+        t.status !== 'COMPLETED' &&
+        t.deadline && new Date(t.deadline) < now
       ).length;
-      
+
+      const upcoming = tasks
+        .filter(t => t.status !== 'COMPLETED' && t.deadline && new Date(t.deadline) >= now)
+        .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
+        .slice(0, 5);
+
       setStats({
         totalTasks: tasks.length,
         completedTasks: completed,
@@ -51,10 +57,10 @@ const StudentDashboard = () => {
         overdueTasks: overdue,
         pendingInvitations: invites.length
       });
-      
+
       setRecentTasks(tasks.slice(0, 5));
+      setUpcomingDeadlines(upcoming);
       setPendingInvitations(invites.slice(0, 3));
-      
     } catch (error) {
       toast.error('Failed to load dashboard data');
     } finally {
@@ -72,8 +78,7 @@ const StudentDashboard = () => {
     }
   };
 
-  const handleDelete = async (taskId) => {
-    // Students cannot delete tasks
+  const handleDelete = async () => {
     toast.error('You are not authorized to delete tasks');
   };
 
@@ -81,17 +86,15 @@ const StudentDashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <h1 className="text-2xl font-bold text-gray-900">
-          Welcome back, {user?.firstName}! 👋
+          Welcome back, {user?.firstName}!
         </h1>
         <p className="text-gray-600 mt-1">
           Here's what's happening with your tasks today.
         </p>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-white rounded-lg shadow-sm p-5 border-l-4 border-indigo-500">
           <p className="text-sm text-gray-500">Total Tasks</p>
@@ -115,7 +118,6 @@ const StudentDashboard = () => {
         </div>
       </div>
 
-      {/* Recent Tasks */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
@@ -142,34 +144,61 @@ const StudentDashboard = () => {
           )}
         </div>
 
-        {/* Pending Invitations */}
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Pending Invitations</h2>
-            <Link to="/student/invitations" className="text-sm text-indigo-600 hover:text-indigo-700">
+            <h2 className="text-lg font-semibold text-gray-900">Upcoming Deadlines</h2>
+            <Link to="/student/tasks" className="text-sm text-indigo-600 hover:text-indigo-700">
               View all →
             </Link>
           </div>
-          {pendingInvitations.length > 0 ? (
+          {upcomingDeadlines.length > 0 ? (
             <div className="space-y-3">
-              {pendingInvitations.map((invite) => (
-                <div key={invite.invitationId} className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
-                  <p className="font-medium text-gray-900">{invite.teamName}</p>
-                  <p className="text-sm text-gray-600">{invite.projectTitle}</p>
-                  <p className="text-xs text-gray-500 mt-1">Invited by: {invite.inviterName}</p>
-                  <Link
-                    to="/student/invitations"
-                    className="mt-2 inline-block px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
-                  >
-                    Review Invitation
-                  </Link>
-                </div>
+              {upcomingDeadlines.map((task) => (
+                <button
+                  key={task.taskId}
+                  onClick={() => navigate(`/student/tasks/${task.taskId}`)}
+                  className="w-full text-left p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                >
+                  <p className="font-medium text-gray-900">{task.title}</p>
+                  <p className="text-sm text-gray-500">{task.projectTitle || 'Project'}</p>
+                  <p className="text-xs text-red-600 mt-1">
+                    Due {new Date(task.deadline).toLocaleDateString()}
+                  </p>
+                </button>
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 text-sm">No pending invitations.</p>
+            <p className="text-gray-500 text-sm">No upcoming deadlines.</p>
           )}
         </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">Pending Invitations</h2>
+          <Link to="/student/invitations" className="text-sm text-indigo-600 hover:text-indigo-700">
+            View all →
+          </Link>
+        </div>
+        {pendingInvitations.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {pendingInvitations.map((invite) => (
+              <div key={invite.invitationId} className="bg-yellow-50 p-4 rounded-lg border border-yellow-100">
+                <p className="font-medium text-gray-900">{invite.teamName}</p>
+                <p className="text-sm text-gray-600">{invite.projectTitle}</p>
+                <p className="text-xs text-gray-500 mt-1">Invited by: {invite.inviterName}</p>
+                <Link
+                  to="/student/invitations"
+                  className="mt-2 inline-block px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
+                >
+                  Review Invitation
+                </Link>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 text-sm">No pending invitations.</p>
+        )}
       </div>
     </div>
   );

@@ -23,6 +23,7 @@ const TeamLeaderLayout = () => {
     { name: 'Create Milestone', icon: '➕', path: '/teamleader/milestones/create' },
     { name: 'My Tasks', icon: '✅', path: '/teamleader/tasks' },
     { name: 'Create Task', icon: '➕', path: '/teamleader/tasks/create' },
+    { name: 'Discussions', icon: '💬', path: '/teamleader/discussions' },
     { name: 'Profile', icon: '👤', path: '/teamleader/profile' },
   ];
 

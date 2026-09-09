@@ -16,7 +16,9 @@ const MilestoneDetails = () => {
   // Determine base path for navigation
   const isLecturerRoute = window.location.pathname.includes('/lecturer');
   const isTeamLeaderRoute = window.location.pathname.includes('/teamleader');
+  const isStudentRoute = window.location.pathname.includes('/student');
   const basePath = isLecturerRoute ? '/lecturer' : isTeamLeaderRoute ? '/teamleader' : '/student';
+  const canManage = !isStudentRoute;
 
   useEffect(() => {
     fetchMilestoneDetails();
@@ -100,26 +102,30 @@ const MilestoneDetails = () => {
             {milestone.isCompleted ? '✅ Completed' :
              isOverdue ? '⚠️ Overdue' : '⏳ In Progress'}
           </span>
-          <button
-            onClick={handleCreateTask}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm flex items-center gap-2"
-          >
-            <span>➕</span> Create Task
-          </button>
-          {!milestone.isCompleted && (
-            <button
-              onClick={handleComplete}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm"
-            >
-              Mark Complete
-            </button>
+          {canManage && (
+            <>
+              <button
+                onClick={handleCreateTask}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm flex items-center gap-2"
+              >
+                <span>➕</span> Create Task
+              </button>
+              {!milestone.isCompleted && (
+                <button
+                  onClick={handleComplete}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm"
+                >
+                  Mark Complete
+                </button>
+              )}
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
+              >
+                Delete
+              </button>
+            </>
           )}
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
-          >
-            Delete
-          </button>
         </div>
       </div>
 
@@ -175,18 +181,20 @@ const MilestoneDetails = () => {
       <div className="bg-white rounded-xl shadow-sm p-6">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-semibold text-gray-900">Tasks for this Milestone</h3>
-          <button
-            onClick={handleCreateTask}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm flex items-center gap-2"
-          >
-            <span>➕</span> Add Task
-          </button>
+          {canManage && (
+            <button
+              onClick={handleCreateTask}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm flex items-center gap-2"
+            >
+              <span>➕</span> Add Task
+            </button>
+          )}
         </div>
         <TaskList 
           milestoneId={milestoneId}
           title=""
           showCreate={false}
-          isTeamLeader={true}
+          isTeamLeader={canManage}
         />
       </div>
     </div>

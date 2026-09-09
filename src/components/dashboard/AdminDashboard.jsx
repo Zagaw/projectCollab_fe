@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../api/axios';
+import projectApi from '../../api/projectApi';
 import toast from 'react-hot-toast';
 
 const AdminDashboard = () => {
@@ -20,16 +21,20 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const [usersRes, pendingRes] = await Promise.all([
+      const [usersRes, pendingRes, projectsRes] = await Promise.all([
         api.get('/admin/users'),
-        api.get('/admin/pending-lecturers')
+        api.get('/admin/pending-lecturers'),
+        projectApi.getAllProjects()
       ]);
+
+      const projects = projectsRes.data || [];
+      const teamCount = projects.reduce((sum, project) => sum + (project.teamCount || 0), 0);
 
       setStats({
         totalUsers: usersRes.data.length,
         pendingLecturers: pendingRes.data.length,
-        totalProjects: 0, // Will be fetched from projects endpoint
-        activeTeams: 0
+        totalProjects: projects.length,
+        activeTeams: teamCount
       });
       setPendingLecturers(pendingRes.data);
     } catch (error) {

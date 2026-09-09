@@ -192,12 +192,14 @@ const TeamDetails = () => {
                       <div className="flex gap-2">
                         {(isLecturerRoute || isTeamLeaderRoute) && member.status === 'ACTIVE' && team.teamLeader?.userId !== member.userId && (
                           <>
-                            <button
-                              onClick={() => handleAssignLeader(member.userId)}
-                              className="px-3 py-1 bg-indigo-100 text-indigo-700 text-sm rounded-lg hover:bg-indigo-200 transition"
-                            >
-                              Make Leader
-                            </button>
+                            {isLecturerRoute && (
+                              <button
+                                onClick={() => handleAssignLeader(member.userId)}
+                                className="px-3 py-1 bg-indigo-100 text-indigo-700 text-sm rounded-lg hover:bg-indigo-200 transition"
+                              >
+                                Make Leader
+                              </button>
+                            )}
                             <button
                               onClick={() => handleRemoveMember(member.teamMemberId)}
                               className="px-3 py-1 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition"

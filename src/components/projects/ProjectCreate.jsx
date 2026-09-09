@@ -168,7 +168,7 @@ const ProjectCreate = () => {
             </button>
             <button
               type="button"
-              onClick={() => navigate('/projects')}
+              onClick={() => navigate('/lecturer/projects')}
               className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
             >
               Cancel

@@ -23,20 +23,23 @@ import TeamLeaderDashboard from './components/dashboard/TeamLeaderDashboard';
 // Project Components
 import ProjectList from './components/projects/ProjectList';
 import ProjectCreate from './components/projects/ProjectCreate';
+import ProjectEdit from './components/projects/ProjectEdit';
 import ProjectDetails from './components/projects/ProjectDetails';
 import StudentProjects from './components/projects/StudentProjects';
 
 // Team Components
-import TeamList from './components/teams/TeamList';
 import TeamCreate from './components/teams/TeamCreate';
 import TeamDetails from './components/teams/TeamDetails';
 import StudentTeamList from './components/teams/StudentTeamList';
+import LecturerTeamList from './components/teams/LecturerTeamList';
 
 // Invitation Components
 import InvitationList from './components/invitations/InvitationList';
 
 // Admin Components
 import PendingLecturers from './components/admin/PendingLecturers';
+import AdminUserList from './components/admin/AdminUserList';
+import AdminProjectList from './components/admin/AdminProjectList';
 
 // Milestone Components
 import MilestoneList from './components/milestones/MilestoneList';
@@ -131,6 +134,7 @@ function App() {
             <Route path="teams" element={<StudentTeamList />} />
             <Route path="teams/:teamId" element={<TeamDetails />} />
             <Route path="milestones" element={<StudentMilestoneView />} />
+            <Route path="milestones/:milestoneId" element={<MilestoneDetails />} />
             <Route path="tasks" element={<TaskBoard />} />
             <Route path="tasks/:taskId" element={<TaskDetails />} />
             <Route path="invitations" element={<InvitationList />} />
@@ -184,8 +188,9 @@ function App() {
             <Route path="dashboard" element={<LecturerDashboard />} />
             <Route path="projects" element={<ProjectList />} />
             <Route path="projects/create" element={<ProjectCreate />} />
+            <Route path="projects/:projectId/edit" element={<ProjectEdit />} />
             <Route path="projects/:projectId" element={<ProjectDetails />} />
-            <Route path="teams" element={<TeamList teams={[]} onTeamUpdate={() => {}} />} />
+            <Route path="teams" element={<LecturerTeamList />} />
             <Route path="teams/create" element={<TeamCreate />} />
             <Route path="teams/:teamId" element={<TeamDetails />} />
             <Route path="invitations" element={<InvitationList />} />
@@ -215,8 +220,8 @@ function App() {
             <Route index element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="pending-lecturers" element={<PendingLecturers />} />
-            <Route path="users" element={<div>Manage Users</div>} />
-            <Route path="projects" element={<div>All Projects</div>} />
+            <Route path="users" element={<AdminUserList />} />
+            <Route path="projects" element={<AdminProjectList />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 

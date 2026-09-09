@@ -18,8 +18,10 @@ const LecturerLayout = () => {
     { name: 'Dashboard', icon: '📊', path: '/lecturer/dashboard' },
     { name: 'My Projects', icon: '📁', path: '/lecturer/projects' },
     { name: 'Create Project', icon: '➕', path: '/lecturer/projects/create' },
+    { name: 'Teams', icon: '👥', path: '/lecturer/teams' },
     { name: 'Milestones', icon: '🎯', path: '/lecturer/milestones' },
     { name: 'Tasks', icon: '✅', path: '/lecturer/tasks' },
+    { name: 'Discussions', icon: '💬', path: '/lecturer/discussions' },
     { name: 'Profile', icon: '👤', path: '/lecturer/profile' },
   ];
 
