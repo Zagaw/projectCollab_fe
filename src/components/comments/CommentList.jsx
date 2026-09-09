@@ -16,6 +16,7 @@ const CommentList = ({
 }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(isLoading);
+  const [teamFilter, setTeamFilter] = useState('ALL');
 
   useEffect(() => {
     if (initialComments) {
@@ -95,6 +96,11 @@ const CommentList = ({
     onCommentDeleted?.(commentId);
   };
 
+  const teamNames = [...new Set(comments.map((c) => c.teamName).filter(Boolean))];
+  const visibleComments = teamFilter === 'ALL'
+    ? comments
+    : comments.filter((c) => c.teamName === teamFilter);
+
   if (loading) {
     return <LoadingSpinner />;
   }
@@ -107,8 +113,24 @@ const CommentList = ({
         placeholder={`Add a comment to this ${entityType}...`}
       />
 
+      {entityType === 'project' && teamNames.length > 0 && (
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-1">Filter by team</label>
+          <select
+            value={teamFilter}
+            onChange={(e) => setTeamFilter(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm max-w-xs"
+          >
+            <option value="ALL">All teams</option>
+            {teamNames.map((name) => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
+        </div>
+      )}
+
       {/* Comments List */}
-      {comments.length === 0 ? (
+      {visibleComments.length === 0 ? (
         <EmptyState
           title="No Comments Yet"
           description={`Be the first to add a comment to this ${entityType}!`}
@@ -116,7 +138,7 @@ const CommentList = ({
         />
       ) : (
         <div className="space-y-3">
-          {comments.map((comment) => (
+          {visibleComments.map((comment) => (
             <CommentItem
               key={comment.commentId}
               comment={comment}

@@ -21,6 +21,10 @@ const milestoneApi = {
     return api.get('/milestones/my-team-milestones');
   },
 
+  getLecturerMilestones: () => {
+    return api.get('/milestones/lecturer');
+  },
+
   // Get incomplete milestones for a team
   getIncompleteMilestones: (teamId) => {
     return api.get(`/milestones/team/${teamId}/incomplete`);

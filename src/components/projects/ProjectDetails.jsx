@@ -8,6 +8,8 @@ import commentApi from '../../api/commentApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import toast from 'react-hot-toast';
 import DiscussionList from '../discussions/DiscussionList';
+import ActivityTimeline from '../activity/ActivityTimeline';
+import ProjectFileLibrary from '../files/ProjectFileLibrary';
 
 const ProjectDetails = () => {
   const { projectId } = useParams();
@@ -130,7 +132,7 @@ const ProjectDetails = () => {
       {/* Tabs */}
       <div className="border-b border-gray-200 mb-6">
         <nav className="flex gap-6">
-          {['overview', 'teams', 'comments', 'discussions'].map((tab) => (
+          {['overview', 'teams', 'comments', 'discussions', 'files', 'activity'].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -222,6 +224,10 @@ const ProjectDetails = () => {
 
       {activeTab === 'comments' && (
         <div className="bg-white rounded-xl shadow-sm p-6">
+          <p className="text-sm text-gray-600 mb-4">
+            Project comments are for the whole project (announcements, lecturer feedback).
+            Each comment is labeled with the author's team. Task discussion and task files stay on the task page under a milestone.
+          </p>
           <CommentList
             entityType="project"
             entityId={projectId}
@@ -241,6 +247,20 @@ const ProjectDetails = () => {
             projectId={projectId} 
             projectTitle={project.title}
           />
+        </div>
+      )}
+
+      {activeTab === 'files' && (
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Files</h3>
+          <ProjectFileLibrary projectId={projectId} teams={teams} />
+        </div>
+      )}
+
+      {activeTab === 'activity' && (
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Activity</h3>
+          <ActivityTimeline projectId={projectId} />
         </div>
       )}
     </div>

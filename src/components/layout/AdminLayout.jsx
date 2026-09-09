@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import NotificationBell from '../notifications/NotificationBell';
 import toast from 'react-hot-toast';
 
 const AdminLayout = () => {
@@ -48,6 +49,7 @@ const AdminLayout = () => {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
+              <NotificationBell />
               <span className="text-sm text-gray-700 hidden sm:block">
                 Welcome, {user?.firstName} {user?.lastName}
               </span>

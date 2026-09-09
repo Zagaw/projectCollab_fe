@@ -26,6 +26,10 @@ const taskApi = {
     return api.get('/tasks/my-tasks');
   },
 
+  getLecturerTasks: () => {
+    return api.get('/tasks/lecturer');
+  },
+
   // Get tasks assigned to a specific student
   getTasksByStudent: (studentId) => {
     return api.get(`/tasks/student/${studentId}`);

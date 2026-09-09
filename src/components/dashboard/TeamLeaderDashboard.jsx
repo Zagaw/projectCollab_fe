@@ -5,6 +5,7 @@ import teamApi from '../../api/teamApi';
 import taskApi from '../../api/taskApi';
 import milestoneApi from '../../api/milestoneApi';
 import LoadingSpinner from '../common/LoadingSpinner';
+import ActivityTimeline from '../activity/ActivityTimeline';
 import toast from 'react-hot-toast';
 
 const TeamLeaderDashboard = () => {
@@ -278,6 +279,11 @@ const TeamLeaderDashboard = () => {
         ) : (
           <p className="text-gray-500 text-sm">No tasks created yet.</p>
         )}
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm p-5">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+        <ActivityTimeline limit={8} compact />
       </div>
     </div>
   );

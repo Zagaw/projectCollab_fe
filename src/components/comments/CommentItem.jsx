@@ -118,6 +118,11 @@ const CommentItem = ({
                 {comment.userName}
               </p>
               <p className="text-xs text-gray-500">
+                {comment.teamName && (
+                  <span className="mr-2 px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded">
+                    {comment.teamName}
+                  </span>
+                )}
                 {new Date(comment.createdAt).toLocaleString()}
                 {comment.updatedAt && (
                   <span className="ml-2 text-gray-400">(edited)</span>

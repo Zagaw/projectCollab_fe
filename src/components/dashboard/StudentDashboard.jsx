@@ -5,6 +5,7 @@ import taskApi from '../../api/taskApi';
 import invitationApi from '../../api/invitationApi';
 import TaskCard from '../tasks/TaskCard';
 import LoadingSpinner from '../common/LoadingSpinner';
+import ActivityTimeline from '../activity/ActivityTimeline';
 import toast from 'react-hot-toast';
 
 const StudentDashboard = () => {
@@ -199,6 +200,11 @@ const StudentDashboard = () => {
         ) : (
           <p className="text-gray-500 text-sm">No pending invitations.</p>
         )}
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+        <ActivityTimeline limit={8} compact />
       </div>
     </div>
   );

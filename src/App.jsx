@@ -42,7 +42,7 @@ import AdminUserList from './components/admin/AdminUserList';
 import AdminProjectList from './components/admin/AdminProjectList';
 
 // Milestone Components
-import MilestoneList from './components/milestones/MilestoneList';
+import LecturerMilestoneMonitor from './components/milestones/LecturerMilestoneMonitor';
 import MilestoneCreate from './components/milestones/MilestoneCreate';
 import MilestoneDetails from './components/milestones/MilestoneDetails';
 import StudentMilestoneView from './components/milestones/StudentMilestoneView';
@@ -51,6 +51,7 @@ import TeamLeaderMilestoneCreate from './components/milestones/TeamLeaderMilesto
 // Task Components
 import TaskList from './components/tasks/TaskList';
 import TaskBoard from './components/tasks/TaskBoard';
+import LecturerTaskMonitor from './components/tasks/LecturerTaskMonitor';
 import TaskCreate from './components/tasks/TaskCreate';
 import TaskDetails from './components/tasks/TaskDetails';
 import TeamLeaderTaskCreate from './components/tasks/TeamLeaderTaskCreate';
@@ -69,6 +70,7 @@ import DiscussionDetails from './components/discussions/DiscussionDetails';
 
 import StudentProjectList from './components/projects/StudentProjectList';
 import StudentProjectDetails from './components/projects/StudentProjectDetails';
+import FileLibraryPage from './components/files/FileLibraryPage';
 
 function App() {
   return (
@@ -140,6 +142,7 @@ function App() {
             <Route path="invitations" element={<InvitationList />} />
             <Route path="discussions" element={<DiscussionList />} />
             <Route path="discussions/:discussionId" element={<DiscussionDetails />} />
+            <Route path="files" element={<FileLibraryPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 
@@ -170,6 +173,7 @@ function App() {
             <Route path="discussions" element={<DiscussionList />} />
             <Route path="discussions/create" element={<DiscussionCreate />} />
             <Route path="discussions/:discussionId" element={<DiscussionDetails />} />
+            <Route path="files" element={<FileLibraryPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 
@@ -194,15 +198,16 @@ function App() {
             <Route path="teams/create" element={<TeamCreate />} />
             <Route path="teams/:teamId" element={<TeamDetails />} />
             <Route path="invitations" element={<InvitationList />} />
-            <Route path="milestones" element={<MilestoneList />} />
+            <Route path="milestones" element={<LecturerMilestoneMonitor />} />
             <Route path="milestones/create" element={<MilestoneCreate />} />
             <Route path="milestones/:milestoneId" element={<MilestoneDetails />} />
-            <Route path="tasks" element={<TaskBoard />} />
+            <Route path="tasks" element={<LecturerTaskMonitor />} />
             <Route path="tasks/create" element={<TaskCreate />} />
             <Route path="tasks/:taskId" element={<TaskDetails />} />
             <Route path="discussions" element={<DiscussionList />} />
             <Route path="discussions/create" element={<DiscussionCreate />} />
             <Route path="discussions/:discussionId" element={<DiscussionDetails />} />
+            <Route path="files" element={<FileLibraryPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 

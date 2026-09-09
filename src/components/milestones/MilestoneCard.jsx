@@ -18,8 +18,12 @@ const MilestoneCard = ({ milestone, onComplete, onDelete, onViewDetails, showAct
           </h3>
           {milestone.projectTitle && (
             <p className="text-sm text-gray-500">
-              Project: {milestone.projectTitle}
+              {milestone.projectTitle}
+              {milestone.teamName ? ` • ${milestone.teamName}` : ''}
             </p>
+          )}
+          {!milestone.projectTitle && milestone.teamName && (
+            <p className="text-sm text-gray-500">{milestone.teamName}</p>
           )}
         </div>
         <div className="flex items-center gap-2">

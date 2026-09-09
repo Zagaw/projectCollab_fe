@@ -27,23 +27,14 @@ const LecturerDashboard = () => {
       setLoading(true);
       
       // Fetch projects
-      const projectsRes = await projectApi.getMyProjects();
+      const [projectsRes, tasksRes] = await Promise.all([
+        projectApi.getMyProjects(),
+        taskApi.getLecturerTasks().catch(() => ({ data: [] })),
+      ]);
       const projects = projectsRes.data || [];
-      
-      // Calculate stats
+      const allTasks = tasksRes.data || [];
       let totalTeams = 0;
-      projects.forEach(p => totalTeams += (p.teamCount || 0));
-      
-      // Fetch tasks from all projects (simplified)
-      let allTasks = [];
-      for (const project of projects) {
-        try {
-          const tasksRes = await taskApi.getTasksByProject(project.projectId);
-          allTasks = [...allTasks, ...(tasksRes.data || [])];
-        } catch (e) {
-          // Skip projects without tasks
-        }
-      }
+      projects.forEach((p) => { totalTeams += (p.teamCount || 0); });
       
       const completed = allTasks.filter(t => t.status === 'COMPLETED').length;
       
@@ -140,10 +131,14 @@ const LecturerDashboard = () => {
           {recentTasks.length > 0 ? (
             <div className="space-y-3">
               {recentTasks.map((task) => (
-                <div key={task.taskId} className="p-3 bg-gray-50 rounded-lg">
+                <Link
+                  key={task.taskId}
+                  to={`/lecturer/tasks/${task.taskId}`}
+                  className="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition"
+                >
                   <p className="font-medium text-gray-900">{task.title}</p>
                   <p className="text-sm text-gray-500">
-                    {task.projectTitle} • Assigned to: {task.assignedToName || 'Unassigned'}
+                    {task.projectTitle} • {task.teamName || 'No team'} • {task.assignedToName || 'Unassigned'}
                   </p>
                   <span className={`text-xs px-2 py-1 rounded-full mt-1 inline-block ${
                     task.status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
@@ -152,7 +147,7 @@ const LecturerDashboard = () => {
                   }`}>
                     {task.status}
                   </span>
-                </div>
+                </Link>
               ))}
             </div>
           ) : (

@@ -60,6 +60,43 @@ const fileApi = {
   compareVersions: (fileId, v1, v2) => {
     return api.get(`/files/${fileId}/compare?v1=${v1}&v2=${v2}`);
   },
+
+  getProjectFiles: (projectId, params = {}) => {
+    return api.get(`/projects/${projectId}/files`, { params });
+  },
+
+  uploadProjectFile: (projectId, file, category, teamId) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (category) {
+      formData.append('category', category);
+    }
+    if (teamId) {
+      formData.append('teamId', teamId);
+    }
+    return api.post(`/projects/${projectId}/files`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+
+  getTeamFiles: (teamId, params = {}) => {
+    return api.get(`/teams/${teamId}/files`, { params });
+  },
+
+  uploadTeamFile: (teamId, file, category) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (category) {
+      formData.append('category', category);
+    }
+    return api.post(`/teams/${teamId}/files`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+
+  deleteFile: (fileId) => {
+    return api.delete(`/files/${fileId}`);
+  },
 };
 
 export default fileApi;

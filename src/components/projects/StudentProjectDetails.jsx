@@ -5,6 +5,8 @@ import teamApi from '../../api/teamApi';
 import commentApi from '../../api/commentApi';
 import CommentList from '../comments/CommentList';
 import DiscussionList from '../discussions/DiscussionList';
+import ActivityTimeline from '../activity/ActivityTimeline';
+import ProjectFileLibrary from '../files/ProjectFileLibrary';
 import LoadingSpinner from '../common/LoadingSpinner';
 import toast from 'react-hot-toast';
 
@@ -93,7 +95,7 @@ const StudentProjectDetails = () => {
     return <div>Project not found</div>;
   }
 
-  const tabs = ['overview', 'teams', 'comments', 'discussions'];
+  const tabs = ['overview', 'teams', 'comments', 'discussions', 'files', 'activity'];
 
   return (
     <div>
@@ -235,6 +237,10 @@ const StudentProjectDetails = () => {
 
       {activeTab === 'comments' && (
         <div className="bg-white rounded-xl shadow-sm p-6">
+          <p className="text-sm text-gray-600 mb-4">
+            Project comments are for the whole project. Each comment is labeled with the author's team.
+            Comments and files on a specific task stay on that task's page.
+          </p>
           <CommentList
             entityType="project"
             entityId={projectId}
@@ -253,6 +259,20 @@ const StudentProjectDetails = () => {
             projectId={projectId} 
             projectTitle={project.title}
           />
+        </div>
+      )}
+
+      {activeTab === 'files' && (
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Files</h3>
+          <ProjectFileLibrary projectId={projectId} teams={teams} />
+        </div>
+      )}
+
+      {activeTab === 'activity' && (
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Activity</h3>
+          <ActivityTimeline projectId={projectId} />
         </div>
       )}
     </div>
