@@ -29,6 +29,7 @@ const TeamLeaderLayout = () => {
     { name: 'Files', icon: '📎', path: '/teamleader/files' },
     { name: 'Meetings', icon: '📅', path: '/teamleader/meetings' },
     { name: 'Calendar', icon: '🗓️', path: '/teamleader/calendar' },
+    { name: 'Progress', icon: '📈', path: '/teamleader/progress' },
     { name: 'Profile', icon: '👤', path: '/teamleader/profile' },
   ];
 

@@ -5,6 +5,7 @@ import projectApi from '../../api/projectApi';
 import taskApi from '../../api/taskApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import UpcomingMeetings from '../meetings/UpcomingMeetings';
+import DashboardProgress from '../progress/DashboardProgress';
 import toast from 'react-hot-toast';
 
 const LecturerDashboard = () => {
@@ -156,6 +157,8 @@ const LecturerDashboard = () => {
           )}
         </div>
       </div>
+
+      <DashboardProgress source="lecturer" basePath="/lecturer" />
 
       <UpcomingMeetings source="lecturer" basePath="/lecturer" />
     </div>

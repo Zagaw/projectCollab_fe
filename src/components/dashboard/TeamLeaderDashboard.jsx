@@ -7,6 +7,7 @@ import milestoneApi from '../../api/milestoneApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ActivityTimeline from '../activity/ActivityTimeline';
 import UpcomingMeetings from '../meetings/UpcomingMeetings';
+import DashboardProgress from '../progress/DashboardProgress';
 import toast from 'react-hot-toast';
 
 const TeamLeaderDashboard = () => {
@@ -293,6 +294,8 @@ const TeamLeaderDashboard = () => {
           <p className="text-gray-500 text-sm">No tasks created yet.</p>
         )}
       </div>
+
+      <DashboardProgress source="my" basePath="/teamleader" showContributions />
 
       <UpcomingMeetings source="my" basePath="/teamleader" />
 

@@ -7,6 +7,7 @@ import TaskCard from '../tasks/TaskCard';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ActivityTimeline from '../activity/ActivityTimeline';
 import UpcomingMeetings from '../meetings/UpcomingMeetings';
+import DashboardProgress from '../progress/DashboardProgress';
 import toast from 'react-hot-toast';
 
 const StudentDashboard = () => {
@@ -212,6 +213,8 @@ const StudentDashboard = () => {
             <p className="text-gray-500 text-sm">No pending invitations.</p>
           )}
       </div>
+
+      <DashboardProgress source="my" basePath="/student" />
 
       <UpcomingMeetings source="my" basePath="/student" />
 

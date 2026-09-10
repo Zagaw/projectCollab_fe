@@ -7,6 +7,7 @@ import CommentList from '../comments/CommentList';
 import DiscussionList from '../discussions/DiscussionList';
 import ActivityTimeline from '../activity/ActivityTimeline';
 import ProjectFileLibrary from '../files/ProjectFileLibrary';
+import ProjectProgressOverview from '../progress/ProjectProgressOverview';
 import LoadingSpinner from '../common/LoadingSpinner';
 import toast from 'react-hot-toast';
 
@@ -151,6 +152,8 @@ const StudentProjectDetails = () => {
               <h3 className="font-semibold text-gray-900 mb-3">Description</h3>
               <p className="text-gray-600">{project.description || 'No description provided'}</p>
             </div>
+
+            <ProjectProgressOverview projectId={projectId} basePath={basePath} />
 
             {/* Lecturer Info */}
             <div className="bg-white rounded-xl shadow-sm p-6">

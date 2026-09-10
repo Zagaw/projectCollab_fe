@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import teamApi from '../../api/teamApi';
 import invitationApi from '../../api/invitationApi';
 import InviteMember from './InviteMember';
+import TeamProgressSection from '../progress/TeamProgressSection';
 import LoadingSpinner from '../common/LoadingSpinner';
 import toast from 'react-hot-toast';
 
@@ -229,6 +230,8 @@ const TeamDetails = () => {
           </div>
         )}
       </div>
+
+      <TeamProgressSection teamId={teamId} />
 
       {/* Invite Modal */}
       {showInviteModal && (

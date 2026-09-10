@@ -27,6 +27,7 @@ const StudentLayout = () => {
     { name: 'Files', icon: '📎', path: '/student/files' },
     { name: 'Meetings', icon: '📅', path: '/student/meetings' },
     { name: 'Calendar', icon: '🗓️', path: '/student/calendar' },
+    { name: 'Progress', icon: '📈', path: '/student/progress' },
     { name: 'Profile', icon: '👤', path: '/student/profile' },
   ];
 
