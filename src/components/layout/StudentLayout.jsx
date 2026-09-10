@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, Outlet } from 'react-router-dom';
+import { Link, useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import NotificationBell from '../notifications/NotificationBell';
 import toast from 'react-hot-toast';
@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 const StudentLayout = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const handleLogout = () => {
@@ -24,6 +25,8 @@ const StudentLayout = () => {
     { name: 'My Tasks', icon: '✅', path: '/student/tasks' },
     { name: 'Discussions', icon: '💬', path: '/student/discussions' },
     { name: 'Files', icon: '📎', path: '/student/files' },
+    { name: 'Meetings', icon: '📅', path: '/student/meetings' },
+    { name: 'Calendar', icon: '🗓️', path: '/student/calendar' },
     { name: 'Profile', icon: '👤', path: '/student/profile' },
   ];
 
@@ -72,16 +75,21 @@ const StudentLayout = () => {
         {/* Sidebar */}
         <aside className={`${isSidebarOpen ? 'block' : 'hidden'} lg:block w-64 bg-white shadow-lg min-h-screen border-r border-gray-200`}>
           <nav className="mt-5 px-2">
-            {navItems.map((item) => (
+            {navItems.map((item) => {
+              const active = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`);
+              return (
               <Link
                 key={item.path}
                 to={item.path}
-                className="group flex items-center px-4 py-3 text-sm font-medium rounded-lg text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200"
+                className={`group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                  active ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-700'
+                }`}
               >
                 <span className="mr-3 text-xl">{item.icon}</span>
                 {item.name}
               </Link>
-            ))}
+              );
+            })}
             <hr className="my-4 border-gray-200" />
             <Link
               to="/student/profile"
@@ -94,7 +102,7 @@ const StudentLayout = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-4 sm:p-6 min-w-0 overflow-x-hidden">
           <Outlet />
         </main>
       </div>

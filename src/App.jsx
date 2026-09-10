@@ -71,6 +71,11 @@ import DiscussionDetails from './components/discussions/DiscussionDetails';
 import StudentProjectList from './components/projects/StudentProjectList';
 import StudentProjectDetails from './components/projects/StudentProjectDetails';
 import FileLibraryPage from './components/files/FileLibraryPage';
+import MeetingList from './components/meetings/MeetingList';
+import MeetingCreate from './components/meetings/MeetingCreate';
+import MeetingDetails from './components/meetings/MeetingDetails';
+import LecturerMeetingMonitor from './components/meetings/LecturerMeetingMonitor';
+import CalendarPage from './components/calendar/CalendarPage';
 
 function App() {
   return (
@@ -143,6 +148,9 @@ function App() {
             <Route path="discussions" element={<DiscussionList />} />
             <Route path="discussions/:discussionId" element={<DiscussionDetails />} />
             <Route path="files" element={<FileLibraryPage />} />
+            <Route path="meetings" element={<MeetingList />} />
+            <Route path="meetings/:meetingId" element={<MeetingDetails />} />
+            <Route path="calendar" element={<CalendarPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 
@@ -174,6 +182,10 @@ function App() {
             <Route path="discussions/create" element={<DiscussionCreate />} />
             <Route path="discussions/:discussionId" element={<DiscussionDetails />} />
             <Route path="files" element={<FileLibraryPage />} />
+            <Route path="meetings" element={<MeetingList />} />
+            <Route path="meetings/create" element={<MeetingCreate />} />
+            <Route path="meetings/:meetingId" element={<MeetingDetails />} />
+            <Route path="calendar" element={<CalendarPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 
@@ -208,6 +220,8 @@ function App() {
             <Route path="discussions/create" element={<DiscussionCreate />} />
             <Route path="discussions/:discussionId" element={<DiscussionDetails />} />
             <Route path="files" element={<FileLibraryPage />} />
+            <Route path="meetings" element={<LecturerMeetingMonitor />} />
+            <Route path="meetings/:meetingId" element={<MeetingDetails />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 

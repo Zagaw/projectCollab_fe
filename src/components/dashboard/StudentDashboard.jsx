@@ -6,6 +6,7 @@ import invitationApi from '../../api/invitationApi';
 import TaskCard from '../tasks/TaskCard';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ActivityTimeline from '../activity/ActivityTimeline';
+import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import toast from 'react-hot-toast';
 
 const StudentDashboard = () => {
@@ -94,6 +95,16 @@ const StudentDashboard = () => {
         <p className="text-gray-600 mt-1">
           Here's what's happening with your tasks today.
         </p>
+        <Link
+          to="/student/calendar"
+          className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 hover:bg-indigo-100 transition"
+        >
+          <div>
+            <p className="font-medium text-indigo-900">Calendar</p>
+            <p className="text-sm text-indigo-700">Meetings, task deadlines, and milestones in one view.</p>
+          </div>
+          <span className="text-sm font-medium text-indigo-700 whitespace-nowrap">Open →</span>
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -148,8 +159,8 @@ const StudentDashboard = () => {
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-900">Upcoming Deadlines</h2>
-            <Link to="/student/tasks" className="text-sm text-indigo-600 hover:text-indigo-700">
-              View all →
+            <Link to="/student/calendar" className="text-sm text-indigo-600 hover:text-indigo-700">
+              View calendar →
             </Link>
           </div>
           {upcomingDeadlines.length > 0 ? (
@@ -198,9 +209,11 @@ const StudentDashboard = () => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 text-sm">No pending invitations.</p>
-        )}
+            <p className="text-gray-500 text-sm">No pending invitations.</p>
+          )}
       </div>
+
+      <UpcomingMeetings source="my" basePath="/student" />
 
       <div className="bg-white rounded-lg shadow-sm p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>

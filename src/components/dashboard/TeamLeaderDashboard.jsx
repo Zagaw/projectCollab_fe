@@ -6,6 +6,7 @@ import taskApi from '../../api/taskApi';
 import milestoneApi from '../../api/milestoneApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ActivityTimeline from '../activity/ActivityTimeline';
+import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import toast from 'react-hot-toast';
 
 const TeamLeaderDashboard = () => {
@@ -109,7 +110,7 @@ const TeamLeaderDashboard = () => {
               You are leading {stats.totalTeams} team(s) with {stats.totalMembers} members
             </p>
           </div>
-          <div className="mt-3 md:mt-0 flex gap-2">
+          <div className="mt-3 md:mt-0 flex flex-wrap gap-2">
             <Link
               to="/teamleader/milestones/create"
               className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition text-sm"
@@ -121,6 +122,18 @@ const TeamLeaderDashboard = () => {
               className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition text-sm"
             >
               + Create Task
+            </Link>
+            <Link
+              to="/teamleader/meetings/create"
+              className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition text-sm"
+            >
+              + Schedule Meeting
+            </Link>
+            <Link
+              to="/teamleader/calendar"
+              className="px-4 py-2 bg-white text-indigo-700 rounded-lg hover:bg-indigo-50 transition text-sm font-medium"
+            >
+              Calendar
             </Link>
           </div>
         </div>
@@ -186,8 +199,8 @@ const TeamLeaderDashboard = () => {
           <div className="bg-white rounded-xl shadow-sm p-5">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Upcoming Milestones</h2>
-              <Link to="/teamleader/milestones" className="text-sm text-indigo-600 hover:text-indigo-700">
-                View all →
+              <Link to="/teamleader/calendar" className="text-sm text-indigo-600 hover:text-indigo-700">
+                View calendar →
               </Link>
             </div>
             {upcomingMilestones.length > 0 ? (
@@ -280,6 +293,8 @@ const TeamLeaderDashboard = () => {
           <p className="text-gray-500 text-sm">No tasks created yet.</p>
         )}
       </div>
+
+      <UpcomingMeetings source="my" basePath="/teamleader" />
 
       <div className="bg-white rounded-xl shadow-sm p-5">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>

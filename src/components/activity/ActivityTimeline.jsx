@@ -21,6 +21,7 @@ const activityLink = (activity, basePath) => {
   if (type === 'TASK' && id) return `${basePath}/tasks/${id}`;
   if (type === 'MILESTONE' && id) return `${basePath}/milestones/${id}`;
   if (type === 'TEAM' && id) return `${basePath}/teams/${id}`;
+  if (type === 'MEETING' && id) return `${basePath}/meetings/${id}`;
   if (type === 'DISCUSSION' && id) {
     return `${basePath}/discussions/${id}${projectId ? `?projectId=${projectId}` : ''}`;
   }

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import projectApi from '../../api/projectApi';
 import taskApi from '../../api/taskApi';
 import LoadingSpinner from '../common/LoadingSpinner';
+import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import toast from 'react-hot-toast';
 
 const LecturerDashboard = () => {
@@ -155,6 +156,8 @@ const LecturerDashboard = () => {
           )}
         </div>
       </div>
+
+      <UpcomingMeetings source="lecturer" basePath="/lecturer" />
     </div>
   );
 };

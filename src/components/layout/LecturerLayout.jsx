@@ -24,6 +24,7 @@ const LecturerLayout = () => {
     { name: 'Tasks', icon: '✅', path: '/lecturer/tasks' },
     { name: 'Discussions', icon: '💬', path: '/lecturer/discussions' },
     { name: 'Files', icon: '📎', path: '/lecturer/files' },
+    { name: 'Meetings', icon: '📅', path: '/lecturer/meetings' },
     { name: 'Profile', icon: '👤', path: '/lecturer/profile' },
   ];
 
