@@ -28,6 +28,7 @@ const StudentLayout = () => {
     { name: 'Meetings', icon: '📅', path: '/student/meetings' },
     { name: 'Calendar', icon: '🗓️', path: '/student/calendar' },
     { name: 'Progress', icon: '📈', path: '/student/progress' },
+    { name: 'Reports', icon: '📄', path: '/student/reports' },
     { name: 'Profile', icon: '👤', path: '/student/profile' },
   ];
 

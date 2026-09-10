@@ -25,9 +25,19 @@ const ProjectProgressOverview = ({ projectId, basePath }) => {
     <div className="bg-white rounded-xl shadow-sm p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-gray-900">Progress</h3>
-        <Link to={`${basePath}/progress`} className="text-sm text-indigo-600 hover:text-indigo-700">
-          Details →
-        </Link>
+        <div className="flex gap-3">
+          <Link to={`${basePath}/progress`} className="text-sm text-indigo-600 hover:text-indigo-700">
+            Details →
+          </Link>
+          <Link
+            to={basePath.includes('/lecturer')
+              ? `${basePath}/reports?projectId=${projectId}&type=PROGRESS`
+              : `${basePath}/reports`}
+            className="text-sm text-indigo-600 hover:text-indigo-700"
+          >
+            Reports →
+          </Link>
+        </div>
       </div>
       <div className="space-y-3">
         <ProgressBar

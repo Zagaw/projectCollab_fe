@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import progressApi from '../../api/progressApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import TeamProgressPanel from './TeamProgressPanel';
+import { reportBasePath } from '../reports/reportUtils';
 import toast from 'react-hot-toast';
 
 const ProgressPage = () => {
@@ -83,9 +84,17 @@ const ProgressPage = () => {
 
           {selected && (
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6">
-              <div className="mb-5">
-                <h2 className="text-lg font-semibold text-gray-900">{selected.teamName}</h2>
-                <p className="text-sm text-gray-500">{selected.projectTitle}</p>
+              <div className="mb-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900">{selected.teamName}</h2>
+                  <p className="text-sm text-gray-500">{selected.projectTitle}</p>
+                </div>
+                <Link
+                  to={`${reportBasePath()}/reports?teamId=${selected.teamId}&type=PROGRESS`}
+                  className="text-sm text-indigo-600 hover:text-indigo-700"
+                >
+                  Open in Reports →
+                </Link>
               </div>
               <TeamProgressPanel progress={selected} />
             </div>
