@@ -56,34 +56,35 @@ const FileUploader = ({ onFilesSelect, maxFiles = 5, maxSize = 10 * 1024 * 1024 
 
   return (
     <div className="space-y-3">
-      {/* Drop Zone */}
       <div
-        className={`border-2 border-dashed rounded-lg p-6 text-center transition ${
+        className={`rounded-2xl border-2 border-dashed p-6 text-center transition ${
           dragOver
-            ? 'border-indigo-500 bg-indigo-50'
-            : 'border-gray-300 hover:border-gray-400'
+            ? 'border-indigo-600 bg-indigo-50'
+            : 'border-gray-200 bg-white hover:border-indigo-200'
         }`}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
       >
         <div className="flex flex-col items-center gap-2">
-          <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-          </svg>
+          <div className="h-10 w-10 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
           <div>
             <p className="text-sm text-gray-600">
-              Drag & drop files here, or{' '}
+              Drag and drop files here, or{' '}
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="text-indigo-600 hover:text-indigo-700 font-medium"
+                className="text-indigo-700 hover:text-indigo-800 font-medium"
               >
                 browse
               </button>
             </p>
-            <p className="text-xs text-gray-400 mt-1">
-              Max {maxFiles} files • Max {formatFileSize(maxSize)} each
+            <p className="text-xs text-gray-500 mt-1">
+              Max {maxFiles} files · Max {formatFileSize(maxSize)} each
             </p>
           </div>
         </div>
@@ -102,31 +103,23 @@ const FileUploader = ({ onFilesSelect, maxFiles = 5, maxSize = 10 * 1024 * 1024 
         />
       </div>
 
-      {/* File List */}
       {files.length > 0 && (
         <div className="space-y-2">
           {files.map((file, index) => (
             <div
               key={index}
-              className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-200"
+              className="flex items-center justify-between gap-3 p-3 surface"
             >
-              <div className="flex items-center gap-3 min-w-0">
-                <span className="text-xl">📎</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {file.name}
-                  </p>
-                  <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
-                </div>
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-ink truncate">{file.name}</p>
+                <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
               </div>
               <button
                 type="button"
                 onClick={() => removeFile(index)}
-                className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                className="btn-danger !py-1 !px-2 text-xs"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                Remove
               </button>
             </div>
           ))}

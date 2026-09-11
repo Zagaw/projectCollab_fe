@@ -6,6 +6,7 @@ import taskApi from '../../api/taskApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import DashboardProgress from '../progress/DashboardProgress';
+import { PageHeader, StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 
 const LecturerDashboard = () => {
@@ -61,41 +62,26 @@ const LecturerDashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Welcome back, {user?.firstName}! 👨‍🏫
-        </h1>
-        <p className="text-gray-600 mt-1">
-          Manage your projects and monitor student progress.
-        </p>
-      </div>
+      <PageHeader
+        title={`Welcome back, ${user?.firstName}`}
+        description="Supervise projects, teams, and student progress."
+        actions={
+          <Link to="/lecturer/projects/create" className="btn-primary">Create project</Link>
+        }
+      />
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-sm p-5 border-l-4 border-indigo-500">
-          <p className="text-sm text-gray-500">My Projects</p>
-          <p className="text-2xl font-bold text-gray-900">{stats.totalProjects}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border-l-4 border-green-500">
-          <p className="text-sm text-gray-500">Total Teams</p>
-          <p className="text-2xl font-bold text-green-600">{stats.totalTeams}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border-l-4 border-blue-500">
-          <p className="text-sm text-gray-500">Total Tasks</p>
-          <p className="text-2xl font-bold text-blue-600">{stats.totalTasks}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border-l-4 border-purple-500">
-          <p className="text-sm text-gray-500">Tasks Completed</p>
-          <p className="text-2xl font-bold text-purple-600">{stats.completedTasks}</p>
-        </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <StatCard label="Projects" value={stats.totalProjects} />
+        <StatCard label="Teams" value={stats.totalTeams} />
+        <StatCard label="Tasks" value={stats.totalTasks} />
+        <StatCard label="Completed" value={stats.completedTasks} />
       </div>
 
       {/* Recent Projects & Tasks */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="surface p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Projects</h2>
+            <h2 className="text-lg font-semibold text-ink">Recent projects</h2>
             <Link to="/lecturer/projects" className="text-sm text-indigo-600 hover:text-indigo-700">
               View all →
             </Link>
@@ -123,9 +109,9 @@ const LecturerDashboard = () => {
           )}
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="surface p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Tasks</h2>
+            <h2 className="text-lg font-semibold text-ink">Recent tasks</h2>
             <Link to="/lecturer/tasks" className="text-sm text-indigo-600 hover:text-indigo-700">
               View all →
             </Link>

@@ -4,6 +4,7 @@ import meetingApi from '../../api/meetingApi';
 import teamApi from '../../api/teamApi';
 import toast from 'react-hot-toast';
 import { toApiDateTime } from './meetingUtils';
+import { PageHeader } from '../common/PageHeader';
 
 const MeetingCreate = () => {
   const navigate = useNavigate();
@@ -77,29 +78,26 @@ const MeetingCreate = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button
-          type="button"
-          onClick={() => navigate('/teamleader/meetings')}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
-        >
-          ← Back
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Schedule meeting</h1>
-          <p className="text-gray-600">Share an agenda and an external meeting link. Collabora does not host video calls.</p>
-        </div>
-      </div>
+    <div className="max-w-3xl">
+      <PageHeader
+        title="Schedule meeting"
+        description="Share an agenda and an external meeting link. Collabora does not host video calls."
+        actions={
+          <button type="button" onClick={() => navigate('/teamleader/meetings')} className="btn-secondary">
+            Cancel
+          </button>
+        }
+      />
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6 space-y-6">
+      <form onSubmit={handleSubmit} className="surface p-5 sm:p-6 mt-5 space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Team *</label>
+          <label className="label" htmlFor="meeting-create-team">Team *</label>
           <select
+            id="meeting-create-team"
             name="teamId"
             value={formData.teamId}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="field"
             required
           >
             <option value="">Select a team</option>
@@ -112,12 +110,13 @@ const MeetingCreate = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Title *</label>
+          <label className="label" htmlFor="meeting-create-title">Title *</label>
           <input
+            id="meeting-create-title"
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="field"
             placeholder="Sprint check-in"
             required
           />
@@ -125,78 +124,75 @@ const MeetingCreate = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Start *</label>
+            <label className="label" htmlFor="meeting-create-start">Start *</label>
             <input
+              id="meeting-create-start"
               type="datetime-local"
               name="startAt"
               value={formData.startAt}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="field"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">End *</label>
+            <label className="label" htmlFor="meeting-create-end">End *</label>
             <input
+              id="meeting-create-end"
               type="datetime-local"
               name="endAt"
               value={formData.endAt}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="field"
               required
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+          <label className="label" htmlFor="meeting-create-location">Location</label>
           <input
+            id="meeting-create-location"
             name="location"
             value={formData.location}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="field"
             placeholder="Lab 3 or leave blank for online"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Meeting link</label>
+          <label className="label" htmlFor="meeting-create-link">Meeting link</label>
           <input
+            id="meeting-create-link"
             name="meetingLink"
             value={formData.meetingLink}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="field"
             placeholder="https://meet.google.com/..."
           />
           <p className="text-xs text-gray-500 mt-1">Zoom, Google Meet, Teams, or any URL. Opens in a new tab.</p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Agenda</label>
+          <label className="label" htmlFor="meeting-create-agenda">Agenda</label>
           <textarea
+            id="meeting-create-agenda"
             name="agenda"
             value={formData.agenda}
             onChange={handleChange}
             rows={5}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
+            className="field"
             placeholder="Topics to cover"
           />
         </div>
 
-        <div className="flex justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => navigate('/teamleader/meetings')}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
-          >
+        <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+          <button type="submit" disabled={loading} className="btn-primary flex-1">
             {loading ? 'Scheduling...' : 'Schedule meeting'}
+          </button>
+          <button type="button" onClick={() => navigate('/teamleader/meetings')} className="btn-secondary">
+            Cancel
           </button>
         </div>
       </form>

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import projectApi from '../../api/projectApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import toast from 'react-hot-toast';
+import { PageHeader } from '../common/PageHeader';
 
 const toDateInput = (value) => {
   if (!value) return '';
@@ -82,26 +83,25 @@ const ProjectEdit = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button
-          onClick={() => navigate(`/lecturer/projects/${projectId}`)}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
-        >
-          ← Back
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Edit Project</h1>
-          <p className="text-gray-600">Update project information</p>
-        </div>
-      </div>
+    <div className="max-w-3xl">
+      <PageHeader
+        title="Edit project"
+        description="Update project information."
+        actions={
+          <button
+            type="button"
+            onClick={() => navigate(`/lecturer/projects/${projectId}`)}
+            className="btn-secondary"
+          >
+            Cancel
+          </button>
+        }
+      />
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6">
+      <form onSubmit={handleSubmit} className="surface p-5 sm:p-6 mt-5 space-y-5">
         <div className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Project Title *
-            </label>
+            <label className="label">Project title *</label>
             <input
               type="text"
               name="title"
@@ -110,42 +110,36 @@ const ProjectEdit = () => {
               maxLength={100}
               value={formData.title}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+              className="field"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
+            <label className="label">Description</label>
             <textarea
               name="description"
               rows="4"
               maxLength={1000}
               value={formData.description}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+              className="field"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Course *
-              </label>
+              <label className="label">Course *</label>
               <input
                 type="text"
                 name="course"
                 required
                 value={formData.course}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+                className="field"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Semester *
-              </label>
+              <label className="label">Semester *</label>
               <input
                 type="text"
                 name="semester"
@@ -153,52 +147,44 @@ const ProjectEdit = () => {
                 maxLength={20}
                 value={formData.semester}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+                className="field"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Start Date *
-              </label>
+              <label className="label">Start date *</label>
               <input
                 type="date"
                 name="startDate"
                 required
                 value={formData.startDate}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+                className="field"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                End Date *
-              </label>
+              <label className="label">End date *</label>
               <input
                 type="date"
                 name="endDate"
                 required
                 value={formData.endDate}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+                className="field"
               />
             </div>
           </div>
 
-          <div className="flex gap-4 pt-4">
-            <button
-              type="submit"
-              disabled={saving}
-              className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50"
-            >
-              {saving ? 'Saving...' : 'Save Changes'}
+          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+            <button type="submit" disabled={saving} className="btn-primary flex-1">
+              {saving ? 'Saving...' : 'Save changes'}
             </button>
             <button
               type="button"
               onClick={() => navigate(`/lecturer/projects/${projectId}`)}
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
+              className="btn-secondary"
             >
               Cancel
             </button>

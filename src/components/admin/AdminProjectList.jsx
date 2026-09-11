@@ -1,12 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import projectApi from '../../api/projectApi';
 import LoadingSpinner from '../common/LoadingSpinner';
+import EmptyState from '../common/EmptyState';
+import { PageHeader, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+
+const STATUS_LABEL = {
+  ACTIVE: 'Active',
+  COMPLETED: 'Completed',
+  ON_HOLD: 'On hold',
+  CANCELLED: 'Cancelled',
+};
 
 const AdminProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchProjects();
@@ -24,78 +34,91 @@ const AdminProjectList = () => {
     }
   };
 
-  const filtered = filter === 'ALL'
-    ? projects
-    : projects.filter((p) => p.status === filter);
+  const filtered = useMemo(() => {
+    const term = search.toLowerCase().trim();
+    return projects.filter((p) => {
+      const statusOk = filter === 'ALL' || p.status === filter;
+      const searchOk = !term ||
+        p.title?.toLowerCase().includes(term) ||
+        p.course?.toLowerCase().includes(term) ||
+        p.lecturerName?.toLowerCase().includes(term) ||
+        p.semester?.toLowerCase().includes(term);
+      return statusOk && searchOk;
+    });
+  }, [projects, filter, search]);
 
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">All Projects</h1>
-        <p className="text-gray-600">Every academic project in the system</p>
-      </div>
+    <div className="space-y-5">
+      <PageHeader
+        title="All projects"
+        description="Every academic project in the system."
+      />
 
-      <div className="flex flex-wrap gap-2 mb-6">
-        {['ALL', 'ACTIVE', 'COMPLETED', 'ON_HOLD', 'CANCELLED'].map((status) => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
-              filter === status
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            {status === 'ALL' ? 'All' : status.replace('_', ' ')}
-          </button>
-        ))}
-      </div>
+      <input
+        type="search"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search by title, course, or lecturer..."
+        className="field max-w-md"
+      />
+
+      <FilterChips
+        value={filter}
+        onChange={setFilter}
+        options={[
+          { id: 'ALL', label: 'All', count: projects.length },
+          { id: 'ACTIVE', label: 'Active', count: projects.filter((p) => p.status === 'ACTIVE').length },
+          { id: 'COMPLETED', label: 'Completed', count: projects.filter((p) => p.status === 'COMPLETED').length },
+          { id: 'ON_HOLD', label: 'On hold', count: projects.filter((p) => p.status === 'ON_HOLD').length },
+          { id: 'CANCELLED', label: 'Cancelled', count: projects.filter((p) => p.status === 'CANCELLED').length },
+        ]}
+      />
 
       {filtered.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Projects Found</h3>
-          <p className="text-gray-500">No projects match this filter.</p>
-        </div>
+        <EmptyState
+          title="No projects found"
+          description="No projects match this filter."
+        />
       ) : (
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
+        <div className="surface">
+          <div className="table-wrap">
+            <table className="data-table">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Project</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Course</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Lecturer</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Teams</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Status</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">End date</th>
+                <tr className="border-b border-gray-200">
+                  <th>Project</th>
+                  <th>Course</th>
+                  <th>Lecturer</th>
+                  <th>Teams</th>
+                  <th>Status</th>
+                  <th>End date</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((project) => (
-                  <tr key={project.projectId} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4">
-                      <p className="font-medium text-gray-900">{project.title}</p>
+                  <tr key={project.projectId} className="border-b border-gray-100 last:border-0">
+                    <td>
+                      <p className="font-medium">{project.title}</p>
                       <p className="text-xs text-gray-500">{project.semester}</p>
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">{project.course}</td>
-                    <td className="py-3 px-4 text-sm text-gray-600">
+                    <td className="text-gray-600">{project.course}</td>
+                    <td className="text-gray-600">
                       {project.lecturerName}
-                      <p className="text-xs text-gray-400">{project.lecturerEmail}</p>
+                      <p className="text-xs text-gray-500">{project.lecturerEmail}</p>
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">{project.teamCount || 0}</td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        project.status === 'ACTIVE' ? 'bg-green-100 text-green-700' :
-                        project.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700' :
-                        project.status === 'ON_HOLD' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-red-100 text-red-700'
+                    <td className="text-gray-600">{project.teamCount || 0}</td>
+                    <td>
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                        project.status === 'ACTIVE' ? 'bg-green-50 text-green-800' :
+                        project.status === 'COMPLETED' ? 'bg-indigo-50 text-indigo-800' :
+                        project.status === 'ON_HOLD' ? 'bg-amber-50 text-amber-800' :
+                        'bg-red-50 text-red-700'
                       }`}>
-                        {project.status}
+                        {STATUS_LABEL[project.status] || project.status}
                       </span>
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">
+                    <td className="text-gray-600">
                       {project.endDate ? new Date(project.endDate).toLocaleDateString() : '—'}
                     </td>
                   </tr>

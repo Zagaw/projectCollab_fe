@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import FileAttachment from './FileAttachment';
 
 const FileAttachmentList = ({ files, onDelete, showDelete = true, onVersionUpdated }) => {
@@ -8,7 +8,7 @@ const FileAttachmentList = ({ files, onDelete, showDelete = true, onVersionUpdat
 
   return (
     <div className="mt-3 space-y-2">
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
         Attachments ({files.length})
       </p>
       <div className="space-y-2">

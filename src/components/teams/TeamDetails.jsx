@@ -5,6 +5,8 @@ import invitationApi from '../../api/invitationApi';
 import InviteMember from './InviteMember';
 import TeamProgressSection from '../progress/TeamProgressSection';
 import LoadingSpinner from '../common/LoadingSpinner';
+import EmptyState from '../common/EmptyState';
+import { StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 
 const TeamDetails = () => {
@@ -76,134 +78,129 @@ const TeamDetails = () => {
   };
 
   if (loading) return <LoadingSpinner />;
-  if (!team) return <div>Team not found</div>;
+  if (!team) {
+    return (
+      <EmptyState
+        title="Team not found"
+        description="It may have been deleted, or you do not have access."
+        actionText="Go back"
+        onAction={() => navigate(-1)}
+      />
+    );
+  }
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div className="space-y-5">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         <div>
           <button
+            type="button"
             onClick={handleBack}
-            className="text-sm text-indigo-600 hover:text-indigo-700 mb-2 inline-block"
+            className="text-sm text-indigo-700 hover:text-indigo-800 mb-2"
           >
-            ← Back
+            Back
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">{team.name}</h1>
-          <p className="text-gray-600">
-            Project: {team.projectTitle} • {team.totalMembers || 0} members
+          <h1 className="page-title">{team.name}</h1>
+          <p className="page-kicker">
+            {team.projectTitle} · {team.totalMembers || 0} members
           </p>
         </div>
-        {/* Only show Invite Member button for Lecturer or Team Leader */}
         {(isLecturerRoute || isTeamLeaderRoute) && (
           <button
+            type="button"
             onClick={() => setShowInviteModal(true)}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+            className="btn-primary"
           >
-            + Invite Member
+            Invite member
           </button>
         )}
       </div>
 
-      {/* Team Info */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Description</h3>
-          <p className="text-gray-600">{team.description || 'No description provided'}</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 surface p-5 sm:p-6">
+          <h3 className="font-semibold text-ink mb-2">Description</h3>
+          <p className="text-gray-600 whitespace-pre-wrap">{team.description || 'No description yet.'}</p>
           
-          <div className="mt-4 flex items-center gap-6 text-sm">
+          <dl className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div>
-              <span className="text-gray-500">Team Leader:</span>
-              <span className="ml-2 font-medium">
-                {team.teamLeader?.fullName || 'Not assigned'}
-              </span>
+              <dt className="text-gray-500">Team leader</dt>
+              <dd className="font-medium text-ink">{team.teamLeader?.fullName || 'Not assigned'}</dd>
             </div>
             <div>
-              <span className="text-gray-500">Created:</span>
-              <span className="ml-2">
-                {new Date(team.createdAt).toLocaleDateString()}
-              </span>
+              <dt className="text-gray-500">Created</dt>
+              <dd className="font-medium text-ink">
+                {team.createdAt ? new Date(team.createdAt).toLocaleDateString() : '—'}
+              </dd>
             </div>
-          </div>
+          </dl>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Statistics</h3>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-gray-500">Total Members</span>
-              <span className="font-medium">{team.totalMembers || 0}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Active Members</span>
-              <span className="font-medium text-green-600">{team.activeMembers || 0}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Pending Invites</span>
-              <span className="font-medium text-yellow-600">{team.pendingMembers || 0}</span>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3">
+          <StatCard label="Total members" value={team.totalMembers || 0} />
+          <StatCard label="Active members" value={team.activeMembers || 0} />
+          <StatCard label="Pending invites" value={team.pendingMembers || 0} warn={(team.pendingMembers || 0) > 0} />
         </div>
       </div>
 
-      {/* Members List */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <h3 className="font-semibold text-gray-900 mb-4">Team Members</h3>
+      <div className="surface p-5 sm:p-6">
+        <h3 className="font-semibold text-ink mb-4">Team members</h3>
         
         {team.members && team.members.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          <div className="table-wrap">
+            <table className="data-table">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Member</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Email</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Status</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">Actions</th>
+                  <th>Member</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {team.members.map((member) => (
-                  <tr key={member.teamMemberId} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4">
+                  <tr key={member.teamMemberId} className="border-b border-gray-100">
+                    <td>
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                          <span className="text-indigo-600 font-semibold text-sm">
+                        <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center shrink-0">
+                          <span className="text-indigo-700 font-semibold text-sm">
                             {member.fullName?.charAt(0) || 'U'}
                           </span>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">{member.fullName}</p>
+                          <p className="font-medium text-ink">{member.fullName}</p>
                           {team.teamLeader?.userId === member.userId && (
-                            <span className="text-xs text-indigo-600 font-medium">Team Leader</span>
+                            <span className="text-xs text-indigo-700 font-medium">Team leader</span>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td className="py-3 px-4 text-sm text-gray-600">{member.email}</td>
-                    <td className="py-3 px-4">
+                    <td className="text-gray-600">{member.email}</td>
+                    <td>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        member.status === 'ACTIVE' ? 'bg-green-100 text-green-700' :
-                        member.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
+                        member.status === 'ACTIVE' ? 'bg-green-50 text-green-800' :
+                        member.status === 'PENDING' ? 'bg-amber-50 text-amber-800' :
                         'bg-gray-100 text-gray-700'
                       }`}>
-                        {member.status}
+                        {member.status === 'ACTIVE' ? 'Active' : member.status === 'PENDING' ? 'Pending' : member.status}
                       </span>
                     </td>
-                    <td className="py-3 px-4">
-                      <div className="flex gap-2">
+                    <td>
+                      <div className="flex flex-wrap gap-2">
                         {(isLecturerRoute || isTeamLeaderRoute) && member.status === 'ACTIVE' && team.teamLeader?.userId !== member.userId && (
                           <>
                             {isLecturerRoute && (
                               <button
+                                type="button"
                                 onClick={() => handleAssignLeader(member.userId)}
-                                className="px-3 py-1 bg-indigo-100 text-indigo-700 text-sm rounded-lg hover:bg-indigo-200 transition"
+                                className="btn-secondary px-3 py-1.5 text-xs"
                               >
-                                Make Leader
+                                Make leader
                               </button>
                             )}
                             <button
+                              type="button"
                               onClick={() => handleRemoveMember(member.teamMemberId)}
-                              className="px-3 py-1 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition"
+                              className="btn-danger px-3 py-1.5 text-xs"
                             >
                               Remove
                             </button>
@@ -211,10 +208,11 @@ const TeamDetails = () => {
                         )}
                         {(isLecturerRoute || isTeamLeaderRoute) && member.status === 'PENDING' && (
                           <button
+                            type="button"
                             onClick={() => handleRemoveMember(member.teamMemberId)}
-                            className="px-3 py-1 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition"
+                            className="btn-danger px-3 py-1.5 text-xs"
                           >
-                            Cancel Invite
+                            Cancel invite
                           </button>
                         )}
                       </div>
@@ -225,15 +223,12 @@ const TeamDetails = () => {
             </table>
           </div>
         ) : (
-          <div className="text-center py-8">
-            <p className="text-gray-500">No members yet. Invite students to join this team.</p>
-          </div>
+          <p className="text-gray-500 text-sm">No members yet. Invite students to join this team.</p>
         )}
       </div>
 
       <TeamProgressSection teamId={teamId} />
 
-      {/* Invite Modal */}
       {showInviteModal && (
         <InviteMember
           teamId={teamId}

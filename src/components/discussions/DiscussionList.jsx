@@ -6,6 +6,7 @@ import teamApi from '../../api/teamApi';
 import DiscussionCard from './DiscussionCard';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
+import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 
 const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
@@ -55,12 +56,13 @@ const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
 
   const fetchProjectsForPicker = async () => {
     try {
+      let next = [];
       if (isLecturerRoute) {
         const response = await projectApi.getMyProjects();
-        setProjects((response.data || []).map((p) => ({
+        next = (response.data || []).map((p) => ({
           projectId: p.projectId,
           title: p.title
-        })));
+        }));
       } else {
         const response = await teamApi.getMyTeams();
         const map = {};
@@ -72,7 +74,11 @@ const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
             };
           }
         });
-        setProjects(Object.values(map));
+        next = Object.values(map);
+      }
+      setProjects(next);
+      if (!projectIdProp && !selectedProjectId && next.length > 0) {
+        handleProjectChange(String(next[0].projectId));
       }
     } catch (error) {
       toast.error('Failed to load projects');
@@ -118,41 +124,48 @@ const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
   const selectedTitle = projectTitle
     || projects.find((p) => String(p.projectId) === String(selectedProjectId))?.title;
 
+  const createButton = canCreate && selectedProjectId ? (
+    <button type="button" onClick={handleCreateDiscussion} className="btn-primary">
+      New discussion
+    </button>
+  ) : null;
+
   if (loading && isEmbedded) {
     return <LoadingSpinner />;
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">Discussions</h2>
-          {selectedTitle && (
-            <p className="text-sm text-gray-600">
-              {selectedTitle} • {discussions.length} discussion{discussions.length !== 1 ? 's' : ''}
-            </p>
-          )}
+    <div className="space-y-5">
+      {isEmbedded ? (
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold text-ink">Discussions</h2>
+            {selectedTitle && (
+              <p className="page-kicker">
+                {selectedTitle} · {discussions.length} thread{discussions.length !== 1 ? 's' : ''}
+              </p>
+            )}
+          </div>
+          {createButton}
         </div>
-        {canCreate && selectedProjectId && (
-          <button
-            onClick={handleCreateDiscussion}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-2"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            New Discussion
-          </button>
-        )}
-      </div>
+      ) : (
+        <PageHeader
+          title="Discussions"
+          description={selectedTitle
+            ? `${selectedTitle} · ${discussions.length} thread${discussions.length !== 1 ? 's' : ''}`
+            : 'Choose a project to view its discussion threads.'}
+          actions={createButton}
+        />
+      )}
 
       {!isEmbedded && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Project</label>
+          <label className="label" htmlFor="discussion-project">Project</label>
           <select
+            id="discussion-project"
             value={selectedProjectId}
             onChange={(e) => handleProjectChange(e.target.value)}
-            className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-lg text-sm"
+            className="field max-w-md"
           >
             <option value="">Select a project</option>
             {projects.map((project) => (
@@ -166,19 +179,17 @@ const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
 
       {!selectedProjectId && !isEmbedded ? (
         <EmptyState
-          title="Select a Project"
+          title="Select a project"
           description="Choose a project to view its discussions."
-          icon="💬"
         />
       ) : loading ? (
         <LoadingSpinner />
       ) : discussions.length === 0 ? (
         <EmptyState
-          title="No Discussions Yet"
+          title="No discussions yet"
           description="Start a conversation about your project. Discuss ideas, share updates, and collaborate with your team."
-          actionText={canCreate ? 'Start a Discussion' : undefined}
+          actionText={canCreate ? 'Start a discussion' : undefined}
           actionLink={canCreate ? `${basePath}/discussions/create?projectId=${selectedProjectId}` : undefined}
-          icon="💬"
         />
       ) : (
         <div className="space-y-3">

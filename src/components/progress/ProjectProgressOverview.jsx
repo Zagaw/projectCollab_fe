@@ -22,20 +22,20 @@ const ProjectProgressOverview = ({ projectId, basePath }) => {
   if (!progress) return null;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6">
+    <div className="surface p-5 sm:p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-gray-900">Progress</h3>
+        <h3 className="font-semibold text-ink">Progress</h3>
         <div className="flex gap-3">
-          <Link to={`${basePath}/progress`} className="text-sm text-indigo-600 hover:text-indigo-700">
-            Details →
+          <Link to={`${basePath}/progress`} className="text-sm text-indigo-700 hover:text-indigo-800">
+            Details
           </Link>
           <Link
             to={basePath.includes('/lecturer')
               ? `${basePath}/reports?projectId=${projectId}&type=PROGRESS`
               : `${basePath}/reports`}
-            className="text-sm text-indigo-600 hover:text-indigo-700"
+            className="text-sm text-indigo-700 hover:text-indigo-800"
           >
-            Reports →
+            Reports
           </Link>
         </div>
       </div>
@@ -48,7 +48,7 @@ const ProjectProgressOverview = ({ projectId, basePath }) => {
         />
         <ProgressBar
           percent={progress.milestonePercent}
-          color="emerald"
+          color="indigo"
           label="Milestones"
           hint={`${progress.milestoneCompleted} of ${progress.milestoneTotal} milestones completed`}
         />
@@ -59,10 +59,10 @@ const ProjectProgressOverview = ({ projectId, basePath }) => {
             <Link
               key={team.teamId}
               to={`${basePath}/teams/${team.teamId}`}
-              className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 text-sm hover:bg-gray-100"
+              className="flex items-center justify-between rounded-xl bg-gray-50 px-3 py-2 text-sm hover:bg-indigo-50"
             >
-              <span className="text-gray-800">{team.teamName}</span>
-              <span className="font-medium text-indigo-700">{team.taskPercent}%</span>
+              <span className="text-ink">{team.teamName}</span>
+              <span className="font-medium text-indigo-700 tabular-nums">{team.taskPercent}%</span>
             </Link>
           ))}
         </div>

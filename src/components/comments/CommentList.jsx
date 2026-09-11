@@ -3,7 +3,6 @@ import CommentItem from './CommentItem';
 import CommentForm from './CommentForm';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
-import toast from 'react-hot-toast';
 
 const CommentList = ({
   entityType,
@@ -107,7 +106,6 @@ const CommentList = ({
 
   return (
     <div className="space-y-4">
-      {/* Comment Form - Top level */}
       <CommentForm
         onSubmit={handleSubmit}
         placeholder={`Add a comment to this ${entityType}...`}
@@ -115,11 +113,12 @@ const CommentList = ({
 
       {entityType === 'project' && teamNames.length > 0 && (
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Filter by team</label>
+          <label className="label" htmlFor="comment-team-filter">Filter by team</label>
           <select
+            id="comment-team-filter"
             value={teamFilter}
             onChange={(e) => setTeamFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm max-w-xs"
+            className="field max-w-xs"
           >
             <option value="ALL">All teams</option>
             {teamNames.map((name) => (
@@ -129,12 +128,10 @@ const CommentList = ({
         </div>
       )}
 
-      {/* Comments List */}
       {visibleComments.length === 0 ? (
         <EmptyState
-          title="No Comments Yet"
-          description={`Be the first to add a comment to this ${entityType}!`}
-          icon="💬"
+          title="No comments yet"
+          description={`Be the first to add a comment to this ${entityType}.`}
         />
       ) : (
         <div className="space-y-3">

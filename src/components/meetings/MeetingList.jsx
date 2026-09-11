@@ -5,6 +5,7 @@ import teamApi from '../../api/teamApi';
 import { useAuth } from '../../context/AuthContext';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
+import { PageHeader, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 import { formatMeetingTime, meetingBasePath, statusBadgeClass } from './meetingUtils';
 
@@ -92,52 +93,41 @@ const MeetingList = () => {
     : `${basePath}/meetings/create`;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Meetings</h1>
-          <p className="text-gray-600 mt-1">
-            Team meetings with an agenda and an external Zoom, Meet, or Teams link.
-          </p>
-        </div>
-        {canCreate && (
-          <button
-            type="button"
-            onClick={() => navigate(createHref)}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-          >
-            Schedule meeting
-          </button>
-        )}
-      </div>
-
-      <div className="bg-white rounded-xl shadow-sm p-4 flex flex-col lg:flex-row gap-3">
-        <select
-          value={selectedTeamId}
-          onChange={(e) => handleTeamChange(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm flex-1"
-        >
-          <option value="ALL">All my teams</option>
-          {teams.map((team) => (
-            <option key={team.teamId} value={team.teamId}>
-              {team.name}{team.projectTitle ? ` (${team.projectTitle})` : ''}
-            </option>
-          ))}
-        </select>
-        <div className="flex flex-wrap gap-2">
-          {FILTERS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => handleFilterChange(item.id)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium ${
-                filter === item.id ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {item.label}
+    <div className="space-y-5">
+      <PageHeader
+        title="Meetings"
+        description="Team meetings with an agenda and an external Zoom, Meet, or Teams link."
+        actions={
+          canCreate ? (
+            <button type="button" onClick={() => navigate(createHref)} className="btn-primary">
+              Schedule meeting
             </button>
-          ))}
+          ) : null
+        }
+      />
+
+      <div className="surface p-4 space-y-4">
+        <div>
+          <label className="label" htmlFor="meeting-team">Team</label>
+          <select
+            id="meeting-team"
+            value={selectedTeamId}
+            onChange={(e) => handleTeamChange(e.target.value)}
+            className="field"
+          >
+            <option value="ALL">All my teams</option>
+            {teams.map((team) => (
+              <option key={team.teamId} value={team.teamId}>
+                {team.name}{team.projectTitle ? ` (${team.projectTitle})` : ''}
+              </option>
+            ))}
+          </select>
         </div>
+        <FilterChips
+          value={filter}
+          onChange={handleFilterChange}
+          options={FILTERS}
+        />
       </div>
 
       {canCreate && selectedTeamId !== 'ALL' && !isLeaderOfSelected && selectedTeam && (
@@ -158,7 +148,6 @@ const MeetingList = () => {
           }
           actionText={canCreate ? 'Schedule meeting' : undefined}
           actionLink={canCreate ? createHref : undefined}
-          icon="📅"
         />
       ) : (
         <div className="space-y-3">
@@ -167,27 +156,27 @@ const MeetingList = () => {
               key={meeting.meetingId}
               type="button"
               onClick={() => navigate(`${basePath}/meetings/${meeting.meetingId}`)}
-              className="w-full text-left bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition border border-gray-100"
+              className="w-full text-left surface p-4 sm:p-5 hover:border-indigo-200 transition"
             >
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
-                <div>
-                  <p className="font-semibold text-gray-900">{meeting.title}</p>
+                <div className="min-w-0">
+                  <p className="font-semibold text-ink">{meeting.title}</p>
                   <p className="text-sm text-gray-500 mt-1">
-                    {meeting.teamName} • {meeting.projectTitle}
+                    {meeting.teamName} · {meeting.projectTitle}
                   </p>
-                  <p className="text-sm text-gray-700 mt-2">
+                  <p className="text-sm text-ink mt-2">
                     {formatMeetingTime(meeting.startAt)} – {formatMeetingTime(meeting.endAt)}
                   </p>
                   {meeting.location && (
                     <p className="text-xs text-gray-500 mt-1">{meeting.location}</p>
                   )}
                 </div>
-                <div className="flex flex-col items-start sm:items-end gap-2">
+                <div className="flex flex-wrap sm:flex-col items-start sm:items-end gap-2">
                   <span className={`text-xs px-2 py-1 rounded-full ${statusBadgeClass(meeting.status)}`}>
                     {meeting.status}
                   </span>
                   {meeting.meetingLink && (
-                    <span className="text-xs text-indigo-600">Has join link</span>
+                    <span className="text-xs text-indigo-700">Has join link</span>
                   )}
                   {meeting.myRsvp && (
                     <span className="text-xs text-gray-500">You: {meeting.myRsvp.replace('_', ' ').toLowerCase()}</span>

@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import FileAttachment from './FileAttachment';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
+import { FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 
 const CATEGORIES = [
@@ -125,111 +126,104 @@ const ProjectFileLibrary = ({ projectId, teamId, teams: teamsProp }) => {
     <div className="space-y-4">
       <p className="text-sm text-gray-600">
         This library is for shared project documents (reports, designs, submissions).
-        Files attached to a <span className="font-medium">task comment</span> stay on that task — they do not appear here.
+        Files attached to a <span className="font-medium text-ink">task comment</span> stay on that task — they do not appear here.
       </p>
 
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setCategory(item.id)}
-              className={`px-3 py-1.5 text-sm rounded-full border transition ${
-                category === item.id
-                  ? 'bg-indigo-600 text-white border-indigo-600'
-                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
-              }`}
+      <div className="surface p-4 space-y-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <FilterChips
+            value={category}
+            onChange={setCategory}
+            options={CATEGORIES}
+          />
+
+          {projectId && teams.length > 0 && (
+            <select
+              value={filterTeamId}
+              onChange={(e) => setFilterTeamId(e.target.value)}
+              className="field max-w-xs"
+              aria-label="Filter by team"
             >
-              {item.label}
-            </button>
-          ))}
+              <option value="ALL">All teams</option>
+              {teams.map((team) => (
+                <option key={team.teamId} value={team.teamId}>
+                  {team.name}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
-        {projectId && teams.length > 0 && (
-          <select
-            value={filterTeamId}
-            onChange={(e) => setFilterTeamId(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+        <div className="flex flex-wrap items-end gap-2 pt-1 border-t border-gray-100">
+          {projectId && teams.length > 0 && (
+            <div>
+              <label className="label" htmlFor="file-upload-team">Upload to</label>
+              <select
+                id="file-upload-team"
+                value={uploadTeamId}
+                onChange={(e) => setUploadTeamId(e.target.value)}
+                className="field"
+              >
+                {isLecturerOrAdmin && <option value="">Project-wide (all teams)</option>}
+                {teams.map((team) => (
+                  <option key={team.teamId} value={team.teamId}>
+                    {team.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div>
+            <label className="label" htmlFor="file-upload-category">Category</label>
+            <select
+              id="file-upload-category"
+              value={uploadCategory}
+              onChange={(e) => setUploadCategory(e.target.value)}
+              className="field"
+            >
+              {CATEGORIES.filter((item) => item.id !== 'ALL').map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            onChange={handleUpload}
+          />
+          <button
+            type="button"
+            onClick={handleUploadClick}
+            disabled={uploading || (!projectId && !teamId)}
+            className="btn-primary"
           >
-            <option value="ALL">All teams</option>
-            {teams.map((team) => (
-              <option key={team.teamId} value={team.teamId}>
-                {team.name}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-
-      <div className="flex flex-wrap items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-100">
-        {projectId && teams.length > 0 && (
-          <select
-            value={uploadTeamId}
-            onChange={(e) => setUploadTeamId(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white"
-          >
-            {isLecturerOrAdmin && <option value="">Project-wide (all teams)</option>}
-            {teams.map((team) => (
-              <option key={team.teamId} value={team.teamId}>
-                {team.name}
-              </option>
-            ))}
-          </select>
-        )}
-        <select
-          value={uploadCategory}
-          onChange={(e) => setUploadCategory(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white"
-        >
-          {CATEGORIES.filter((item) => item.id !== 'ALL').map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.label}
-            </option>
-          ))}
-        </select>
-        <input
-          ref={fileInputRef}
-          type="file"
-          className="hidden"
-          onChange={handleUpload}
-        />
-        <button
-          type="button"
-          onClick={handleUploadClick}
-          disabled={uploading || (!projectId && !teamId)}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm disabled:opacity-50"
-        >
-          {uploading ? 'Uploading...' : 'Upload file'}
-        </button>
+            {uploading ? 'Uploading...' : 'Upload file'}
+          </button>
+        </div>
       </div>
 
       {loading ? (
         <LoadingSpinner />
       ) : files.length === 0 ? (
         <EmptyState
-          title="No Files Yet"
+          title="No files yet"
           description="Use Upload file above to add a report, design, or submission for this project."
         />
       ) : (
         <div className="space-y-2">
           {files.map((file) => (
-            <div key={file.fileId}>
-              <div className="flex flex-wrap gap-1 mb-1">
-                {file.teamName && (
-                  <span className="inline-block px-2 py-0.5 text-xs rounded-full bg-indigo-50 text-indigo-700">
-                    {file.teamName}
-                  </span>
-                )}
-                {!file.teamName && (
-                  <span className="inline-block px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600">
-                    Project-wide
-                  </span>
+            <div key={file.fileId} className="space-y-1.5">
+              <div className="flex flex-wrap gap-1.5">
+                {file.teamName ? (
+                  <span className="text-xs text-indigo-700 bg-indigo-50 px-2 py-1 rounded-md">{file.teamName}</span>
+                ) : (
+                  <span className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded-md">Project-wide</span>
                 )}
                 {file.category && (
-                  <span className="inline-block px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-600">
-                    {file.category}
-                  </span>
+                  <span className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded-md">{file.category}</span>
                 )}
               </div>
               <FileAttachment

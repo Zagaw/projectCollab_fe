@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import teamApi from '../../api/teamApi';
 import projectApi from '../../api/projectApi';
 import toast from 'react-hot-toast';
+import { PageHeader } from '../common/PageHeader';
 
 const TeamCreate = () => {
   const navigate = useNavigate();
@@ -60,87 +61,70 @@ const TeamCreate = () => {
     }
   };
 
-  return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button
-          onClick={() => navigate(projectId ? `/lecturer/projects/${projectId}` : '/teams')}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
-        >
-          ← Back
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Create New Team</h1>
-          <p className="text-gray-600">
-            {project ? `For project: ${project.title}` : 'Add a team to your project'}
-          </p>
-        </div>
-      </div>
+  const backTo = projectId ? `/lecturer/projects/${projectId}` : '/teams';
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6">
+  return (
+    <div className="max-w-3xl">
+      <PageHeader
+        title="Create team"
+        description={project ? `For project: ${project.title}` : 'Add a team to your project.'}
+        actions={
+          <button type="button" onClick={() => navigate(backTo)} className="btn-secondary">
+            Cancel
+          </button>
+        }
+      />
+
+      <form onSubmit={handleSubmit} className="surface p-5 sm:p-6 mt-5 space-y-5">
         <div className="space-y-6">
-          {/* Project Selection */}
           {!projectId && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Project *
-              </label>
+              <label className="label">Project *</label>
               <input
                 type="text"
                 name="projectId"
                 required
                 value={formData.projectId}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
-                placeholder="Enter Project ID"
+                className="field"
+                placeholder="Enter project ID"
               />
             </div>
           )}
 
-          {/* Team Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Team Name *
-            </label>
+            <label className="label">Team name *</label>
             <input
               type="text"
               name="name"
               required
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+              className="field"
               placeholder="e.g., Team Alpha"
             />
           </div>
 
-          {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
+            <label className="label">Description</label>
             <textarea
               name="description"
               rows="4"
               value={formData.description}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+              className="field"
               placeholder="Describe the team's purpose and responsibilities"
             />
           </div>
 
-          {/* Submit Button */}
-          <div className="flex gap-4 pt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50"
-            >
-              {loading ? 'Creating...' : 'Create Team'}
+          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+            <button type="submit" disabled={loading} className="btn-primary flex-1">
+              {loading ? 'Creating...' : 'Create team'}
             </button>
             <button
               type="button"
-              onClick={() => navigate(projectId ? `/lecturer/projects/${projectId}` : '/teams')}
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
+              onClick={() => navigate(backTo)}
+              className="btn-secondary"
             >
               Cancel
             </button>

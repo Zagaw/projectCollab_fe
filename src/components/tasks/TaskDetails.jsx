@@ -6,6 +6,7 @@ import CommentList from '../comments/CommentList';
 import TaskStatusBadge from './TaskStatusBadge';
 import TaskPriorityBadge from './TaskPriorityBadge';
 import LoadingSpinner from '../common/LoadingSpinner';
+import EmptyState from '../common/EmptyState';
 import toast from 'react-hot-toast';
 
 const TaskDetails = () => {
@@ -123,203 +124,127 @@ const TaskDetails = () => {
     setComments(comments.filter(c => c.commentId !== commentId));
   };
 
-  if (loading) return <LoadingSpinner />;
-  if (!task) return <div>Task not found</div>;
+  if (loading) return <LoadingSpinner text="Loading task..." />;
+  if (!task) {
+    return (
+      <EmptyState
+        title="Task not found"
+        description="It may have been deleted, or you do not have access."
+        actionText="Back to tasks"
+        actionLink={`${basePath}/tasks`}
+      />
+    );
+  }
 
   const isOverdue = task.deadline && 
     new Date(task.deadline) < new Date() && 
     task.status !== 'COMPLETED';
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div className="space-y-5">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         <div>
-          <button
-            onClick={() => navigate(-1)}
-            className="text-sm text-indigo-600 hover:text-indigo-700 mb-2 inline-block"
-          >
-            ← Back
+          <button type="button" onClick={() => navigate(`${basePath}/tasks`)} className="text-sm text-indigo-700 hover:text-indigo-800 mb-2">
+            Back to tasks
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">{task.title}</h1>
-          <p className="text-gray-600">
-            {task.projectTitle} • {task.teamName || 'No Team'}
+          <h1 className="page-title">{task.title}</h1>
+          <p className="page-kicker">
+            {task.projectTitle}
+            {task.teamName ? ` · ${task.teamName}` : ''}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <TaskPriorityBadge priority={task.priority} />
           <TaskStatusBadge status={task.status} />
           {isOverdue && (
-            <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
-              ⚠️ Overdue
-            </span>
+            <span className="px-2 py-1 bg-red-50 text-red-700 text-xs font-medium rounded-full">Overdue</span>
           )}
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm"
-          >
+          <button type="button" onClick={() => setIsEditing(!isEditing)} className="btn-secondary">
             {isEditing ? 'Cancel' : 'Edit'}
           </button>
-          <button
-            onClick={handleDelete}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
-          >
-            Delete
-          </button>
+          {(isTeamLeaderRoute || isLecturerRoute) && (
+            <button type="button" onClick={handleDelete} className="btn-danger">Delete</button>
+          )}
         </div>
       </div>
 
       {isEditing ? (
-        // Edit Form
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <form onSubmit={handleUpdate} className="space-y-4">
+        <form onSubmit={handleUpdate} className="surface p-5 sm:p-6 space-y-4">
+          <div>
+            <label className="label">Title</label>
+            <input type="text" value={editData.title || ''} onChange={(e) => setEditData({ ...editData, title: e.target.value })} className="field" required />
+          </div>
+          <div>
+            <label className="label">Description</label>
+            <textarea rows="4" value={editData.description || ''} onChange={(e) => setEditData({ ...editData, description: e.target.value })} className="field" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-              <input
-                type="text"
-                value={editData.title || ''}
-                onChange={(e) => setEditData({...editData, title: e.target.value})}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
-                required
-              />
+              <label className="label">Status</label>
+              <select value={editData.status || 'TODO'} onChange={(e) => setEditData({ ...editData, status: e.target.value })} className="field">
+                <option value="TODO">To do</option>
+                <option value="IN_PROGRESS">In progress</option>
+                <option value="REVIEW">Review</option>
+                <option value="BLOCKED">Blocked</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-              <textarea
-                rows="4"
-                value={editData.description || ''}
-                onChange={(e) => setEditData({...editData, description: e.target.value})}
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
-              />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                <select
-                  value={editData.status || 'TODO'}
-                  onChange={(e) => setEditData({...editData, status: e.target.value})}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
-                >
-                  <option value="TODO">To Do</option>
-                  <option value="IN_PROGRESS">In Progress</option>
-                  <option value="REVIEW">In Review</option>
-                  <option value="BLOCKED">Blocked</option>
-                  <option value="COMPLETED">Completed</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Priority</label>
-                <select
-                  value={editData.priority || 'MEDIUM'}
-                  onChange={(e) => setEditData({...editData, priority: e.target.value})}
-                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
-                >
-                  <option value="LOW">Low</option>
-                  <option value="MEDIUM">Medium</option>
-                  <option value="HIGH">High</option>
-                  <option value="URGENT">Urgent</option>
-                </select>
-              </div>
-            </div>
-            <button
-              type="submit"
-              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-            >
-              Save Changes
-            </button>
-          </form>
-        </div>
-      ) : (
-        // View Mode
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
-            <h3 className="font-semibold text-gray-900 mb-3">Description</h3>
-            <p className="text-gray-600">{task.description || 'No description provided'}</p>
-            
-            <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-500">
-              <div>
-                <span className="font-medium">Project:</span>
-                <span className="ml-1">{task.projectTitle}</span>
-              </div>
-              <div>
-                <span className="font-medium">Team:</span>
-                <span className="ml-1">{task.teamName || 'Not assigned'}</span>
-              </div>
-              <div>
-                <span className="font-medium">Assigned To:</span>
-                <span className="ml-1">{task.assignedToName || 'Unassigned'}</span>
-              </div>
-              <div>
-                <span className="font-medium">Created By:</span>
-                <span className="ml-1">{task.createdByName}</span>
-              </div>
-              {task.milestoneTitle && (
-                <div>
-                  <span className="font-medium">Milestone:</span>
-                  <span className="ml-1 text-indigo-600">{task.milestoneTitle}</span>
-                </div>
-              )}
+              <label className="label">Priority</label>
+              <select value={editData.priority || 'MEDIUM'} onChange={(e) => setEditData({ ...editData, priority: e.target.value })} className="field">
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="URGENT">Urgent</option>
+              </select>
             </div>
           </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h3 className="font-semibold text-gray-900 mb-3">Task Info</h3>
-            <div className="space-y-3 text-sm">
-              <div>
-                <span className="text-gray-500">Deadline:</span>
-                <p className={`font-medium ${isOverdue ? 'text-red-600' : 'text-gray-900'}`}>
-                  {task.deadline ? new Date(task.deadline).toLocaleDateString() : 'No deadline'}
-                  {isOverdue && ' ⚠️ Overdue'}
-                </p>
-              </div>
-              {task.completedAt && (
-                <div>
-                  <span className="text-gray-500">Completed:</span>
-                  <p className="font-medium text-green-600">
-                    {new Date(task.completedAt).toLocaleDateString()}
-                  </p>
-                </div>
+          <button type="submit" className="btn-primary">Save changes</button>
+        </form>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-2 surface p-5 sm:p-6">
+            <h3 className="font-semibold text-ink mb-2">Description</h3>
+            <p className="text-gray-600 whitespace-pre-wrap">{task.description || 'No description yet.'}</p>
+            <dl className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+              <div><dt className="text-gray-500">Assignee</dt><dd className="font-medium">{task.assignedToName || 'Unassigned'}</dd></div>
+              <div><dt className="text-gray-500">Created by</dt><dd className="font-medium">{task.createdByName}</dd></div>
+              {task.milestoneTitle && (
+                <div><dt className="text-gray-500">Milestone</dt><dd className="font-medium">{task.milestoneTitle}</dd></div>
               )}
-              <div>
-                <span className="text-gray-500">Created:</span>
-                <p className="font-medium">{new Date(task.createdAt).toLocaleDateString()}</p>
-              </div>
-              <div>
-                <span className="text-gray-500">Updated:</span>
-                <p className="font-medium">{new Date(task.updatedAt).toLocaleDateString()}</p>
-              </div>
-            </div>
-
-            <hr className="my-4" />
-            <h4 className="font-medium text-gray-900 mb-2">Update Status</h4>
-            <div className="space-y-2">
+            </dl>
+          </div>
+          <aside className="surface p-5 sm:p-6">
+            <h3 className="font-semibold text-ink mb-3">Dates and status</h3>
+            <p className={`text-sm font-medium ${isOverdue ? 'text-red-700' : 'text-ink'}`}>
+              Deadline: {task.deadline ? new Date(task.deadline).toLocaleDateString() : 'None'}
+              {isOverdue ? ' (overdue)' : ''}
+            </p>
+            {task.completedAt && (
+              <p className="text-sm text-gray-600 mt-2">Completed {new Date(task.completedAt).toLocaleDateString()}</p>
+            )}
+            <p className="text-sm text-gray-500 mt-2">Created {new Date(task.createdAt).toLocaleDateString()}</p>
+            <div className="mt-4 space-y-2">
               {['TODO', 'IN_PROGRESS', 'REVIEW', 'BLOCKED', 'COMPLETED'].map((status) => (
                 <button
                   key={status}
+                  type="button"
                   onClick={() => handleStatusChange(status)}
                   disabled={status === task.status}
-                  className={`w-full px-4 py-2 text-sm font-medium rounded-lg transition ${
-                    status === task.status
-                      ? 'bg-indigo-100 text-indigo-600 cursor-default'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  className={`w-full px-3 py-2 text-sm font-medium rounded-lg ${
+                    status === task.status ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                   }`}
                 >
-                  {status === task.status ? '✓ ' : ''}
                   {status.replace('_', ' ')}
                 </button>
               ))}
             </div>
-          </div>
+          </aside>
         </div>
       )}
 
-      {/* ✅ NEW: Comments Section */}
-      <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Comments ({comments.length})
-          </h3>
-        </div>
+      <div className="surface p-5 sm:p-6">
+        <h3 className="text-lg font-semibold text-ink mb-4">Comments ({comments.length})</h3>
         <CommentList
           entityType="task"
           entityId={taskId}

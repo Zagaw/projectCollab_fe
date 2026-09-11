@@ -146,171 +146,177 @@ const MeetingDetails = () => {
   const canManage = Boolean(meeting.canManage);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-3">
+    <div className="space-y-5">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+        <div>
           <button
             type="button"
             onClick={() => navigate(`${basePath}/meetings`)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition mt-1"
+            className="text-sm text-indigo-700 hover:text-indigo-800 mb-2"
           >
-            ← Back
+            Back to meetings
           </button>
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-2xl font-bold text-gray-900">{meeting.title}</h1>
-              <span className={`text-xs px-2 py-1 rounded-full ${statusBadgeClass(meeting.status)}`}>
-                {meeting.status}
-              </span>
-            </div>
-            <p className="text-gray-600 mt-1">
-              {meeting.teamName} • {meeting.projectTitle}
-            </p>
-            <p className="text-sm text-gray-500 mt-1">
-              Scheduled by {meeting.createdByName}
-            </p>
-          </div>
+          <h1 className="page-title">{meeting.title}</h1>
+          <p className="page-kicker">
+            {meeting.teamName} · {meeting.projectTitle}
+          </p>
+          <p className="text-sm text-gray-500 mt-1">Scheduled by {meeting.createdByName}</p>
         </div>
-        {canManage && !cancelled && (
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={() => setEditing((value) => !value)}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
-            >
-              {editing ? 'Close editor' : 'Edit'}
-            </button>
-            <button
-              type="button"
-              onClick={handleCancelMeeting}
-              disabled={saving}
-              className="px-3 py-2 bg-red-50 text-red-700 rounded-lg text-sm hover:bg-red-100"
-            >
-              Cancel meeting
-            </button>
-          </div>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`text-xs px-2 py-1 rounded-full ${statusBadgeClass(meeting.status)}`}>
+            {meeting.status}
+          </span>
+          {canManage && !cancelled && (
+            <>
+              <button type="button" onClick={() => setEditing((value) => !value)} className="btn-secondary">
+                {editing ? 'Close editor' : 'Edit'}
+              </button>
+              <button type="button" onClick={handleCancelMeeting} disabled={saving} className="btn-danger">
+                Cancel meeting
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {editing && canManage && !cancelled && (
-        <form onSubmit={handleUpdate} className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-          <h2 className="font-semibold text-gray-900">Update meeting</h2>
-          <input
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300"
-            placeholder="Title"
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form onSubmit={handleUpdate} className="surface p-5 sm:p-6 space-y-4">
+          <h2 className="font-semibold text-ink">Update meeting</h2>
+          <div>
+            <label className="label" htmlFor="edit-title">Title</label>
             <input
-              type="datetime-local"
-              value={formData.startAt}
-              onChange={(e) => setFormData({ ...formData, startAt: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300"
-            />
-            <input
-              type="datetime-local"
-              value={formData.endAt}
-              onChange={(e) => setFormData({ ...formData, endAt: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-gray-300"
+              id="edit-title"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className="field"
+              placeholder="Title"
             />
           </div>
-          <input
-            value={formData.location}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300"
-            placeholder="Location"
-          />
-          <input
-            value={formData.meetingLink}
-            onChange={(e) => setFormData({ ...formData, meetingLink: e.target.value })}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300"
-            placeholder="Meeting link"
-          />
-          <textarea
-            value={formData.agenda}
-            onChange={(e) => setFormData({ ...formData, agenda: e.target.value })}
-            rows={4}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300"
-            placeholder="Agenda"
-          />
-          <button
-            type="submit"
-            disabled={saving}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="label" htmlFor="edit-start">Start</label>
+              <input
+                id="edit-start"
+                type="datetime-local"
+                value={formData.startAt}
+                onChange={(e) => setFormData({ ...formData, startAt: e.target.value })}
+                className="field"
+              />
+            </div>
+            <div>
+              <label className="label" htmlFor="edit-end">End</label>
+              <input
+                id="edit-end"
+                type="datetime-local"
+                value={formData.endAt}
+                onChange={(e) => setFormData({ ...formData, endAt: e.target.value })}
+                className="field"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="label" htmlFor="edit-location">Location</label>
+            <input
+              id="edit-location"
+              value={formData.location}
+              onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+              className="field"
+              placeholder="Location"
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="edit-link">Meeting link</label>
+            <input
+              id="edit-link"
+              value={formData.meetingLink}
+              onChange={(e) => setFormData({ ...formData, meetingLink: e.target.value })}
+              className="field"
+              placeholder="Meeting link"
+            />
+          </div>
+          <div>
+            <label className="label" htmlFor="edit-agenda">Agenda</label>
+            <textarea
+              id="edit-agenda"
+              value={formData.agenda}
+              onChange={(e) => setFormData({ ...formData, agenda: e.target.value })}
+              rows={4}
+              className="field"
+              placeholder="Agenda"
+            />
+          </div>
+          <button type="submit" disabled={saving} className="btn-primary">
             Save changes
           </button>
         </form>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-xl shadow-sm p-6 space-y-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 space-y-4">
+          <div className="surface p-5 sm:p-6 space-y-3">
             <p className="text-sm text-gray-500">When</p>
-            <p className="text-gray-900 font-medium">
+            <p className="text-ink font-medium">
               {formatMeetingTime(meeting.startAt)} – {formatMeetingTime(meeting.endAt)}
             </p>
             {meeting.location && (
               <>
                 <p className="text-sm text-gray-500 pt-2">Location</p>
-                <p className="text-gray-900">{meeting.location}</p>
+                <p className="text-ink">{meeting.location}</p>
               </>
             )}
-            {meeting.meetingLink && (
+            {meeting.meetingLink ? (
               <a
                 href={meeting.meetingLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex mt-3 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                className="btn-primary mt-3 self-start"
               >
                 Join meeting
               </a>
-            )}
-            {!meeting.meetingLink && (
+            ) : (
               <p className="text-sm text-gray-500">No external meeting link was added.</p>
             )}
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="font-semibold text-gray-900 mb-2">Agenda</h2>
-            <p className="text-gray-700 whitespace-pre-wrap">
+          <div className="surface p-5 sm:p-6">
+            <h2 className="font-semibold text-ink mb-2">Agenda</h2>
+            <p className="text-gray-600 whitespace-pre-wrap">
               {meeting.agenda || 'No agenda provided.'}
             </p>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="font-semibold text-gray-900 mb-2">Minutes</h2>
+          <div className="surface p-5 sm:p-6">
+            <h2 className="font-semibold text-ink mb-2">Minutes</h2>
             {canManage && !cancelled ? (
               <>
                 <textarea
                   value={minutes}
                   onChange={(e) => setMinutes(e.target.value)}
                   rows={8}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300"
+                  className="field"
                   placeholder="Record what was discussed after the meeting"
                 />
                 <button
                   type="button"
                   onClick={handleSaveMinutes}
                   disabled={saving}
-                  className="mt-3 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                  className="btn-primary mt-3"
                 >
                   Save minutes
                 </button>
                 <p className="text-xs text-gray-500 mt-2">Saving minutes marks this meeting as completed.</p>
               </>
             ) : (
-              <p className="text-gray-700 whitespace-pre-wrap">
+              <p className="text-gray-600 whitespace-pre-wrap">
                 {meeting.minutes || 'Minutes have not been posted yet.'}
               </p>
             )}
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="font-semibold text-gray-900 mb-3">Your RSVP</h2>
+        <aside className="space-y-4">
+          <div className="surface p-5 sm:p-6">
+            <h2 className="font-semibold text-ink mb-3">Your RSVP</h2>
             {cancelled ? (
               <p className="text-sm text-gray-500">This meeting was cancelled.</p>
             ) : (
@@ -320,10 +326,10 @@ const MeetingDetails = () => {
                     key={option.id}
                     type="button"
                     onClick={() => handleRsvp(option.id)}
-                    className={`px-3 py-2 rounded-lg text-sm border ${
+                    className={`w-full px-3 py-2 text-sm font-medium rounded-lg ${
                       meeting.myRsvp === option.id
-                        ? 'bg-indigo-600 text-white border-indigo-600'
-                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                        ? 'bg-indigo-50 text-indigo-700'
+                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
                     }`}
                   >
                     {option.label}
@@ -333,22 +339,22 @@ const MeetingDetails = () => {
             )}
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="font-semibold text-gray-900 mb-3">Attendees</h2>
+          <div className="surface p-5 sm:p-6">
+            <h2 className="font-semibold text-ink mb-3">Attendees</h2>
             {(meeting.attendees || []).length === 0 ? (
               <p className="text-sm text-gray-500">No RSVPs yet.</p>
             ) : (
               <ul className="space-y-2">
                 {meeting.attendees.map((attendee) => (
                   <li key={attendee.attendeeId || attendee.userId} className="text-sm">
-                    <span className="font-medium text-gray-900">{attendee.userName}</span>
+                    <span className="font-medium text-ink">{attendee.userName}</span>
                     <span className="text-gray-500"> — {rsvpLabel(attendee.response)}</span>
                   </li>
                 ))}
               </ul>
             )}
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );

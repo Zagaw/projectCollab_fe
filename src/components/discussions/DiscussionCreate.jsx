@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
 import discussionApi from '../../api/discussionApi';
 import projectApi from '../../api/projectApi';
+import EmptyState from '../common/EmptyState';
+import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 
 const DiscussionCreate = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  
+
   // Get projectId from searchParams OR location state
   const projectId = searchParams.get('projectId') || location.state?.projectId;
 
@@ -23,7 +25,7 @@ const DiscussionCreate = () => {
   const pathname = window.location.pathname;
   const isLecturerRoute = pathname.includes('/lecturer');
   const isTeamLeaderRoute = pathname.includes('/teamleader');
-  const basePath = isLecturerRoute ? '/lecturer' : 
+  const basePath = isLecturerRoute ? '/lecturer' :
                    isTeamLeaderRoute ? '/teamleader' : '/student';
 
   useEffect(() => {
@@ -82,94 +84,69 @@ const DiscussionCreate = () => {
 
   if (!projectId) {
     return (
-      <div className="max-w-3xl mx-auto text-center py-12">
-        <div className="text-6xl mb-4">⚠️</div>
-        <h2 className="text-2xl font-bold text-gray-900">Project ID Required</h2>
-        <p className="text-gray-600 mt-2">Please select a project first to start a discussion.</p>
-        <button
-          onClick={() => navigate(`${basePath}/discussions`)}
-          className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-        >
-          Go to Discussions
-        </button>
-      </div>
+      <EmptyState
+        title="Project required"
+        description="Select a project first to start a discussion."
+        actionText="Go to discussions"
+        actionLink={`${basePath}/discussions`}
+      />
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button
-          onClick={handleCancel}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
-        >
-          ← Back to Project
+    <div className="space-y-5">
+      <div>
+        <button type="button" onClick={handleCancel} className="text-sm text-indigo-700 hover:text-indigo-800 mb-2">
+          Back to project
         </button>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Start New Discussion</h1>
-          {project && (
-            <p className="text-gray-600">Project: {project.title}</p>
-          )}
-        </div>
+        <PageHeader
+          title="Start a discussion"
+          description={project ? project.title : 'Share a topic with the project.'}
+        />
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6">
-        <div className="space-y-6">
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Discussion Title *
-            </label>
-            <input
-              type="text"
-              name="title"
-              required
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
-              placeholder="What would you like to discuss?"
-            />
-            <p className="mt-1 text-xs text-gray-500">
-              Be specific and descriptive to get better responses
-            </p>
-          </div>
+      <form onSubmit={handleSubmit} className="surface p-5 sm:p-6 space-y-4">
+        <div>
+          <label className="label" htmlFor="discussion-title">Title</label>
+          <input
+            id="discussion-title"
+            type="text"
+            name="title"
+            required
+            value={formData.title}
+            onChange={handleChange}
+            className="field"
+            placeholder="What would you like to discuss?"
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Be specific so others can respond usefully.
+          </p>
+        </div>
 
-          {/* Content */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Content *
-            </label>
-            <textarea
-              name="content"
-              rows="8"
-              required
-              value={formData.content}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none resize-none"
-              placeholder="Describe your topic in detail. Include any relevant context, questions, or proposals..."
-            />
-            <p className="mt-1 text-xs text-gray-500">
-              Provide enough detail to help others understand and respond effectively
-            </p>
-          </div>
+        <div>
+          <label className="label" htmlFor="discussion-content">Content</label>
+          <textarea
+            id="discussion-content"
+            name="content"
+            rows="8"
+            required
+            value={formData.content}
+            onChange={handleChange}
+            className="field resize-none"
+            placeholder="Describe your topic in detail. Include any relevant context, questions, or proposals..."
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Provide enough detail to help others understand and respond.
+          </p>
+        </div>
 
-          {/* Submit */}
-          <div className="flex gap-4 pt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50"
-            >
-              {loading ? 'Creating...' : 'Create Discussion'}
-            </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
-            >
-              Cancel
-            </button>
-          </div>
+        <div className="flex flex-wrap gap-2 pt-1">
+          <button type="submit" disabled={loading} className="btn-primary">
+            {loading ? 'Creating...' : 'Create discussion'}
+          </button>
+          <button type="button" onClick={handleCancel} className="btn-secondary">
+            Cancel
+          </button>
         </div>
       </form>
     </div>

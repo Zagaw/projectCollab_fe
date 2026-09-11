@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import userApi from '../../api/userApi';
 import LoadingSpinner from './LoadingSpinner';
+import { FilterChips } from './PageHeader';
 import toast from 'react-hot-toast';
 
 const StudentSearchList = ({ selectedUserId, onSelect, onClose }) => {
@@ -75,42 +76,28 @@ const StudentSearchList = ({ selectedUserId, onSelect, onClose }) => {
 
   return (
     <div className="space-y-4">
-      {/* Search & Filter */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex-1 relative">
-          <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by name or email..."
-            className="w-full pl-9 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none"
-          />
-        </div>
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none bg-white"
-        >
-          <option value="ALL">All Students</option>
-          <option value="NOT_IN_TEAM">Not in any team</option>
-          <option value="IN_TEAM">Currently in teams</option>
-        </select>
-      </div>
+      <input
+        type="search"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        placeholder="Search by name or email..."
+        className="field"
+      />
 
-      {/* Results Count */}
+      <FilterChips
+        value={filter}
+        onChange={setFilter}
+        options={[
+          { id: 'ALL', label: 'All', count: users.length },
+          { id: 'NOT_IN_TEAM', label: 'Available', count: users.filter((u) => !isInAnyTeam(u)).length },
+          { id: 'IN_TEAM', label: 'In a team', count: users.filter((u) => isInAnyTeam(u)).length },
+        ]}
+      />
+
       <p className="text-sm text-gray-500">
         {filteredUsers.length} student{filteredUsers.length !== 1 ? 's' : ''} found
       </p>
 
-      {/* User List */}
       <div className="max-h-[400px] overflow-y-auto space-y-2 pr-1">
         {filteredUsers.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
@@ -128,27 +115,25 @@ const StudentSearchList = ({ selectedUserId, onSelect, onClose }) => {
               <div
                 key={user.userId}
                 onClick={() => onSelect(user)}
-                className={`flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition ${
+                className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition ${
                   isSelected
-                    ? 'border-indigo-500 bg-indigo-50'
-                    : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'
+                    ? 'border-indigo-600 bg-indigo-50'
+                    : 'border-gray-200 bg-white hover:border-indigo-200'
                 }`}
               >
-                {/* Avatar */}
-                <div className="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-indigo-600 font-semibold text-sm">
+                <div className="w-10 h-10 bg-indigo-50 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-indigo-700 font-semibold text-sm">
                     {getInitials(user.firstName, user.lastName)}
                   </span>
                 </div>
 
-                {/* User Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-ink">
                       {user.firstName} {user.lastName}
                     </p>
                     <span className="text-xs text-gray-500">@{user.username}</span>
-                    <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full">
+                    <span className="text-xs px-2 py-0.5 bg-gray-50 text-gray-600 rounded-full">
                       {user.role}
                     </span>
                   </div>
@@ -156,11 +141,11 @@ const StudentSearchList = ({ selectedUserId, onSelect, onClose }) => {
                   <div className="flex items-center gap-2 mt-1">
                     {inTeam ? (
                       <span className="text-xs text-gray-500">
-                        📊 In {user.currentTeams.length} team{user.currentTeams.length > 1 ? 's' : ''}
+                        In {user.currentTeams.length} team{user.currentTeams.length > 1 ? 's' : ''}
                       </span>
                     ) : (
-                      <span className="text-xs text-green-600 font-medium">
-                        🆕 Available - Not in any team
+                      <span className="text-xs text-green-700 font-medium">
+                        Available — not in any team
                       </span>
                     )}
                     {user.currentTeams && user.currentTeams.length > 0 && (
@@ -171,7 +156,6 @@ const StudentSearchList = ({ selectedUserId, onSelect, onClose }) => {
                   </div>
                 </div>
 
-                {/* Selection Indicator */}
                 {isSelected && (
                   <div className="flex-shrink-0 text-indigo-600">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

@@ -5,7 +5,11 @@ import projectApi from '../../api/projectApi';
 import teamApi from '../../api/teamApi';
 import MilestoneCard from './MilestoneCard';
 import LoadingSpinner from '../common/LoadingSpinner';
+import EmptyState from '../common/EmptyState';
+import { PageHeader, StatCard, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+
+const isOverdue = (m) => !m.isCompleted && m.deadline && new Date(m.deadline) < new Date();
 
 const MilestoneList = () => {
   const [milestones, setMilestones] = useState([]);
@@ -20,24 +24,22 @@ const MilestoneList = () => {
   const fetchAllMilestones = async () => {
     try {
       setLoading(true);
-      
-      // Get all projects created by lecturer
+
       const projectsRes = await projectApi.getMyProjects();
       const projects = projectsRes.data || [];
-      
+
       if (projects.length === 0) {
         setMilestones([]);
         setLoading(false);
         return;
       }
-      
-      // For each project, get teams and their milestones
+
       let allMilestones = [];
       for (const project of projects) {
         try {
           const teamsRes = await teamApi.getTeamsByProject(project.projectId);
           const teams = teamsRes.data || [];
-          
+
           for (const team of teams) {
             try {
               const milestonesRes = await milestoneApi.getMilestonesByTeam(team.teamId);
@@ -51,7 +53,7 @@ const MilestoneList = () => {
           // Skip projects without teams
         }
       }
-      
+
       setMilestones(allMilestones);
     } catch (error) {
       toast.error('Failed to load milestones');
@@ -72,7 +74,7 @@ const MilestoneList = () => {
 
   const handleDelete = async (milestoneId) => {
     if (!window.confirm('Are you sure you want to delete this milestone?')) return;
-    
+
     try {
       await milestoneApi.deleteMilestone(milestoneId);
       toast.success('Milestone deleted successfully');
@@ -82,84 +84,57 @@ const MilestoneList = () => {
     }
   };
 
-  const filteredMilestones = milestones.filter(m => {
+  const filteredMilestones = milestones.filter((m) => {
     if (filter === 'ALL') return true;
     if (filter === 'COMPLETED') return m.isCompleted;
     if (filter === 'IN_PROGRESS') return !m.isCompleted;
-    if (filter === 'OVERDUE') {
-      return !m.isCompleted && new Date(m.deadline) < new Date();
-    }
+    if (filter === 'OVERDUE') return isOverdue(m);
     return true;
   });
+
+  const counts = {
+    ALL: milestones.length,
+    IN_PROGRESS: milestones.filter((m) => !m.isCompleted).length,
+    COMPLETED: milestones.filter((m) => m.isCompleted).length,
+    OVERDUE: milestones.filter(isOverdue).length,
+  };
 
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">All Milestones</h1>
-          <p className="text-gray-600">
-            {milestones.length} milestone(s) across all your projects
-          </p>
-        </div>
+    <div className="space-y-5">
+      <PageHeader
+        title="Milestones"
+        description={`${milestones.length} across your projects`}
+      />
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <StatCard label="Milestones" value={counts.ALL} />
+        <StatCard label="In progress" value={counts.IN_PROGRESS} />
+        <StatCard label="Completed" value={counts.COMPLETED} />
+        <StatCard label="Overdue" value={counts.OVERDUE} warn={counts.OVERDUE > 0} />
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        <button
-          onClick={() => setFilter('ALL')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-            filter === 'ALL'
-              ? 'bg-indigo-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-        >
-          All
-        </button>
-        <button
-          onClick={() => setFilter('IN_PROGRESS')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-            filter === 'IN_PROGRESS'
-              ? 'bg-yellow-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-        >
-          In Progress
-        </button>
-        <button
-          onClick={() => setFilter('COMPLETED')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-            filter === 'COMPLETED'
-              ? 'bg-green-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-        >
-          Completed
-        </button>
-        <button
-          onClick={() => setFilter('OVERDUE')}
-          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-            filter === 'OVERDUE'
-              ? 'bg-red-600 text-white'
-              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }`}
-        >
-          Overdue
-        </button>
-      </div>
+      <FilterChips
+        value={filter}
+        onChange={setFilter}
+        options={[
+          { id: 'ALL', label: 'All', count: counts.ALL },
+          { id: 'IN_PROGRESS', label: 'In progress', count: counts.IN_PROGRESS },
+          { id: 'COMPLETED', label: 'Completed', count: counts.COMPLETED },
+          { id: 'OVERDUE', label: 'Overdue', count: counts.OVERDUE },
+        ]}
+      />
 
-      {/* Milestones Grid */}
       {filteredMilestones.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-          <div className="text-6xl mb-3">🎯</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Milestones Found</h3>
-          <p className="text-gray-500">
-            {milestones.length === 0 
+        <EmptyState
+          title="No milestones found"
+          description={
+            milestones.length === 0
               ? 'No milestones have been created in your projects yet.'
-              : 'No milestones match the selected filter.'}
-          </p>
-        </div>
+              : 'No milestones match the selected filter.'
+          }
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredMilestones.map((milestone) => (
@@ -168,6 +143,8 @@ const MilestoneList = () => {
               milestone={milestone}
               onComplete={handleComplete}
               onDelete={handleDelete}
+              detailsTo={`/lecturer/milestones/${milestone.milestoneId}`}
+              onViewDetails={(id) => navigate(`/lecturer/milestones/${id}`)}
               showActions={true}
             />
           ))}

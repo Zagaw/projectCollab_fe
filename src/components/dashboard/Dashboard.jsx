@@ -18,7 +18,7 @@ const Dashboard = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <span className="text-xl font-bold text-gray-900">Collabra</span>
+                <span className="text-xl font-bold text-gray-900">Collabora</span>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -40,7 +40,7 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow p-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Welcome to Collabra!
+            Welcome to Collabora!
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-indigo-50 p-4 rounded-lg">

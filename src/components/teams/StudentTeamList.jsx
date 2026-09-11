@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import teamApi from '../../api/teamApi';
 import LoadingSpinner from '../common/LoadingSpinner';
+import EmptyState from '../common/EmptyState';
+import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 
 const StudentTeamList = () => {
@@ -37,58 +39,55 @@ const StudentTeamList = () => {
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">My Teams</h1>
-        <p className="text-gray-600">Teams you are a member of</p>
-      </div>
+    <div className="space-y-5">
+      <PageHeader
+        title="My teams"
+        description="Teams you are a member of."
+      />
 
       {teams.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-          <div className="text-6xl mb-4">👥</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Teams Yet</h3>
-          <p className="text-gray-500">You haven't been added to any team yet.</p>
-          <p className="text-sm text-gray-400 mt-1">Check your invitations or wait for a team assignment.</p>
-        </div>
+        <EmptyState
+          title="No teams yet"
+          description="You haven't been added to any team yet. Check your invitations or wait for a team assignment."
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {teams.map((team) => (
-            <div key={team.teamId} className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition">
-              <div className="flex justify-between items-start mb-3">
+            <article key={team.teamId} className="surface p-5 flex flex-col">
+              <div className="flex justify-between items-start gap-2 mb-3">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{team.name}</h3>
+                  <h3 className="text-lg font-semibold text-ink">{team.name}</h3>
                   <p className="text-sm text-gray-600">{team.projectTitle}</p>
                 </div>
-                <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                <span className="px-2.5 py-1 bg-indigo-50 text-indigo-800 text-xs font-medium rounded-full">
                   {team.totalMembers || 0} members
                 </span>
               </div>
               
-              <p className="text-sm text-gray-600 mb-3">
-                {team.description || 'No description'}
+              <p className="text-sm text-gray-600 mb-3 flex-1">
+                {team.description || 'No description yet.'}
               </p>
               
-              <div className="flex items-center gap-3 text-sm text-gray-500 mb-4">
-                <span>👤 Leader: {team.teamLeader?.fullName || 'Not assigned'}</span>
-                <span>•</span>
-                <span>✅ {team.activeMembers || 0} active</span>
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-gray-500 mb-4">
+                <span>Leader: {team.teamLeader?.fullName || 'Not assigned'}</span>
+                <span>{team.activeMembers || 0} active</span>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row items-stretch gap-2 pt-4 border-t border-gray-100 mt-auto">
                 <Link
                   to={`${basePath}/teams/${team.teamId}`}
-                  className="flex-1 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition text-center"
+                  className="btn-primary flex-1"
                 >
-                  View Team
+                  View team
                 </Link>
                 <Link
                   to={`${basePath}/milestones?teamId=${team.teamId}`}
-                  className="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition text-center"
+                  className="btn-secondary"
                 >
-                  🎯 Milestones
+                  Milestones
                 </Link>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       )}

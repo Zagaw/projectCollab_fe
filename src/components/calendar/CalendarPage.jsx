@@ -5,6 +5,7 @@ import taskApi from '../../api/taskApi';
 import milestoneApi from '../../api/milestoneApi';
 import teamApi from '../../api/teamApi';
 import LoadingSpinner from '../common/LoadingSpinner';
+import { PageHeader, StatCard, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 import {
   EVENT_TYPES,
@@ -33,7 +34,7 @@ const FILTERS = [
 const eventStyle = (event) => {
   if (event.overdue) {
     return {
-      chip: 'bg-red-100 text-red-800',
+      chip: 'bg-red-50 text-red-800',
       dot: 'bg-red-500',
       soft: 'bg-red-50 border-red-100',
       text: 'text-red-700',
@@ -165,68 +166,53 @@ const CalendarPage = () => {
 
   return (
     <div className="space-y-5 min-w-0">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Calendar</h1>
-          <p className="text-gray-600 mt-1">
-            {isTeamLeader
-              ? 'Team meetings, task deadlines, and milestone due dates in one place.'
-              : 'Your meetings, assigned task deadlines, and team milestone due dates.'}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setViewDate((current) => addMonths(current, -1))}
-            className="h-10 w-10 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
-            aria-label="Previous month"
-          >
-            ‹
-          </button>
-          <h2 className="min-w-[160px] text-center text-lg font-semibold text-gray-900">
-            {formatMonthYear(viewDate)}
-          </h2>
-          <button
-            type="button"
-            onClick={() => setViewDate((current) => addMonths(current, 1))}
-            className="h-10 w-10 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50"
-            aria-label="Next month"
-          >
-            ›
-          </button>
-          <button
-            type="button"
-            onClick={goToday}
-            className="h-10 px-3 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700"
-          >
-            Today
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Calendar"
+        description={
+          isTeamLeader
+            ? 'Team meetings, task deadlines, and milestone due dates in one place.'
+            : 'Your meetings, assigned task deadlines, and team milestone due dates.'
+        }
+        actions={
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setViewDate((current) => addMonths(current, -1))}
+              className="btn-secondary !px-3"
+              aria-label="Previous month"
+            >
+              ‹
+            </button>
+            <h2 className="min-w-[9.5rem] text-center text-base font-semibold text-ink">
+              {formatMonthYear(viewDate)}
+            </h2>
+            <button
+              type="button"
+              onClick={() => setViewDate((current) => addMonths(current, 1))}
+              className="btn-secondary !px-3"
+              aria-label="Next month"
+            >
+              ›
+            </button>
+            <button type="button" onClick={goToday} className="btn-primary">
+              Today
+            </button>
+          </div>
+        }
+      />
 
       <div className="grid grid-cols-3 gap-3">
-        <StatCard label="Meetings" count={monthCounts.meeting} color="border-indigo-500" />
-        <StatCard label="Task deadlines" count={monthCounts.task} color="border-amber-500" />
-        <StatCard label="Milestones" count={monthCounts.milestone} color="border-emerald-500" />
+        <StatCard label="Meetings" value={monthCounts.meeting} />
+        <StatCard label="Task deadlines" value={monthCounts.task} />
+        <StatCard label="Milestones" value={monthCounts.milestone} />
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2">
-          {FILTERS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setFilter(item.id)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition ${
-                filter === item.id
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
+        <FilterChips
+          value={filter}
+          onChange={setFilter}
+          options={FILTERS}
+        />
         <label className="inline-flex items-center gap-2 text-sm text-gray-600">
           <input
             type="checkbox"
@@ -252,97 +238,100 @@ const CalendarPage = () => {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden min-w-0">
-          <div className="grid grid-cols-7 border-b border-gray-100 bg-gray-50">
-            {WEEKDAYS.map((day, index) => (
-              <div
-                key={day}
-                className="px-1 py-2 text-center text-[11px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wide"
-              >
-                <span className="sm:hidden">{WEEKDAYS_SHORT[index]}</span>
-                <span className="hidden sm:inline">{day}</span>
-              </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-7">
-            {cells.map((date) => {
-              const key = toDateKey(date);
-              const dayEvents = eventsByDate[key] || [];
-              const outside = date.getMonth() !== viewDate.getMonth();
-              const selected = isSameDay(date, selectedDate);
-              const today = isToday(date);
-              const hasOverdue = dayEvents.some((event) => event.overdue);
-
-              return (
+        <div className="surface overflow-hidden min-w-0">
+            <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
+              {WEEKDAYS.map((day, index) => (
                 <div
-                  key={key}
-                  onClick={() => selectDay(date)}
-                  className={`min-h-[72px] sm:min-h-[108px] lg:min-h-[124px] p-1 sm:p-1.5 text-left border-b border-r border-gray-100 cursor-pointer transition ${
-                    outside ? 'bg-gray-50/80' : 'bg-white'
-                  } ${selected ? 'ring-2 ring-inset ring-indigo-500 bg-indigo-50/70' : 'hover:bg-gray-50'}`}
+                  key={day}
+                  className="px-1 py-2 text-center text-[11px] sm:text-xs font-semibold text-gray-500 uppercase tracking-wide"
                 >
-                  <div className="flex items-center justify-between mb-1">
-                    <button
-                      type="button"
-                      onClick={() => selectDay(date)}
-                      aria-current={today ? 'date' : undefined}
-                      className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold ${
-                        today
-                          ? 'bg-indigo-600 text-white'
-                          : outside
-                            ? 'text-gray-400'
-                            : 'text-gray-800 hover:bg-gray-200'
-                      }`}
-                    >
-                      {date.getDate()}
-                    </button>
-                    {hasOverdue && (
-                      <span className="hidden sm:inline h-1.5 w-1.5 rounded-full bg-red-500" />
-                    )}
-                  </div>
-                  <button
-                    type="button"
+                  <span className="sm:hidden">{WEEKDAYS_SHORT[index]}</span>
+                  <span className="hidden sm:inline">{day}</span>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-7">
+              {cells.map((date) => {
+                const key = toDateKey(date);
+                const dayEvents = eventsByDate[key] || [];
+                const outside = date.getMonth() !== viewDate.getMonth();
+                const selected = isSameDay(date, selectedDate);
+                const today = isToday(date);
+                const hasOverdue = dayEvents.some((event) => event.overdue);
+
+                return (
+                  <div
+                    key={key}
                     onClick={() => selectDay(date)}
-                    className="sm:hidden w-full flex flex-wrap gap-0.5 min-h-[18px]"
-                    aria-label={`Show items on ${date.getDate()}`}
+                    className={`min-h-[72px] sm:min-h-[108px] lg:min-h-[124px] p-1 sm:p-1.5 text-left border-b border-r border-gray-100 cursor-pointer transition ${
+                      outside ? 'bg-gray-50/80' : 'bg-white'
+                    } ${selected ? 'ring-2 ring-inset ring-indigo-500 bg-indigo-50/70' : 'hover:bg-gray-50'}`}
                   >
-                    {dayEvents.slice(0, 4).map((event) => (
-                      <span key={event.id} className={`h-1.5 w-1.5 rounded-full ${eventStyle(event).dot}`} />
-                    ))}
-                  </button>
-                  <div className="hidden sm:flex flex-col gap-1">
-                    {dayEvents.slice(0, 3).map((event) => {
-                      const style = eventStyle(event);
-                      return (
-                        <button
-                          key={event.id}
-                          type="button"
-                          onClick={() => navigate(event.href)}
-                          className={`truncate rounded-md px-1.5 py-0.5 text-[11px] font-medium text-left ${style.chip} ${event.done ? 'opacity-60 line-through' : ''} hover:brightness-95`}
-                        >
-                          {event.title}
-                        </button>
-                      );
-                    })}
-                    {dayEvents.length > 3 && (
+                    <div className="flex items-center justify-between mb-1">
                       <button
                         type="button"
                         onClick={() => selectDay(date)}
-                        className="text-[11px] text-gray-500 px-1 text-left hover:text-indigo-600"
+                        aria-current={today ? 'date' : undefined}
+                        className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold ${
+                          today
+                            ? 'bg-indigo-600 text-white'
+                            : outside
+                              ? 'text-gray-400'
+                              : 'text-ink hover:bg-gray-200'
+                        }`}
                       >
-                        +{dayEvents.length - 3} more
+                        {date.getDate()}
                       </button>
-                    )}
+                      {hasOverdue && (
+                        <span className="hidden sm:inline h-1.5 w-1.5 rounded-full bg-red-500" />
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => selectDay(date)}
+                      className="sm:hidden w-full flex flex-wrap gap-0.5 min-h-[18px]"
+                      aria-label={`Show items on ${date.getDate()}`}
+                    >
+                      {dayEvents.slice(0, 4).map((event) => (
+                        <span key={event.id} className={`h-1.5 w-1.5 rounded-full ${eventStyle(event).dot}`} />
+                      ))}
+                    </button>
+                    <div className="hidden sm:flex flex-col gap-1">
+                      {dayEvents.slice(0, 3).map((event) => {
+                        const style = eventStyle(event);
+                        return (
+                          <button
+                            key={event.id}
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(event.href);
+                            }}
+                            className={`truncate rounded-md px-1.5 py-0.5 text-[11px] font-medium text-left ${style.chip} ${event.done ? 'opacity-60 line-through' : ''} hover:brightness-95`}
+                          >
+                            {event.title}
+                          </button>
+                        );
+                      })}
+                      {dayEvents.length > 3 && (
+                        <button
+                          type="button"
+                          onClick={() => selectDay(date)}
+                          className="text-[11px] text-gray-500 px-1 text-left hover:text-indigo-700"
+                        >
+                          +{dayEvents.length - 3} more
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
         </div>
 
         <div className="space-y-4 min-w-0">
-          <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5">
-            <h3 className="font-semibold text-gray-900">{formatDayHeading(selectedDate)}</h3>
+          <section className="surface p-4 sm:p-5">
+            <h3 className="font-semibold text-ink">{formatDayHeading(selectedDate)}</h3>
             <p className="text-sm text-gray-500 mt-0.5">
               {selectedEvents.length === 0
                 ? 'Nothing scheduled this day.'
@@ -366,7 +355,7 @@ const CalendarPage = () => {
           </section>
 
           {overdue.length > 0 && (
-            <section className="bg-white rounded-2xl shadow-sm border border-red-100 p-4 sm:p-5">
+            <section className="surface p-4 sm:p-5 border-red-200">
               <h3 className="font-semibold text-red-700">Overdue</h3>
               <div className="mt-3 space-y-2">
                 {overdue.slice(0, 5).map((event) => (
@@ -376,8 +365,8 @@ const CalendarPage = () => {
             </section>
           )}
 
-          <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-5">
-            <h3 className="font-semibold text-gray-900">Coming up</h3>
+          <section className="surface p-4 sm:p-5">
+            <h3 className="font-semibold text-ink">Coming up</h3>
             <div className="mt-3 space-y-2">
               {upcoming.length === 0 ? (
                 <p className="text-sm text-gray-500">No upcoming items for this filter.</p>
@@ -394,13 +383,6 @@ const CalendarPage = () => {
   );
 };
 
-const StatCard = ({ label, count, color }) => (
-  <div className={`bg-white rounded-xl shadow-sm p-3 sm:p-4 border-l-4 ${color}`}>
-    <p className="text-[11px] sm:text-xs text-gray-500">{label}</p>
-    <p className="text-xl sm:text-2xl font-bold text-gray-900">{count}</p>
-  </div>
-);
-
 const EventRow = ({ event, onOpen, compact = false, showDate = false }) => {
   const style = eventStyle(event);
   const dateLabel = new Date(event.at).toLocaleDateString(undefined, {
@@ -412,13 +394,13 @@ const EventRow = ({ event, onOpen, compact = false, showDate = false }) => {
     <button
       type="button"
       onClick={onOpen}
-      className={`w-full text-left rounded-xl border p-3 hover:shadow-sm transition ${style.soft} ${event.done ? 'opacity-70' : ''}`}
+      className={`w-full text-left rounded-xl border p-3 hover:border-indigo-200 transition ${style.soft} ${event.done ? 'opacity-70' : ''}`}
     >
       <div className="flex items-start gap-2">
         <span className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${style.dot}`} />
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
-            <p className={`font-medium text-gray-900 truncate ${event.done ? 'line-through' : ''}`}>
+            <p className={`font-medium text-ink truncate ${event.done ? 'line-through' : ''}`}>
               {event.title}
             </p>
             <span className={`shrink-0 text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${style.chip}`}>
@@ -426,12 +408,12 @@ const EventRow = ({ event, onOpen, compact = false, showDate = false }) => {
             </span>
           </div>
           <p className={`text-xs mt-1 ${style.text}`}>
-            {showDate ? `${dateLabel} • ${event.timeLabel}` : event.timeLabel}
-            {event.overdue ? ' • Overdue' : ''}
+            {showDate ? `${dateLabel} · ${event.timeLabel}` : event.timeLabel}
+            {event.overdue ? ' · Overdue' : ''}
           </p>
           {!compact && (event.teamName || event.projectTitle) && (
             <p className="text-xs text-gray-500 mt-0.5 truncate">
-              {[event.teamName, event.projectTitle].filter(Boolean).join(' • ')}
+              {[event.teamName, event.projectTitle].filter(Boolean).join(' · ')}
             </p>
           )}
         </div>

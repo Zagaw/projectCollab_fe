@@ -25,48 +25,53 @@ const DiscussionCard = ({ discussion, onView }) => {
     }
   };
 
+  const replyCount = discussion.replyCount ?? discussion.replies?.length ?? 0;
+
   return (
-    <div 
+    <article
       onClick={handleClick}
-      className="bg-white rounded-xl shadow-sm p-5 border border-gray-100 hover:shadow-md transition-all cursor-pointer"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      className="surface p-4 sm:p-5 hover:border-indigo-200 transition cursor-pointer"
     >
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-gray-900 hover:text-indigo-600 transition">
+          <h3 className="font-semibold text-ink hover:text-indigo-700">
             {discussion.title}
           </h3>
           <p className="text-sm text-gray-600 mt-1 line-clamp-2">
             {discussion.content}
           </p>
         </div>
-        <div className="flex items-center gap-2 ml-4 flex-shrink-0">
-          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full">
-            💬 {discussion.replies?.length || 0}
-          </span>
-        </div>
+        <span className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded-md shrink-0">
+          {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
+        </span>
       </div>
 
-      <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
+      <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-gray-100">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center">
-            <span className="text-indigo-600 font-semibold text-xs">
+          <div className="w-6 h-6 bg-indigo-50 rounded-full flex items-center justify-center">
+            <span className="text-indigo-700 font-semibold text-xs">
               {getInitials(discussion.createdByName)}
             </span>
           </div>
           <span className="text-sm text-gray-600">{discussion.createdByName || 'Unknown'}</span>
         </div>
-        <span className="text-sm text-gray-400">•</span>
-        <span className="text-sm text-gray-400">{getTimeAgo(discussion.createdAt)}</span>
+        <span className="text-sm text-gray-500">{getTimeAgo(discussion.createdAt)}</span>
         {discussion.replies && discussion.replies.length > 0 && (
-          <>
-            <span className="text-sm text-gray-400">•</span>
-            <span className="text-sm text-gray-400">
-              Last reply {getTimeAgo(discussion.replies[discussion.replies.length - 1]?.createdAt)}
-            </span>
-          </>
+          <span className="text-sm text-gray-500">
+            Last reply {getTimeAgo(discussion.replies[discussion.replies.length - 1]?.createdAt)}
+          </span>
         )}
+        <span className="ml-auto text-sm font-medium text-indigo-700">Open thread</span>
       </div>
-    </div>
+    </article>
   );
 };
 

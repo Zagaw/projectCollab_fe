@@ -49,31 +49,26 @@ const FilePreviewModal = ({ file, onClose }) => {
   const isText = file.fileType?.startsWith('text/');
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <div className="flex items-center gap-3 min-w-0">
-            <span className="text-2xl">📄</span>
-            <div className="min-w-0">
-              <h3 className="text-lg font-semibold text-gray-900 truncate">
-                {file.fileName}
-              </h3>
-              <p className="text-sm text-gray-500">
-                {formatFileSize(file.fileSize)} • {file.fileType || 'Unknown type'}
-              </p>
-            </div>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+      <div className="bg-white border border-gray-200 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
+        <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-gray-200">
+          <div className="min-w-0">
+            <h3 className="text-lg font-semibold text-ink truncate">
+              {file.fileName}
+            </h3>
+            <p className="text-sm text-gray-500">
+              {formatFileSize(file.fileSize)} · {file.fileType || 'Unknown type'}
+            </p>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleDownload}
-              className="px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
-            >
+          <div className="flex items-center gap-2 shrink-0">
+            <button type="button" onClick={handleDownload} className="btn-primary !py-2">
               Download
             </button>
             <button
+              type="button"
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition"
+              className="p-2 hover:bg-gray-50 rounded-lg transition"
+              aria-label="Close"
             >
               <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -82,8 +77,7 @@ const FilePreviewModal = ({ file, onClose }) => {
           </div>
         </div>
 
-        {/* Preview Content */}
-        <div className="flex-1 overflow-auto p-4 bg-gray-50">
+        <div className="flex-1 overflow-auto p-4 bg-paper">
           {loading ? (
             <div className="flex items-center justify-center h-64">
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
@@ -91,14 +85,13 @@ const FilePreviewModal = ({ file, onClose }) => {
           ) : isImage ? (
             <img src={previewUrl} alt={file.fileName} className="max-w-full max-h-full mx-auto object-contain" />
           ) : isPDF ? (
-            <iframe src={previewUrl} className="w-full h-[70vh] rounded-lg" title={file.fileName} />
+            <iframe src={previewUrl} className="w-full h-[70vh] rounded-lg bg-white" title={file.fileName} />
           ) : isText ? (
-            <iframe src={previewUrl} className="w-full h-[70vh] rounded-lg" title={file.fileName} />
+            <iframe src={previewUrl} className="w-full h-[70vh] rounded-lg bg-white" title={file.fileName} />
           ) : (
             <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-              <span className="text-6xl mb-4">📄</span>
-              <p className="text-lg font-medium">Preview not available</p>
-              <p className="text-sm">Click Download to view this file</p>
+              <p className="text-lg font-medium text-ink">Preview not available</p>
+              <p className="text-sm mt-1">Click Download to view this file.</p>
             </div>
           )}
         </div>

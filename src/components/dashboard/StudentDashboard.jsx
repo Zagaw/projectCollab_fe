@@ -8,6 +8,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import ActivityTimeline from '../activity/ActivityTimeline';
 import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import DashboardProgress from '../progress/DashboardProgress';
+import { PageHeader, StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 
 const StudentDashboard = () => {
@@ -89,52 +90,28 @@ const StudentDashboard = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Welcome back, {user?.firstName}!
-        </h1>
-        <p className="text-gray-600 mt-1">
-          Here's what's happening with your tasks today.
-        </p>
-        <Link
-          to="/student/calendar"
-          className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 hover:bg-indigo-100 transition"
-        >
-          <div>
-            <p className="font-medium text-indigo-900">Calendar</p>
-            <p className="text-sm text-indigo-700">Meetings, task deadlines, and milestones in one view.</p>
-          </div>
-          <span className="text-sm font-medium text-indigo-700 whitespace-nowrap">Open →</span>
-        </Link>
-      </div>
+      <PageHeader
+        title={`Welcome back, ${user?.firstName}`}
+        description="Overdue work, deadlines, and invitations for today."
+        actions={
+          <Link to="/student/calendar" className="text-sm font-medium text-indigo-700 hover:text-indigo-800">
+            Open calendar →
+          </Link>
+        }
+      />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="bg-white rounded-lg shadow-sm p-5 border-l-4 border-indigo-500">
-          <p className="text-sm text-gray-500">Total Tasks</p>
-          <p className="text-2xl font-bold text-gray-900">{stats.totalTasks}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border-l-4 border-green-500">
-          <p className="text-sm text-gray-500">Completed</p>
-          <p className="text-2xl font-bold text-green-600">{stats.completedTasks}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border-l-4 border-blue-500">
-          <p className="text-sm text-gray-500">In Progress</p>
-          <p className="text-2xl font-bold text-blue-600">{stats.inProgressTasks}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border-l-4 border-red-500">
-          <p className="text-sm text-gray-500">Overdue</p>
-          <p className="text-2xl font-bold text-red-600">{stats.overdueTasks}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border-l-4 border-yellow-500">
-          <p className="text-sm text-gray-500">Invitations</p>
-          <p className="text-2xl font-bold text-yellow-600">{stats.pendingInvitations}</p>
-        </div>
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+        <StatCard label="Tasks" value={stats.totalTasks} />
+        <StatCard label="Completed" value={stats.completedTasks} />
+        <StatCard label="In progress" value={stats.inProgressTasks} />
+        <StatCard label="Overdue" value={stats.overdueTasks} warn={stats.overdueTasks > 0} />
+        <StatCard label="Invitations" value={stats.pendingInvitations} warn={stats.pendingInvitations > 0} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="surface p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Your Recent Tasks</h2>
+            <h2 className="text-lg font-semibold text-ink">Recent tasks</h2>
             <Link to="/student/tasks" className="text-sm text-indigo-600 hover:text-indigo-700">
               View all →
             </Link>
@@ -147,6 +124,7 @@ const StudentDashboard = () => {
                   task={task}
                   onStatusChange={handleStatusChange}
                   onDelete={handleDelete}
+                  detailsTo={`/student/tasks/${task.taskId}`}
                   onViewDetails={(taskId) => navigate(`/student/tasks/${taskId}`)}
                   showActions={false}
                 />
@@ -157,9 +135,9 @@ const StudentDashboard = () => {
           )}
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="surface p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Upcoming Deadlines</h2>
+            <h2 className="text-lg font-semibold text-ink">Upcoming deadlines</h2>
             <Link to="/student/calendar" className="text-sm text-indigo-600 hover:text-indigo-700">
               View calendar →
             </Link>
@@ -186,9 +164,9 @@ const StudentDashboard = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="surface p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Pending Invitations</h2>
+          <h2 className="text-lg font-semibold text-ink">Pending invitations</h2>
           <Link to="/student/invitations" className="text-sm text-indigo-600 hover:text-indigo-700">
             View all →
           </Link>
@@ -200,11 +178,8 @@ const StudentDashboard = () => {
                 <p className="font-medium text-gray-900">{invite.teamName}</p>
                 <p className="text-sm text-gray-600">{invite.projectTitle}</p>
                 <p className="text-xs text-gray-500 mt-1">Invited by: {invite.inviterName}</p>
-                <Link
-                  to="/student/invitations"
-                  className="mt-2 inline-block px-3 py-1 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
-                >
-                  Review Invitation
+                <Link to="/student/invitations" className="btn-primary mt-3 !py-1.5">
+                  Review invitation
                 </Link>
               </div>
             ))}
@@ -218,8 +193,8 @@ const StudentDashboard = () => {
 
       <UpcomingMeetings source="my" basePath="/student" />
 
-      <div className="bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+      <div className="surface p-6">
+        <h2 className="text-lg font-semibold text-ink mb-4">Recent activity</h2>
         <ActivityTimeline limit={8} compact />
       </div>
     </div>

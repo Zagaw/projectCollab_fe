@@ -2,43 +2,47 @@ import React from 'react';
 
 const InvitationCard = ({ invitation, onAccept, onReject }) => {
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition">
-      <div className="flex items-start justify-between mb-3">
+    <article className="surface p-5 flex flex-col">
+      <div className="flex items-start justify-between gap-3 mb-3">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">{invitation.teamName}</h3>
+          <h3 className="text-lg font-semibold text-ink">{invitation.teamName}</h3>
           <p className="text-sm text-gray-600">{invitation.projectTitle}</p>
         </div>
-        <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">
-          PENDING
+        <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-800 shrink-0">
+          Pending
         </span>
       </div>
 
-      <div className="space-y-2 text-sm text-gray-600 mb-4">
+      <div className="space-y-1.5 text-sm text-gray-600 mb-4 flex-1">
         <p>
-          <span className="font-medium">Invited by:</span> {invitation.inviterName}
+          <span className="font-medium text-ink">Invited by:</span> {invitation.inviterName}
         </p>
         <p>
-          <span className="font-medium">Invited on:</span>{' '}
+          <span className="font-medium text-ink">Invited on:</span>{' '}
           {new Date(invitation.invitedAt).toLocaleDateString()}
         </p>
-        <p className="text-gray-500 italic">{invitation.message}</p>
+        {invitation.message && (
+          <p className="text-gray-500 pt-1">{invitation.message}</p>
+        )}
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t border-gray-100 mt-auto">
         <button
+          type="button"
           onClick={() => onAccept(invitation.invitationId)}
-          className="flex-1 bg-green-600 text-white py-2 rounded-lg font-medium hover:bg-green-700 transition"
+          className="btn-primary flex-1"
         >
           Accept
         </button>
         <button
+          type="button"
           onClick={() => onReject(invitation.invitationId)}
-          className="flex-1 bg-red-100 text-red-700 py-2 rounded-lg font-medium hover:bg-red-200 transition"
+          className="btn-danger flex-1"
         >
-          Reject
+          Decline
         </button>
       </div>
-    </div>
+    </article>
   );
 };
 

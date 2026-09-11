@@ -58,13 +58,13 @@ const Login = () => {
 
   return (
     <AuthLayout 
-      title="Welcome Back" 
-      subtitle="Sign in to your account to continue collaborating"
+      title="Welcome back" 
+      subtitle="Sign in to continue collaborating"
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email Address
+          <label htmlFor="email" className="label">
+            Email address
           </label>
           <input
             id="email"
@@ -74,13 +74,13 @@ const Login = () => {
             required
             value={formData.email}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 outline-none"
+            className="field"
             placeholder="you@example.com"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="password" className="label">
             Password
           </label>
           <input
@@ -91,7 +91,7 @@ const Login = () => {
             required
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 outline-none"
+            className="field"
             placeholder="Enter your password"
           />
         </div>
@@ -108,7 +108,7 @@ const Login = () => {
               Remember me
             </label>
           </div>
-          <Link to="/forgot-password" className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+          <Link to="/forgot-password" className="text-sm font-medium text-indigo-600 hover:text-indigo-700">
             Forgot password?
           </Link>
         </div>
@@ -116,24 +116,14 @@ const Login = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-primary w-full"
         >
-          {loading ? (
-            <span className="flex items-center justify-center">
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Signing in...
-            </span>
-          ) : (
-            'Sign In'
-          )}
+          {loading ? 'Signing in...' : 'Sign in'}
         </button>
 
         <p className="text-center text-sm text-gray-600">
           Don't have an account?{' '}
-          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-700">
             Create an account
           </Link>
         </p>

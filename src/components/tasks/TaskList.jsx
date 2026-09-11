@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import taskApi from '../../api/taskApi';
 import TaskCard from './TaskCard';
 import LoadingSpinner from '../common/LoadingSpinner';
+import EmptyState from '../common/EmptyState';
+import { FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 
 const TaskList = ({ 
@@ -74,6 +76,8 @@ const TaskList = ({
     navigate(`${basePath}/tasks/${taskId}`);
   };
 
+  const createPath = `${basePath}/tasks/create?projectId=${projectId}&teamId=${teamId}&milestoneId=${milestoneId}`;
+
   const filteredTasks = tasks.filter(t => {
     if (filter === 'ALL') return true;
     if (filter === 'COMPLETED') return t.status === 'COMPLETED';
@@ -86,56 +90,44 @@ const TaskList = ({
   if (loading) return <LoadingSpinner />;
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+    <div className="space-y-4">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
         <div>
-          {title && <h2 className="text-xl font-bold text-gray-900">{title}</h2>}
+          {title && <h2 className="text-lg font-semibold text-ink">{title}</h2>}
           <p className="text-sm text-gray-600">
-            {tasks.length} task(s) found
+            {tasks.length} task{tasks.length !== 1 ? 's' : ''}
           </p>
         </div>
         {showCreate && (
           <button
-            onClick={() => navigate(`${basePath}/tasks/create?projectId=${projectId}&teamId=${teamId}&milestoneId=${milestoneId}`)}
-            className="mt-2 sm:mt-0 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-2"
+            type="button"
+            onClick={() => navigate(createPath)}
+            className="btn-primary"
           >
-            <span>➕</span> Create Task
+            Create task
           </button>
         )}
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        {['ALL', 'TODO', 'IN_PROGRESS', 'COMPLETED', 'BLOCKED'].map((status) => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition ${
-              filter === status
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            {status === 'ALL' ? 'All' : status.replace('_', ' ')}
-          </button>
-        ))}
-      </div>
+      <FilterChips
+        value={filter}
+        onChange={setFilter}
+        options={[
+          { id: 'ALL', label: 'All', count: tasks.length },
+          { id: 'TODO', label: 'To do', count: tasks.filter((t) => t.status === 'TODO').length },
+          { id: 'IN_PROGRESS', label: 'In progress', count: tasks.filter((t) => t.status === 'IN_PROGRESS').length },
+          { id: 'COMPLETED', label: 'Completed', count: tasks.filter((t) => t.status === 'COMPLETED').length },
+          { id: 'BLOCKED', label: 'Blocked', count: tasks.filter((t) => t.status === 'BLOCKED').length },
+        ]}
+      />
 
-      {/* Tasks Grid */}
       {filteredTasks.length === 0 ? (
-        <div className="text-center py-8 bg-white rounded-xl shadow-sm">
-          <div className="text-4xl mb-3">📋</div>
-          <p className="text-gray-500">No tasks found</p>
-          {showCreate && (
-            <button
-              onClick={() => navigate(`${basePath}/tasks/create?projectId=${projectId}&teamId=${teamId}`)}
-              className="mt-3 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm"
-            >
-              Create First Task
-            </button>
-          )}
-        </div>
+        <EmptyState
+          title="No tasks found"
+          description="No tasks match this filter."
+          actionText={showCreate ? 'Create first task' : undefined}
+          onAction={showCreate ? () => navigate(`${basePath}/tasks/create?projectId=${projectId}&teamId=${teamId}`) : undefined}
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4">
           {filteredTasks.map((task) => (
@@ -144,6 +136,7 @@ const TaskList = ({
               task={task}
               onStatusChange={handleStatusChange}
               onDelete={handleDelete}
+              detailsTo={`${basePath}/tasks/${task.taskId}`}
               onViewDetails={handleViewDetails}
               showActions={isTeamLeader}
             />

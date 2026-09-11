@@ -33,11 +33,11 @@ const DashboardProgress = ({ source = 'my', basePath, showContributions = false 
 
   if (source === 'lecturer') {
     return (
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="surface p-5 sm:p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Project progress</h2>
-          <Link to={`${basePath}/progress`} className="text-sm text-indigo-600 hover:text-indigo-700">
-            View all →
+          <h2 className="text-lg font-semibold text-ink">Project progress</h2>
+          <Link to={`${basePath}/progress`} className="text-sm text-indigo-700 hover:text-indigo-800">
+            View all
           </Link>
         </div>
         {projects.length === 0 ? (
@@ -48,15 +48,15 @@ const DashboardProgress = ({ source = 'my', basePath, showContributions = false 
               <Link
                 key={project.projectId}
                 to={`${basePath}/progress`}
-                className="block rounded-xl border border-gray-100 p-4 hover:border-indigo-200 transition"
+                className="block surface p-4 hover:border-indigo-200 transition"
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <p className="font-medium text-gray-900">{project.projectTitle}</p>
-                  <span className="text-sm font-semibold text-indigo-700">{project.taskPercent}%</span>
+                  <p className="font-medium text-ink">{project.projectTitle}</p>
+                  <span className="text-sm font-semibold text-indigo-700 tabular-nums">{project.taskPercent}%</span>
                 </div>
-                <ProgressBar percent={project.taskPercent} label="Tasks" hint={`${project.taskCompleted}/${project.taskTotal} tasks • ${project.teamCount} teams`} />
+                <ProgressBar percent={project.taskPercent} label="Tasks" hint={`${project.taskCompleted}/${project.taskTotal} tasks · ${project.teamCount} teams`} />
                 {project.overdueTeamCount > 0 && (
-                  <p className="text-xs text-red-600 mt-2">{project.overdueTeamCount} team(s) have overdue tasks</p>
+                  <p className="text-xs text-red-700 mt-2">{project.overdueTeamCount} team(s) have overdue tasks</p>
                 )}
               </Link>
             ))}
@@ -67,11 +67,11 @@ const DashboardProgress = ({ source = 'my', basePath, showContributions = false 
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6">
+    <div className="surface p-5 sm:p-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">Team progress</h2>
-        <Link to={`${basePath}/progress`} className="text-sm text-indigo-600 hover:text-indigo-700">
-          View all →
+        <h2 className="text-lg font-semibold text-ink">Team progress</h2>
+        <Link to={`${basePath}/progress`} className="text-sm text-indigo-700 hover:text-indigo-800">
+          View all
         </Link>
       </div>
       {teams.length === 0 ? (
@@ -82,20 +82,20 @@ const DashboardProgress = ({ source = 'my', basePath, showContributions = false 
             <Link
               key={team.teamId}
               to={`${basePath}/progress?teamId=${team.teamId}`}
-              className="block rounded-xl border border-gray-100 p-4 hover:border-indigo-200 transition"
+              className="block surface p-4 hover:border-indigo-200 transition"
             >
-              <p className="font-medium text-gray-900">{team.teamName}</p>
+              <p className="font-medium text-ink">{team.teamName}</p>
               <p className="text-xs text-gray-500 mb-2">{team.projectTitle}</p>
               <ProgressBar
                 percent={team.taskPercent}
                 label="Tasks"
-                hint={`${team.taskCompleted}/${team.taskTotal} tasks${typeof team.myCompleted === 'number' ? ` • you ${team.myCompleted}/${team.myAssigned}` : ''}`}
+                hint={`${team.taskCompleted}/${team.taskTotal} tasks${typeof team.myCompleted === 'number' ? ` · you ${team.myCompleted}/${team.myAssigned}` : ''}`}
               />
             </Link>
           ))}
           {showContributions && teams[0]?.members?.length > 0 && (
             <div className="pt-2">
-              <h3 className="text-sm font-semibold text-gray-800 mb-2">
+              <h3 className="text-sm font-semibold text-ink mb-2">
                 Contributions · {teams[0].teamName}
               </h3>
               <ContributionTable members={teams[0].members} compact />

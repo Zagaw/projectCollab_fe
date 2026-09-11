@@ -38,7 +38,7 @@ const formatTime = (value) => {
   return new Date(value).toLocaleString();
 };
 
-const NotificationBell = () => {
+const NotificationBell = ({ tone = 'light' }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -125,7 +125,11 @@ const NotificationBell = () => {
       <button
         type="button"
         onClick={handleToggle}
-        className="relative p-2 rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition"
+        className={`relative p-2 rounded-lg transition ${
+          tone === 'ink'
+            ? 'text-white/80 hover:bg-white/10 hover:text-white'
+            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+        }`}
         title="Notifications"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

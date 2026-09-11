@@ -3,6 +3,7 @@ import { useParams, useNavigate, useSearchParams, useLocation } from 'react-rout
 import discussionApi from '../../api/discussionApi';
 import { useAuth } from '../../context/AuthContext';
 import LoadingSpinner from '../common/LoadingSpinner';
+import EmptyState from '../common/EmptyState';
 import toast from 'react-hot-toast';
 
 const DiscussionDetails = () => {
@@ -26,8 +27,8 @@ const DiscussionDetails = () => {
   const isLecturerRoute = pathname.includes('/lecturer');
   const isStudentRoute = pathname.includes('/student');
   const isTeamLeaderRoute = pathname.includes('/teamleader');
-  const basePath = isLecturerRoute ? '/lecturer' : 
-                   isTeamLeaderRoute ? '/teamleader' : 
+  const basePath = isLecturerRoute ? '/lecturer' :
+                   isTeamLeaderRoute ? '/teamleader' :
                    isStudentRoute ? '/student' : '/student';
 
   useEffect(() => {
@@ -125,17 +126,12 @@ const DiscussionDetails = () => {
 
   if (!projectId) {
     return (
-      <div className="max-w-4xl mx-auto text-center py-12">
-        <div className="text-6xl mb-4">⚠️</div>
-        <h2 className="text-2xl font-bold text-gray-900">Project ID Required</h2>
-        <p className="text-gray-600 mt-2">Please select a project first to view discussions.</p>
-        <button
-          onClick={() => navigate(`${basePath}/discussions`)}
-          className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-        >
-          Go to Discussions
-        </button>
-      </div>
+      <EmptyState
+        title="Project required"
+        description="Select a project first to view discussions."
+        actionText="Go to discussions"
+        actionLink={`${basePath}/discussions`}
+      />
     );
   }
 
@@ -144,103 +140,92 @@ const DiscussionDetails = () => {
   }
 
   if (!discussion) {
-    return <div>Discussion not found</div>;
+    return (
+      <EmptyState
+        title="Discussion not found"
+        description="It may have been deleted, or you do not have access."
+        actionText="Back to discussions"
+        onAction={handleBack}
+      />
+    );
   }
 
+  const replyCount = discussion.replies?.length || 0;
+
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div className="space-y-5">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         <div>
-          <button
-            onClick={handleBack}
-            className="text-sm text-indigo-600 hover:text-indigo-700 mb-2 inline-block"
-          >
-            ← Back to Project
+          <button type="button" onClick={handleBack} className="text-sm text-indigo-700 hover:text-indigo-800 mb-2">
+            Back to project
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">{discussion.title}</h1>
-          <div className="flex items-center gap-3 mt-1">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center">
-                <span className="text-indigo-600 font-semibold text-xs">
-                  {getInitials(discussion.createdByName)}
-                </span>
-              </div>
-              <span className="text-sm text-gray-600">{discussion.createdByName || 'Unknown'}</span>
-            </div>
-            <span className="text-sm text-gray-400">•</span>
-            <span className="text-sm text-gray-400">{getTimeAgo(discussion.createdAt)}</span>
-            <span className="text-sm text-gray-400">•</span>
-            <span className="text-sm text-gray-400">💬 {discussion.replies?.length || 0} replies</span>
-          </div>
+          <h1 className="page-title">{discussion.title}</h1>
+          <p className="page-kicker">
+            {discussion.createdByName || 'Unknown'} · {getTimeAgo(discussion.createdAt)} · {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
+          </p>
         </div>
         {canDelete() && (
-          <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50 text-sm"
-          >
-            {deleting ? 'Deleting...' : 'Delete Discussion'}
+          <button type="button" onClick={handleDelete} disabled={deleting} className="btn-danger">
+            {deleting ? 'Deleting...' : 'Delete'}
           </button>
         )}
       </div>
 
-      {/* Original Post */}
-      <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-        <div className="prose max-w-none">
-          <p className="text-gray-700 whitespace-pre-wrap">{discussion.content}</p>
+      <div className="surface p-5 sm:p-6">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center">
+            <span className="text-indigo-700 font-semibold text-sm">
+              {getInitials(discussion.createdByName)}
+            </span>
+          </div>
+          <span className="text-sm font-medium text-ink">{discussion.createdByName || 'Unknown'}</span>
         </div>
+        <p className="text-gray-600 whitespace-pre-wrap">{discussion.content}</p>
       </div>
 
-      {/* Replies */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-gray-900">
-          {discussion.replies?.length || 0} Replies
+      <div className="space-y-3">
+        <h3 className="text-lg font-semibold text-ink">
+          Replies ({replyCount})
         </h3>
 
         {discussion.replies && discussion.replies.length > 0 ? (
           discussion.replies.map((reply) => (
-            <div key={reply.replyId} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center">
-                  <span className="text-indigo-600 font-semibold text-xs">
+            <div key={reply.replyId} className="surface p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-7 h-7 bg-indigo-50 rounded-full flex items-center justify-center">
+                  <span className="text-indigo-700 font-semibold text-xs">
                     {getInitials(reply.userName)}
                   </span>
                 </div>
-                <span className="text-sm font-medium text-gray-900">{reply.userName || 'Unknown'}</span>
-                <span className="text-xs text-gray-400">{getTimeAgo(reply.createdAt)}</span>
+                <span className="text-sm font-medium text-ink">{reply.userName || 'Unknown'}</span>
+                <span className="text-xs text-gray-500">{getTimeAgo(reply.createdAt)}</span>
               </div>
-              <p className="text-sm text-gray-700 whitespace-pre-wrap">{reply.content}</p>
+              <p className="text-sm text-gray-600 whitespace-pre-wrap">{reply.content}</p>
             </div>
           ))
         ) : (
-          <div className="text-center py-8 bg-gray-50 rounded-xl">
-            <p className="text-gray-500">No replies yet. Be the first to respond!</p>
-          </div>
+          <p className="text-sm text-gray-500 surface px-4 py-8 text-center">No replies yet. Be the first to respond.</p>
         )}
       </div>
 
-      {/* Reply Form */}
-      <div className="mt-6 bg-white rounded-xl shadow-sm p-6">
-        <h4 className="font-medium text-gray-900 mb-3">Add Your Reply</h4>
-        <form onSubmit={handleReply}>
-          <textarea
-            value={replyContent}
-            onChange={(e) => setReplyContent(e.target.value)}
-            rows="4"
-            placeholder="Write your reply..."
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none resize-none"
-            disabled={replying}
-          />
-          <div className="flex items-center gap-3 mt-3">
-            <button
-              type="submit"
+      <div className="surface p-5 sm:p-6">
+        <h4 className="font-semibold text-ink mb-3">Add a reply</h4>
+        <form onSubmit={handleReply} className="space-y-3">
+          <div>
+            <label className="label" htmlFor="discussion-reply">Reply</label>
+            <textarea
+              id="discussion-reply"
+              value={replyContent}
+              onChange={(e) => setReplyContent(e.target.value)}
+              rows="4"
+              placeholder="Write your reply..."
+              className="field resize-none"
               disabled={replying}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50"
-            >
-              {replying ? 'Posting...' : 'Post Reply'}
-            </button>
+            />
           </div>
+          <button type="submit" disabled={replying} className="btn-primary">
+            {replying ? 'Posting...' : 'Post reply'}
+          </button>
         </form>
       </div>
     </div>

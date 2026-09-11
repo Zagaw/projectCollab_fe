@@ -10,47 +10,47 @@ const ContributionTable = ({ members = [], compact = false }) => {
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[640px]">
+    <div className="table-wrap">
+      <table className="data-table">
         <thead>
-          <tr className="border-b border-gray-200 text-left text-xs font-medium uppercase tracking-wide text-gray-500">
-            <th className="py-2 pr-3">Member</th>
-            <th className="py-2 px-2">Assigned</th>
-            <th className="py-2 px-2">Completed</th>
-            <th className="py-2 px-2">Overdue</th>
+          <tr>
+            <th>Member</th>
+            <th>Assigned</th>
+            <th>Completed</th>
+            <th>Overdue</th>
             {!compact && (
               <>
-                <th className="py-2 px-2">Comments</th>
-                <th className="py-2 px-2">Files</th>
-                <th className="py-2 px-2">Discussions</th>
+                <th>Comments</th>
+                <th>Files</th>
+                <th>Discussions</th>
               </>
             )}
           </tr>
         </thead>
         <tbody>
-          {rows.map((member) => {
+          {rows.map((member, index) => {
             const isMe = String(member.userId) === String(user?.userId);
             return (
               <tr
                 key={member.userId}
-                className={`border-b border-gray-100 ${isMe ? 'bg-indigo-50/70' : 'hover:bg-gray-50'}`}
+                className={isMe ? 'bg-indigo-50/70' : index % 2 === 1 ? 'bg-gray-50' : ''}
               >
-                <td className="py-3 pr-3">
-                  <p className="font-medium text-gray-900">
+                <td>
+                  <p className="font-medium">
                     {member.name}
-                    {isMe && <span className="ml-2 text-xs font-medium text-indigo-600">You</span>}
+                    {isMe && <span className="ml-2 text-xs font-medium text-indigo-700">You</span>}
                   </p>
                 </td>
-                <td className="py-3 px-2 text-sm text-gray-700">{member.assigned}</td>
-                <td className="py-3 px-2 text-sm font-semibold text-gray-900">{member.completed}</td>
-                <td className={`py-3 px-2 text-sm ${member.overdue > 0 ? 'text-red-600 font-medium' : 'text-gray-700'}`}>
+                <td>{member.assigned}</td>
+                <td className="font-semibold">{member.completed}</td>
+                <td className={member.overdue > 0 ? 'text-red-700 font-medium' : ''}>
                   {member.overdue}
                 </td>
                 {!compact && (
                   <>
-                    <td className="py-3 px-2 text-sm text-gray-700">{member.comments}</td>
-                    <td className="py-3 px-2 text-sm text-gray-700">{member.files}</td>
-                    <td className="py-3 px-2 text-sm text-gray-700">{member.discussions}</td>
+                    <td>{member.comments}</td>
+                    <td>{member.files}</td>
+                    <td>{member.discussions}</td>
                   </>
                 )}
               </tr>
@@ -58,7 +58,7 @@ const ContributionTable = ({ members = [], compact = false }) => {
           })}
         </tbody>
       </table>
-      <p className="text-xs text-gray-500 mt-3">
+      <p className="text-xs text-gray-500 mt-3 px-3 sm:px-0">
         Ranked by tasks completed. Comments, files, and discussions are shown for context and are not part of the score.
       </p>
     </div>

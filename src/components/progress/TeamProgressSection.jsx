@@ -24,14 +24,14 @@ const TeamProgressSection = ({ teamId }) => {
   if (!progress) return null;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 mt-6">
+    <div className="surface p-5 sm:p-6 mt-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-gray-900">Progress and contributions</h3>
+        <h3 className="font-semibold text-ink">Progress and contributions</h3>
         <Link
           to={`${reportBasePath()}/reports?teamId=${teamId}&projectId=${progress.projectId || ''}&type=PROGRESS`}
-          className="text-sm text-indigo-600 hover:text-indigo-700"
+          className="text-sm text-indigo-700 hover:text-indigo-800"
         >
-          Open in Reports →
+          Open in Reports
         </Link>
       </div>
       <TeamProgressPanel progress={progress} />

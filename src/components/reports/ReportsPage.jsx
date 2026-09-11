@@ -6,6 +6,7 @@ import teamApi from '../../api/teamApi';
 import progressApi from '../../api/progressApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
+import { PageHeader, StatCard, FilterChips } from '../common/PageHeader';
 import {
   REPORT_TYPES,
   defaultWeeklyRange,
@@ -161,10 +162,10 @@ const ReportsPage = () => {
   return (
     <div className="space-y-6">
       <div className="no-print">
-        <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
-        <p className="text-gray-600 mt-1">
-          Preview a report on screen, download CSV, or use Print to save a PDF. Weekly reports cover the last 7 days unless you change the dates.
-        </p>
+        <PageHeader
+          title="Reports"
+          description="Preview a report on screen, download CSV, or use Print to save a PDF. Weekly reports cover the last 7 days unless you change the dates."
+        />
       </div>
 
       {empty ? (
@@ -175,39 +176,28 @@ const ReportsPage = () => {
               ? 'Create a project and teams, then you can export progress, tasks, contributions, and weekly activity.'
               : 'Join an active team to generate reports for that team only.'
           }
-          icon="📄"
         />
       ) : (
         <>
-          <div className="no-print bg-white rounded-xl shadow-sm p-4 space-y-4">
+          <div className="no-print surface p-4 space-y-4">
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Report type</p>
-              <div className="flex flex-wrap gap-2">
-                {REPORT_TYPES.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => handleTypeChange(item.id)}
-                    className={`px-3 py-2 text-sm rounded-lg border transition ${
-                      type === item.id
-                        ? 'bg-indigo-600 text-white border-indigo-600'
-                        : 'bg-white text-gray-700 border-gray-300 hover:border-indigo-300'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
+              <p className="label">Report type</p>
+              <FilterChips
+                value={type}
+                onChange={handleTypeChange}
+                options={REPORT_TYPES}
+              />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {isLecturer && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Project</label>
+                  <label className="label" htmlFor="report-project">Project</label>
                   <select
+                    id="report-project"
                     value={projectId}
                     onChange={(e) => handleProjectChange(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    className="field"
                   >
                     <option value="">Select a project</option>
                     {projects.map((project) => (
@@ -219,13 +209,14 @@ const ReportsPage = () => {
                 </div>
               )}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="label" htmlFor="report-team">
                   {isLecturer ? 'Team (optional)' : 'Team'}
                 </label>
                 <select
+                  id="report-team"
                   value={teamId}
                   onChange={(e) => handleTeamChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                  className="field"
                   disabled={isLecturer && !projectId}
                 >
                   {isLecturer ? (
@@ -247,21 +238,23 @@ const ReportsPage = () => {
             {type === 'WEEKLY' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">From</label>
+                  <label className="label" htmlFor="report-from">From</label>
                   <input
+                    id="report-from"
                     type="datetime-local"
                     value={range.from}
                     onChange={(e) => setRange((current) => ({ ...current, from: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    className="field"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">To</label>
+                  <label className="label" htmlFor="report-to">To</label>
                   <input
+                    id="report-to"
                     type="datetime-local"
                     value={range.to}
                     onChange={(e) => setRange((current) => ({ ...current, to: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    className="field"
                   />
                 </div>
               </div>
@@ -272,7 +265,7 @@ const ReportsPage = () => {
                 type="button"
                 onClick={generate}
                 disabled={generating || !canGenerate}
-                className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+                className="btn-primary"
               >
                 {generating ? 'Generating...' : 'Generate preview'}
               </button>
@@ -280,7 +273,7 @@ const ReportsPage = () => {
                 type="button"
                 onClick={exportCsv}
                 disabled={!report}
-                className="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                className="btn-secondary disabled:opacity-50"
               >
                 Download CSV
               </button>
@@ -288,7 +281,7 @@ const ReportsPage = () => {
                 type="button"
                 onClick={() => window.print()}
                 disabled={!report}
-                className="px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50"
+                className="btn-secondary disabled:opacity-50"
               >
                 Print / Save as PDF
               </button>
@@ -305,13 +298,13 @@ const ReportsPage = () => {
 };
 
 const ReportPreview = ({ report }) => (
-  <div className="print-report bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6 space-y-6">
+  <div className="print-report surface p-5 sm:p-6 space-y-6">
     <div>
-      <h2 className="text-xl font-semibold text-gray-900">{report.title}</h2>
+      <h2 className="text-xl font-semibold text-ink">{report.title}</h2>
       <p className="text-sm text-gray-500 mt-1">
         Generated {formatReportDate(report.generatedAt)}
-        {report.projectTitle ? ` • ${report.projectTitle}` : ''}
-        {report.teamName ? ` • ${report.teamName}` : ''}
+        {report.projectTitle ? ` · ${report.projectTitle}` : ''}
+        {report.teamName ? ` · ${report.teamName}` : ''}
       </p>
       {(report.periodStart || report.periodEnd) && (
         <p className="text-sm text-gray-500">
@@ -323,38 +316,35 @@ const ReportPreview = ({ report }) => (
     {(report.metrics || []).length > 0 && (
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {report.metrics.map((metric) => (
-          <div key={metric.label} className="bg-gray-50 rounded-xl p-3">
-            <p className="text-xs text-gray-500">{metric.label}</p>
-            <p className="text-lg font-bold text-gray-900 break-words">{metric.value}</p>
-          </div>
+          <StatCard key={metric.label} label={metric.label} value={metric.value} />
         ))}
       </div>
     )}
 
     {(report.sections || []).map((section) => (
       <div key={section.title}>
-        <h3 className="font-semibold text-gray-900 mb-3">{section.title}</h3>
-        <div className="overflow-x-auto">
-          <table className="min-w-full text-sm">
+        <h3 className="font-semibold text-ink mb-3">{section.title}</h3>
+        <div className="table-wrap">
+          <table className="data-table">
             <thead>
-              <tr className="border-b border-gray-200 text-left text-gray-500">
+              <tr>
                 {(section.columns || []).map((column) => (
-                  <th key={column} className="py-2 pr-4 font-medium">{column}</th>
+                  <th key={column}>{column}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {(section.rows || []).length === 0 ? (
                 <tr>
-                  <td className="py-3 text-gray-500" colSpan={Math.max((section.columns || []).length, 1)}>
+                  <td className="text-gray-500" colSpan={Math.max((section.columns || []).length, 1)}>
                     None in this report.
                   </td>
                 </tr>
               ) : (
                 section.rows.map((row, index) => (
-                  <tr key={`${section.title}-${index}`} className="border-b border-gray-100">
+                  <tr key={`${section.title}-${index}`} className={index % 2 === 1 ? 'bg-gray-50' : ''}>
                     {(row || []).map((cell, cellIndex) => (
-                      <td key={`${section.title}-${index}-${cellIndex}`} className="py-2 pr-4 text-gray-800">
+                      <td key={`${section.title}-${index}-${cellIndex}`}>
                         {cell}
                       </td>
                     ))}

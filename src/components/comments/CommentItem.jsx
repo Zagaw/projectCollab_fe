@@ -73,12 +73,12 @@ const CommentItem = ({
     try {
       // Extract content from formData
       const content = formData.get('content');
-      
+
       // Update the comment via API
       const response = await commentApi.updateComment(comment.commentId, {
         content: content,
       });
-      
+
       toast.success('Comment updated');
       onUpdate(response.data);
       setIsEditing(false);
@@ -92,7 +92,7 @@ const CommentItem = ({
     try {
       // Extract content from formData
       const content = formData.get('content');
-      
+
       // Pass to parent with parent comment ID
       await onReply(comment.commentId, formData);
       setShowReplyForm(false);
@@ -103,23 +103,22 @@ const CommentItem = ({
   };
 
   return (
-    <div className={`${isReply ? 'ml-8' : ''}`}>
-      <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100">
-        {/* Header */}
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-              <span className="text-indigo-600 font-semibold text-sm">
+    <div className={`${isReply ? 'ml-6 sm:ml-8' : ''}`}>
+      <div className="surface p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 bg-indigo-50 rounded-full flex items-center justify-center shrink-0">
+              <span className="text-indigo-700 font-semibold text-sm">
                 {comment.userName?.charAt(0) || 'U'}
               </span>
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-900">
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-ink">
                 {comment.userName}
               </p>
               <p className="text-xs text-gray-500">
                 {comment.teamName && (
-                  <span className="mr-2 px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded">
+                  <span className="mr-2 px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded-md">
                     {comment.teamName}
                   </span>
                 )}
@@ -131,39 +130,30 @@ const CommentItem = ({
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-1">
-            {isOwner && !comment.isDeleted && (
-              <>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition"
-                  title="Edit"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
-                  title="Delete"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
-              </>
-            )}
-          </div>
+          {isOwner && !comment.isDeleted && (
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="text-xs font-medium text-gray-600 hover:text-indigo-700"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="text-xs font-medium text-red-700 hover:text-red-800"
+              >
+                Delete
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Content */}
         {comment.isDeleted ? (
-          <p className="text-sm text-gray-400 italic mt-2">This comment was deleted</p>
+          <p className="text-sm text-gray-500 italic mt-2">This comment was deleted</p>
         ) : isEditing ? (
-          // ✅ FIX: Edit form
-          <div className="mt-2">
+          <div className="mt-3">
             <CommentForm
               initialContent={comment.content}
               onSubmit={handleEdit}
@@ -172,12 +162,11 @@ const CommentItem = ({
             />
           </div>
         ) : (
-          <p className="text-sm text-gray-700 mt-2 whitespace-pre-wrap">
+          <p className="text-sm text-gray-600 mt-2 whitespace-pre-wrap">
             {comment.content}
           </p>
         )}
 
-        {/* Files */}
         {!comment.isDeleted && hasFiles && (
           <FileAttachmentList
             files={comment.files}
@@ -190,37 +179,29 @@ const CommentItem = ({
           />
         )}
 
-        {/* Reply & Actions */}
         {!comment.isDeleted && !isReply && (
           <div className="flex items-center gap-4 mt-3 pt-2 border-t border-gray-100">
             <button
+              type="button"
               onClick={() => setShowReplyForm(!showReplyForm)}
-              className="text-xs text-gray-500 hover:text-indigo-600 transition flex items-center gap-1"
+              className="text-xs font-medium text-gray-600 hover:text-indigo-700"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-              </svg>
               Reply
             </button>
 
             {hasReplies && (
               <button
+                type="button"
                 onClick={handleLoadReplies}
-                className="text-xs text-gray-500 hover:text-indigo-600 transition flex items-center gap-1"
+                className="text-xs font-medium text-gray-600 hover:text-indigo-700"
               >
                 {showReplies ? 'Hide replies' : `View ${comment.replyCount} repl${comment.replyCount > 1 ? 'ies' : 'y'}`}
-                {loadingReplies && (
-                  <svg className="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                )}
+                {loadingReplies ? '…' : ''}
               </button>
             )}
           </div>
         )}
 
-        {/* Reply Form */}
         {showReplyForm && !comment.isDeleted && (
           <div className="mt-3">
             <CommentForm
@@ -233,7 +214,6 @@ const CommentItem = ({
         )}
       </div>
 
-      {/* Replies */}
       {showReplies && (
         <div className="mt-2 space-y-2">
           {replies.map((reply) => (

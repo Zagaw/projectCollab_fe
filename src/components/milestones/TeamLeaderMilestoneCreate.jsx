@@ -3,12 +3,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import milestoneApi from '../../api/milestoneApi';
 import teamApi from '../../api/teamApi';
 import toast from 'react-hot-toast';
+import { PageHeader } from '../common/PageHeader';
 
 const TeamLeaderMilestoneCreate = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const teamId = searchParams.get('teamId');
-  
+
   const [loading, setLoading] = useState(false);
   const [teams, setTeams] = useState([]);
   const [formData, setFormData] = useState({
@@ -40,7 +41,7 @@ const TeamLeaderMilestoneCreate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.teamId) {
       toast.error('Please select a team');
       return;
@@ -62,102 +63,84 @@ const TeamLeaderMilestoneCreate = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button
-          onClick={() => navigate('/teamleader/milestones')}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
-        >
-          ← Back
-        </button>
+    <div className="max-w-3xl">
+      <PageHeader
+        title="Create milestone"
+        description="Set a milestone for your team to achieve."
+        actions={
+          <button type="button" onClick={() => navigate('/teamleader/milestones')} className="btn-secondary">
+            Cancel
+          </button>
+        }
+      />
+      <form onSubmit={handleSubmit} className="surface p-5 sm:p-6 mt-5 space-y-5">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Create New Milestone</h1>
-          <p className="text-gray-600">Set a milestone for your team to achieve</p>
+          <label className="label" htmlFor="tl-milestone-team">Team *</label>
+          <select
+            id="tl-milestone-team"
+            name="teamId"
+            value={formData.teamId}
+            onChange={handleChange}
+            className="field"
+            required
+            disabled={!!teamId}
+          >
+            <option value="">Select a team</option>
+            {teams.map((team) => (
+              <option key={team.teamId} value={team.teamId}>
+                {team.name} - {team.projectTitle}
+              </option>
+            ))}
+          </select>
         </div>
-      </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6">
-        <div className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Team *
-            </label>
-            <select
-              name="teamId"
-              value={formData.teamId}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
-              required
-              disabled={!!teamId}
-            >
-              <option value="">Select a team</option>
-              {teams.map((team) => (
-                <option key={team.teamId} value={team.teamId}>
-                  {team.name} - {team.projectTitle}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div>
+          <label className="label" htmlFor="tl-milestone-title">Milestone title *</label>
+          <input
+            id="tl-milestone-title"
+            type="text"
+            name="title"
+            required
+            value={formData.title}
+            onChange={handleChange}
+            className="field"
+            placeholder="e.g., Complete Sprint 1"
+          />
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Milestone Title *
-            </label>
-            <input
-              type="text"
-              name="title"
-              required
-              value={formData.title}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
-              placeholder="e.g., Complete Sprint 1"
-            />
-          </div>
+        <div>
+          <label className="label" htmlFor="tl-milestone-description">Description</label>
+          <textarea
+            id="tl-milestone-description"
+            name="description"
+            rows="4"
+            value={formData.description}
+            onChange={handleChange}
+            className="field"
+            placeholder="Describe what this milestone aims to achieve"
+          />
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
-            <textarea
-              name="description"
-              rows="4"
-              value={formData.description}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
-              placeholder="Describe what this milestone aims to achieve"
-            />
-          </div>
+        <div>
+          <label className="label" htmlFor="tl-milestone-deadline">Deadline *</label>
+          <input
+            id="tl-milestone-deadline"
+            type="date"
+            name="deadline"
+            required
+            value={formData.deadline}
+            onChange={handleChange}
+            className="field"
+          />
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Deadline *
-            </label>
-            <input
-              type="date"
-              name="deadline"
-              required
-              value={formData.deadline}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
-            />
-          </div>
-
-          <div className="flex gap-4 pt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50"
-            >
-              {loading ? 'Creating...' : 'Create Milestone'}
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/teamleader/milestones')}
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
-            >
-              Cancel
-            </button>
-          </div>
+        <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+          <button type="submit" disabled={loading} className="btn-primary flex-1">
+            {loading ? 'Creating...' : 'Create milestone'}
+          </button>
+          <button type="button" onClick={() => navigate('/teamleader/milestones')} className="btn-secondary">
+            Cancel
+          </button>
         </div>
       </form>
     </div>

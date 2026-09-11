@@ -75,7 +75,7 @@ const ActivityTimeline = ({ projectId, limit = 50, compact = false }) => {
     }
     return (
       <EmptyState
-        title="No Activity Yet"
+        title="No activity yet"
         description="Project actions like tasks, comments, and file uploads will appear here."
       />
     );
@@ -91,21 +91,21 @@ const ActivityTimeline = ({ projectId, limit = 50, compact = false }) => {
             type="button"
             onClick={() => handleClick(activity)}
             disabled={!path}
-            className={`w-full text-left rounded-lg border border-gray-100 p-3 transition ${
-              path ? 'hover:bg-gray-50 cursor-pointer' : 'cursor-default'
-            } ${compact ? 'bg-gray-50' : 'bg-white'}`}
+            className={`w-full text-left surface p-3 transition ${
+              path ? 'hover:border-indigo-200 cursor-pointer' : 'cursor-default'
+            }`}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className={`font-medium text-gray-900 ${compact ? 'text-sm' : 'text-sm'}`}>
+                <p className="font-medium text-ink text-sm">
                   {activity.userName}
                 </p>
                 <p className="text-sm text-gray-600 mt-0.5">{activity.description}</p>
                 {!compact && activity.projectTitle && (
-                  <p className="text-xs text-gray-400 mt-1">{activity.projectTitle}</p>
+                  <p className="text-xs text-gray-500 mt-1">{activity.projectTitle}</p>
                 )}
               </div>
-              <span className="text-xs text-gray-400 whitespace-nowrap">
+              <span className="text-xs text-gray-500 whitespace-nowrap">
                 {formatTime(activity.createdAt)}
               </span>
             </div>

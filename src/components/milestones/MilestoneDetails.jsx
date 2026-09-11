@@ -4,6 +4,7 @@ import milestoneApi from '../../api/milestoneApi';
 import taskApi from '../../api/taskApi';
 import TaskList from '../tasks/TaskList';
 import LoadingSpinner from '../common/LoadingSpinner';
+import EmptyState from '../common/EmptyState';
 import toast from 'react-hot-toast';
 
 const MilestoneDetails = () => {
@@ -13,7 +14,6 @@ const MilestoneDetails = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Determine base path for navigation
   const isLecturerRoute = window.location.pathname.includes('/lecturer');
   const isTeamLeaderRoute = window.location.pathname.includes('/teamleader');
   const isStudentRoute = window.location.pathname.includes('/student');
@@ -53,7 +53,7 @@ const MilestoneDetails = () => {
 
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this milestone?')) return;
-    
+
     try {
       await milestoneApi.deleteMilestone(milestoneId);
       toast.success('Milestone deleted successfully');
@@ -72,128 +72,108 @@ const MilestoneDetails = () => {
   };
 
   if (loading) return <LoadingSpinner />;
-  if (!milestone) return <div>Milestone not found</div>;
+  if (!milestone) {
+    return (
+      <EmptyState
+        title="Milestone not found"
+        description="It may have been deleted, or you do not have access."
+        actionText="Back to milestones"
+        actionLink={`${basePath}/milestones`}
+      />
+    );
+  }
 
-  const isOverdue = milestone.deadline && 
-    new Date(milestone.deadline) < new Date() && 
+  const isOverdue = milestone.deadline &&
+    new Date(milestone.deadline) < new Date() &&
     !milestone.isCompleted;
 
+  const statusLabel = milestone.isCompleted ? 'Completed' : isOverdue ? 'Overdue' : 'In progress';
+  const statusClass = milestone.isCompleted
+    ? 'bg-green-50 text-green-800'
+    : isOverdue
+      ? 'bg-red-50 text-red-700'
+      : 'bg-amber-50 text-amber-800';
+
   return (
-    <div>
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+    <div className="space-y-5">
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
         <div>
-          <button
-            onClick={handleBack}
-            className="text-sm text-indigo-600 hover:text-indigo-700 mb-2 inline-block"
-          >
-            ← Back to Milestones
+          <button type="button" onClick={handleBack} className="text-sm text-indigo-700 hover:text-indigo-800 mb-2">
+            Back to milestones
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">{milestone.title}</h1>
-          <p className="text-gray-600">
-            {milestone.projectTitle} • {milestone.teamName}
+          <h1 className="page-title">{milestone.title}</h1>
+          <p className="page-kicker">
+            {milestone.projectTitle}
+            {milestone.teamName ? ` · ${milestone.teamName}` : ''}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-            milestone.isCompleted ? 'bg-green-100 text-green-700' :
-            isOverdue ? 'bg-red-100 text-red-700' :
-            'bg-yellow-100 text-yellow-700'
-          }`}>
-            {milestone.isCompleted ? '✅ Completed' :
-             isOverdue ? '⚠️ Overdue' : '⏳ In Progress'}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusClass}`}>
+            {statusLabel}
           </span>
           {canCreateTask && (
-            <>
-              <button
-                onClick={handleCreateTask}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm flex items-center gap-2"
-              >
-                <span>➕</span> Create Task
-              </button>
-              {canManage && !milestone.isCompleted && (
-                <button
-                  onClick={handleComplete}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm"
-                >
-                  Mark Complete
-                </button>
-              )}
-              {canManage && (
-                <button
-                  onClick={handleDelete}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
-                >
-                  Delete
-                </button>
-              )}
-            </>
+            <button type="button" onClick={handleCreateTask} className="btn-primary">
+              Create task
+            </button>
           )}
-        </div>
-      </div>
-
-      {/* Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Description</h3>
-          <p className="text-gray-600">{milestone.description || 'No description provided'}</p>
-          
-          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-gray-500">
-            <div>
-              <span className="font-medium">Team:</span>
-              <span className="ml-1">{milestone.teamName}</span>
-            </div>
-            <div>
-              <span className="font-medium">Created By:</span>
-              <span className="ml-1">{milestone.createdByName}</span>
-            </div>
-            <div>
-              <span className="font-medium">Created:</span>
-              <span className="ml-1">{new Date(milestone.createdAt).toLocaleDateString()}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm p-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Milestone Info</h3>
-          <div className="space-y-3 text-sm">
-            <div>
-              <span className="text-gray-500">Deadline:</span>
-              <p className={`font-medium ${isOverdue ? 'text-red-600' : 'text-gray-900'}`}>
-                {new Date(milestone.deadline).toLocaleDateString()}
-                {isOverdue && ' ⚠️ Overdue'}
-              </p>
-            </div>
-            {milestone.completedAt && (
-              <div>
-                <span className="text-gray-500">Completed:</span>
-                <p className="font-medium text-green-600">
-                  {new Date(milestone.completedAt).toLocaleDateString()}
-                </p>
-              </div>
-            )}
-            <div>
-              <span className="text-gray-500">Tasks:</span>
-              <p className="font-medium">{tasks.length} tasks</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Tasks */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="font-semibold text-gray-900">Tasks for this Milestone</h3>
-          {canCreateTask && (
-            <button
-              onClick={handleCreateTask}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm flex items-center gap-2"
-            >
-              <span>➕</span> Add Task
+          {canManage && !milestone.isCompleted && (
+            <button type="button" onClick={handleComplete} className="btn-secondary">
+              Mark complete
+            </button>
+          )}
+          {canManage && (
+            <button type="button" onClick={handleDelete} className="btn-danger">
+              Delete
             </button>
           )}
         </div>
-        <TaskList 
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 surface p-5 sm:p-6">
+          <h3 className="font-semibold text-ink mb-2">Description</h3>
+          <p className="text-gray-600 whitespace-pre-wrap">{milestone.description || 'No description yet.'}</p>
+          <dl className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div>
+              <dt className="text-gray-500">Team</dt>
+              <dd className="font-medium">{milestone.teamName}</dd>
+            </div>
+            <div>
+              <dt className="text-gray-500">Created by</dt>
+              <dd className="font-medium">{milestone.createdByName}</dd>
+            </div>
+            <div>
+              <dt className="text-gray-500">Created</dt>
+              <dd className="font-medium">{new Date(milestone.createdAt).toLocaleDateString()}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <aside className="surface p-5 sm:p-6">
+          <h3 className="font-semibold text-ink mb-3">Dates and status</h3>
+          <p className={`text-sm font-medium ${isOverdue ? 'text-red-700' : 'text-ink'}`}>
+            Deadline: {milestone.deadline ? new Date(milestone.deadline).toLocaleDateString() : 'None'}
+            {isOverdue ? ' (overdue)' : ''}
+          </p>
+          {milestone.completedAt && (
+            <p className="text-sm text-gray-600 mt-2">
+              Completed {new Date(milestone.completedAt).toLocaleDateString()}
+            </p>
+          )}
+          <p className="text-sm text-gray-500 mt-2">{tasks.length} tasks</p>
+        </aside>
+      </div>
+
+      <div className="surface p-5 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <h3 className="text-lg font-semibold text-ink">Tasks for this milestone</h3>
+          {canCreateTask && (
+            <button type="button" onClick={handleCreateTask} className="btn-secondary">
+              Add task
+            </button>
+          )}
+        </div>
+        <TaskList
           milestoneId={milestoneId}
           title=""
           showCreate={false}

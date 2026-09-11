@@ -1,100 +1,104 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const MilestoneCard = ({ milestone, onComplete, onDelete, onViewDetails, showActions = true }) => {
-  const isOverdue = milestone.deadline && 
-    new Date(milestone.deadline) < new Date() && 
-    !milestone.isCompleted;
+const isOverdueMilestone = (milestone) =>
+  milestone.deadline && new Date(milestone.deadline) < new Date() && !milestone.isCompleted;
+
+const MilestoneCard = ({ milestone, onComplete, onDelete, onViewDetails, detailsTo, showActions = true }) => {
+  const overdue = isOverdueMilestone(milestone);
+
+  const statusLabel = milestone.isCompleted ? 'Completed' : overdue ? 'Overdue' : 'In progress';
+  const statusClass = milestone.isCompleted
+    ? 'bg-green-50 text-green-800'
+    : overdue
+      ? 'bg-red-50 text-red-700'
+      : 'bg-amber-50 text-amber-800';
 
   return (
-    <div className={`bg-white rounded-xl shadow-sm border p-6 transition-all hover:shadow-md ${
-      milestone.isCompleted ? 'border-green-200' : 
-      isOverdue ? 'border-red-200' : 'border-gray-100'
-    }`}>
-      {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900">
+    <article className={`surface p-4 ${overdue ? 'border-red-200' : ''}`}>
+      <div className="flex items-start justify-between gap-2">
+        {detailsTo ? (
+          <Link to={detailsTo} className="text-left font-semibold text-ink hover:text-indigo-700 min-w-0 flex-1">
             {milestone.title}
-          </h3>
-          {milestone.projectTitle && (
-            <p className="text-sm text-gray-500">
-              {milestone.projectTitle}
-              {milestone.teamName ? ` • ${milestone.teamName}` : ''}
-            </p>
-          )}
-          {!milestone.projectTitle && milestone.teamName && (
-            <p className="text-sm text-gray-500">{milestone.teamName}</p>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          {milestone.isCompleted ? (
-            <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-              ✅ Completed
-            </span>
-          ) : isOverdue ? (
-            <span className="px-2 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">
-              ⚠️ Overdue
-            </span>
-          ) : (
-            <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">
-              ⏳ In Progress
-            </span>
-          )}
-        </div>
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={() => onViewDetails && onViewDetails(milestone.milestoneId)}
+            className="text-left font-semibold text-ink hover:text-indigo-700 min-w-0 flex-1"
+          >
+            {milestone.title}
+          </button>
+        )}
+        <span className={`shrink-0 px-2 py-1 rounded-full text-xs font-medium ${statusClass}`}>
+          {statusLabel}
+        </span>
       </div>
 
-      {/* Description */}
-      {milestone.description && (
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-          {milestone.description}
+      {(milestone.projectTitle || milestone.teamName) && (
+        <p className="text-sm text-gray-500 mt-1">
+          {milestone.projectTitle}
+          {milestone.projectTitle && milestone.teamName ? ' · ' : ''}
+          {milestone.teamName}
         </p>
       )}
 
-      {/* Deadline */}
-      <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
-        <div className="flex items-center gap-1">
-          <span>📅</span>
-          <span>Deadline: {new Date(milestone.deadline).toLocaleDateString()}</span>
-        </div>
+      {milestone.description && (
+        <p className="text-sm text-gray-600 mt-2 line-clamp-2">{milestone.description}</p>
+      )}
+
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {milestone.deadline && (
+          <span className={`text-xs px-2 py-1 rounded-md ${overdue ? 'bg-red-50 text-red-700 font-medium' : 'bg-gray-50 text-gray-600'}`}>
+            {new Date(milestone.deadline).toLocaleDateString()}
+            {overdue ? ' · overdue' : ''}
+          </span>
+        )}
         {milestone.completedAt && (
-          <div className="flex items-center gap-1">
-            <span>✅</span>
-            <span>Completed: {new Date(milestone.completedAt).toLocaleDateString()}</span>
-          </div>
+          <span className="text-xs px-2 py-1 rounded-md bg-gray-50 text-gray-600">
+            Done {new Date(milestone.completedAt).toLocaleDateString()}
+          </span>
         )}
       </div>
 
-      {/* ✅ FIX: View Details button is ALWAYS visible for everyone */}
-      <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
-        <button
-          onClick={() => onViewDetails && onViewDetails(milestone.milestoneId)}
-          className="flex-1 px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition"
-        >
-          View Details
-        </button>
-        
-        {/* Actions only for team leaders */}
+      <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        {detailsTo ? (
+          <Link to={detailsTo} className="btn-primary !py-1.5 !px-3 text-xs flex-1 text-center">
+            View details
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={() => onViewDetails && onViewDetails(milestone.milestoneId)}
+            className="btn-primary !py-1.5 !px-3 text-xs flex-1"
+          >
+            View details
+          </button>
+        )}
         {showActions && (
           <>
             {!milestone.isCompleted && (
               <button
+                type="button"
                 onClick={() => onComplete(milestone.milestoneId)}
-                className="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition"
+                className="btn-secondary !py-1.5 !px-3 text-xs"
               >
-                Mark Complete
+                Mark complete
               </button>
             )}
             <button
+              type="button"
               onClick={() => onDelete(milestone.milestoneId)}
-              className="px-3 py-1.5 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200 transition"
+              className="btn-danger !py-1.5 !px-3 text-xs"
             >
               Delete
             </button>
           </>
         )}
       </div>
-    </div>
+    </article>
   );
 };
 
 export default MilestoneCard;
+export { isOverdueMilestone };

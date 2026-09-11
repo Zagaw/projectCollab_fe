@@ -4,6 +4,7 @@ import progressApi from '../../api/progressApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import TeamProgressPanel from './TeamProgressPanel';
+import { PageHeader } from '../common/PageHeader';
 import { reportBasePath } from '../reports/reportUtils';
 import toast from 'react-hot-toast';
 
@@ -52,27 +53,25 @@ const ProgressPage = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Progress</h1>
-        <p className="text-gray-600 mt-1">
-          Team completion is based on tasks. Member ranking uses tasks completed; comments, files, and discussions are shown beside that score.
-        </p>
-      </div>
+      <PageHeader
+        title="Progress"
+        description="Team completion is based on tasks. Member ranking uses tasks completed; comments, files, and discussions are shown beside that score."
+      />
 
       {teams.length === 0 ? (
         <EmptyState
           title="No team progress yet"
           description="Join a team to see task and milestone progress, plus how members are contributing."
-          icon="📈"
         />
       ) : (
         <>
-          <div className="bg-white rounded-xl shadow-sm p-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Team</label>
+          <div className="surface p-4">
+            <label className="label" htmlFor="progress-team">Team</label>
             <select
+              id="progress-team"
               value={selectedTeamId}
               onChange={(e) => handleTeamChange(e.target.value)}
-              className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              className="field max-w-md"
             >
               {teams.map((team) => (
                 <option key={team.teamId} value={team.teamId}>
@@ -83,17 +82,17 @@ const ProgressPage = () => {
           </div>
 
           {selected && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6">
+            <div className="surface p-5 sm:p-6">
               <div className="mb-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">{selected.teamName}</h2>
+                  <h2 className="text-lg font-semibold text-ink">{selected.teamName}</h2>
                   <p className="text-sm text-gray-500">{selected.projectTitle}</p>
                 </div>
                 <Link
                   to={`${reportBasePath()}/reports?teamId=${selected.teamId}&type=PROGRESS`}
-                  className="text-sm text-indigo-600 hover:text-indigo-700"
+                  className="text-sm text-indigo-700 hover:text-indigo-800"
                 >
-                  Open in Reports →
+                  Open in Reports
                 </Link>
               </div>
               <TeamProgressPanel progress={selected} />

@@ -4,28 +4,32 @@ import milestoneApi from '../../api/milestoneApi';
 import teamApi from '../../api/teamApi';
 import MilestoneCard from './MilestoneCard';
 import LoadingSpinner from '../common/LoadingSpinner';
+import EmptyState from '../common/EmptyState';
+import { PageHeader, StatCard, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+
+const isOverdue = (m) => !m.isCompleted && m.deadline && new Date(m.deadline) < new Date();
 
 const StudentMilestoneView = () => {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const teamId = searchParams.get('teamId');
   const navigate = useNavigate();
-  
+
   const [milestones, setMilestones] = useState([]);
   const [teams, setTeams] = useState([]);
   const [selectedTeamId, setSelectedTeamId] = useState(teamId || '');
   const [loading, setLoading] = useState(true);
   const [isTeamLeader, setIsTeamLeader] = useState(false);
+  const [filter, setFilter] = useState('ALL');
 
-  // Determine base path
   const pathname = window.location.pathname;
   const isLecturerRoute = pathname.includes('/lecturer');
   const isTeamLeaderRoute = pathname.includes('/teamleader');
   const isStudentRoute = pathname.includes('/student');
-  const basePath = isLecturerRoute ? '/lecturer' : 
-                   isTeamLeaderRoute ? '/teamleader' : 
+  const basePath = isLecturerRoute ? '/lecturer' :
+                   isTeamLeaderRoute ? '/teamleader' :
                    isStudentRoute ? '/student' : '/teamleader';
 
   useEffect(() => {
@@ -96,7 +100,7 @@ const StudentMilestoneView = () => {
       return;
     }
     if (!window.confirm('Are you sure you want to delete this milestone?')) return;
-    
+
     try {
       await milestoneApi.deleteMilestone(milestoneId);
       toast.success('Milestone deleted successfully');
@@ -106,12 +110,10 @@ const StudentMilestoneView = () => {
     }
   };
 
-  // ✅ FIX: View details - always available for all members
   const handleViewDetails = (milestoneId) => {
     navigate(`${basePath}/milestones/${milestoneId}`);
   };
 
-  // Create milestone - only for team leaders
   const handleCreateMilestone = () => {
     navigate(`${basePath}/milestones/create?teamId=${selectedTeamId}`);
   };
@@ -120,78 +122,99 @@ const StudentMilestoneView = () => {
 
   const selectedTeam = teams.find(t => t.teamId === parseInt(selectedTeamId));
 
+  const counts = {
+    ALL: milestones.length,
+    IN_PROGRESS: milestones.filter((m) => !m.isCompleted).length,
+    COMPLETED: milestones.filter((m) => m.isCompleted).length,
+    OVERDUE: milestones.filter(isOverdue).length,
+  };
+
+  const filteredMilestones = milestones.filter((m) => {
+    if (filter === 'ALL') return true;
+    if (filter === 'COMPLETED') return m.isCompleted;
+    if (filter === 'IN_PROGRESS') return !m.isCompleted;
+    if (filter === 'OVERDUE') return isOverdue(m);
+    return true;
+  });
+
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Team Milestones</h1>
-          <p className="text-gray-600">Track progress and achievements</p>
-        </div>
-        {isTeamLeader && (
-          <button
-            onClick={handleCreateMilestone}
-            className="mt-2 sm:mt-0 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-2"
-          >
-            <span>➕</span> Create Milestone
-          </button>
-        )}
+    <div className="space-y-5">
+      <PageHeader
+        title="Milestones"
+        description="Track progress and due dates for your team."
+        actions={
+          isTeamLeader ? (
+            <button type="button" onClick={handleCreateMilestone} className="btn-primary">
+              Create milestone
+            </button>
+          ) : null
+        }
+      />
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <StatCard label="Milestones" value={counts.ALL} />
+        <StatCard label="In progress" value={counts.IN_PROGRESS} />
+        <StatCard label="Completed" value={counts.COMPLETED} />
+        <StatCard label="Overdue" value={counts.OVERDUE} warn={counts.OVERDUE > 0} />
       </div>
 
-      {/* Team Selector */}
-      {teams.length > 1 && (
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Select Team</label>
-          <select
-            value={selectedTeamId}
-            onChange={(e) => setSelectedTeamId(e.target.value)}
-            className="px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none"
-          >
-            {teams.map((team) => (
-              <option key={team.teamId} value={team.teamId}>
-                {team.name} - {team.projectTitle}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {selectedTeam && (
-        <div className="mb-4 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
-          <p className="text-sm text-gray-700">
-            <span className="font-medium">Team:</span> {selectedTeam.name}
-            {isTeamLeader && (
-              <span className="ml-3 px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                You are the Team Leader
-              </span>
-            )}
-          </p>
-        </div>
-      )}
-
-      {milestones.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-          <div className="text-6xl mb-4">🎯</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Milestones Yet</h3>
-          <p className="text-gray-500">This team hasn't created any milestones yet.</p>
-          {isTeamLeader && (
-            <button
-              onClick={handleCreateMilestone}
-              className="mt-3 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm"
+      <div className="surface p-4 space-y-4">
+        {teams.length > 1 && (
+          <div>
+            <label className="label" htmlFor="milestone-team-select">Team</label>
+            <select
+              id="milestone-team-select"
+              value={selectedTeamId}
+              onChange={(e) => setSelectedTeamId(e.target.value)}
+              className="field"
             >
-              Create First Milestone
-            </button>
-          )}
-        </div>
+              {teams.map((team) => (
+                <option key={team.teamId} value={team.teamId}>
+                  {team.name} - {team.projectTitle}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+        {selectedTeam && (
+          <p className="text-sm text-gray-600">
+            {selectedTeam.name}
+            {isTeamLeader ? ' · You lead this team' : ''}
+          </p>
+        )}
+        <FilterChips
+          value={filter}
+          onChange={setFilter}
+          options={[
+            { id: 'ALL', label: 'All', count: counts.ALL },
+            { id: 'IN_PROGRESS', label: 'In progress', count: counts.IN_PROGRESS },
+            { id: 'COMPLETED', label: 'Completed', count: counts.COMPLETED },
+            { id: 'OVERDUE', label: 'Overdue', count: counts.OVERDUE },
+          ]}
+        />
+      </div>
+
+      {filteredMilestones.length === 0 ? (
+        <EmptyState
+          title="No milestones yet"
+          description={
+            milestones.length === 0
+              ? "This team hasn't created any milestones yet."
+              : 'No milestones match the selected filter.'
+          }
+          actionText={isTeamLeader && milestones.length === 0 ? 'Create milestone' : undefined}
+          onAction={isTeamLeader && milestones.length === 0 ? handleCreateMilestone : undefined}
+        />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {milestones.map((milestone) => (
+          {filteredMilestones.map((milestone) => (
             <MilestoneCard
               key={milestone.milestoneId}
               milestone={milestone}
               onComplete={handleComplete}
               onDelete={handleDelete}
+              detailsTo={`${basePath}/milestones/${milestone.milestoneId}`}
               onViewDetails={handleViewDetails}
-              // ✅ FIX: Show actions only for team leaders, BUT view details is always available
               showActions={isTeamLeader}
             />
           ))}

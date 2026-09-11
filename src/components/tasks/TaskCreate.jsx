@@ -5,6 +5,7 @@ import projectApi from '../../api/projectApi';
 import teamApi from '../../api/teamApi';
 import milestoneApi from '../../api/milestoneApi';
 import toast from 'react-hot-toast';
+import { PageHeader } from '../common/PageHeader';
 
 const TaskCreate = () => {
   const navigate = useNavigate();
@@ -101,7 +102,7 @@ const TaskCreate = () => {
         teamId: formData.teamId || null
       });
       toast.success('Task created successfully!');
-      navigate(`/tasks/${response.data.taskId}`);
+      navigate(`/lecturer/tasks/${response.data.taskId}`);
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to create task');
     } finally {
@@ -110,32 +111,24 @@ const TaskCreate = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
-        >
-          ← Back
-        </button>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Create New Task</h1>
-          <p className="text-gray-600">Add a task to track work progress</p>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6">
+    <div className="max-w-3xl">
+      <PageHeader
+        title="Create task"
+        description="Add a task to a project team."
+        actions={<button type="button" onClick={() => navigate(-1)} className="btn-secondary">Cancel</button>}
+      />
+      <form onSubmit={handleSubmit} className="surface p-5 sm:p-6 mt-5 space-y-5">
         <div className="space-y-6">
           {/* Project */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="label">
               Project *
             </label>
             <select
               name="projectId"
               value={formData.projectId}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+              className="field"
               required
               disabled={!!projectId}
             >
@@ -150,7 +143,7 @@ const TaskCreate = () => {
 
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="label">
               Task Title *
             </label>
             <input
@@ -159,14 +152,14 @@ const TaskCreate = () => {
               required
               value={formData.title}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+              className="field"
               placeholder="Enter task title"
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="label">
               Description
             </label>
             <textarea
@@ -174,7 +167,7 @@ const TaskCreate = () => {
               rows="4"
               value={formData.description}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+              className="field"
               placeholder="Describe the task"
             />
           </div>
@@ -182,14 +175,14 @@ const TaskCreate = () => {
           {/* Team, Status, Priority */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="label">
                 Team
               </label>
               <select
                 name="teamId"
                 value={formData.teamId}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+                className="field"
                 disabled={!!teamId}
               >
                 <option value="">Select a team</option>
@@ -202,14 +195,14 @@ const TaskCreate = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="label">
                 Status
               </label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+                className="field"
               >
                 <option value="TODO">To Do</option>
                 <option value="IN_PROGRESS">In Progress</option>
@@ -220,14 +213,14 @@ const TaskCreate = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="label">
                 Priority
               </label>
               <select
                 name="priority"
                 value={formData.priority}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+                className="field"
               >
                 <option value="LOW">Low</option>
                 <option value="MEDIUM">Medium</option>
@@ -240,7 +233,7 @@ const TaskCreate = () => {
           {/* Deadline & Assigned To */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="label">
                 Deadline
               </label>
               <input
@@ -248,12 +241,12 @@ const TaskCreate = () => {
                 name="deadline"
                 value={formData.deadline}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+                className="field"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="label">
                 Assign To (Student ID)
               </label>
               <input
@@ -261,7 +254,7 @@ const TaskCreate = () => {
                 name="assignedTo"
                 value={formData.assignedTo}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+                className="field"
                 placeholder="Enter student ID"
               />
             </div>
@@ -269,39 +262,31 @@ const TaskCreate = () => {
 
           {/* Milestone */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="label">
               Milestone (Optional)
             </label>
             <select
               name="milestoneId"
               value={formData.milestoneId}
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition outline-none"
+              className="field"
               disabled={!!milestoneId}
             >
               <option value="">No milestone</option>
               {milestones.map((milestone) => (
                 <option key={milestone.milestoneId} value={milestone.milestoneId}>
-                  {milestone.title} {milestone.isCompleted ? '✅' : ''}
+                  {milestone.title}{milestone.isCompleted ? ' (done)' : ''}
                 </option>
               ))}
             </select>
           </div>
 
           {/* Submit */}
-          <div className="flex gap-4 pt-4">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-indigo-600 text-white py-3 rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50"
-            >
-              {loading ? 'Creating...' : 'Create Task'}
+          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
+            <button type="submit" disabled={loading} className="btn-primary flex-1">
+              {loading ? 'Creating...' : 'Create task'}
             </button>
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
-            >
+            <button type="button" onClick={() => navigate(-1)} className="btn-secondary">
               Cancel
             </button>
           </div>

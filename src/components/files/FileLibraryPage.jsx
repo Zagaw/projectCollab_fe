@@ -4,6 +4,7 @@ import projectApi from '../../api/projectApi';
 import teamApi from '../../api/teamApi';
 import ProjectFileLibrary from './ProjectFileLibrary';
 import EmptyState from '../common/EmptyState';
+import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 
 const FileLibraryPage = () => {
@@ -20,12 +21,13 @@ const FileLibraryPage = () => {
 
   const fetchProjectsForPicker = async () => {
     try {
+      let next = [];
       if (isLecturerRoute) {
         const response = await projectApi.getMyProjects();
-        setProjects((response.data || []).map((p) => ({
+        next = (response.data || []).map((p) => ({
           projectId: p.projectId,
           title: p.title,
-        })));
+        }));
       } else {
         const response = await teamApi.getMyTeams();
         const map = {};
@@ -37,7 +39,11 @@ const FileLibraryPage = () => {
             };
           }
         });
-        setProjects(Object.values(map));
+        next = Object.values(map);
+      }
+      setProjects(next);
+      if (!selectedProjectId && next.length > 0) {
+        handleProjectChange(String(next[0].projectId));
       }
     } catch (error) {
       toast.error('Failed to load projects');
@@ -56,20 +62,19 @@ const FileLibraryPage = () => {
   const selectedTitle = projects.find((p) => String(p.projectId) === String(selectedProjectId))?.title;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-6 space-y-4">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Files</h1>
-        <p className="text-sm text-gray-600 mt-1">
-          {selectedTitle ? `${selectedTitle} document library` : 'Choose a project to browse its files.'}
-        </p>
-      </div>
+    <div className="space-y-5">
+      <PageHeader
+        title="Files"
+        description={selectedTitle ? `${selectedTitle} document library` : 'Choose a project to browse its files.'}
+      />
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Project</label>
+        <label className="label" htmlFor="file-library-project">Project</label>
         <select
+          id="file-library-project"
           value={selectedProjectId}
           onChange={(e) => handleProjectChange(e.target.value)}
-          className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          className="field max-w-md"
         >
           <option value="">Select a project</option>
           {projects.map((project) => (
@@ -82,7 +87,7 @@ const FileLibraryPage = () => {
 
       {!selectedProjectId ? (
         <EmptyState
-          title="Select a Project"
+          title="Select a project"
           description="Choose a project to view and upload documents."
         />
       ) : (

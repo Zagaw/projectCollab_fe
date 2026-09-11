@@ -8,6 +8,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import ActivityTimeline from '../activity/ActivityTimeline';
 import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import DashboardProgress from '../progress/DashboardProgress';
+import { PageHeader, StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 
 const TeamLeaderDashboard = () => {
@@ -100,75 +101,36 @@ const TeamLeaderDashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-lg p-6 text-white">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-          <div>
-            <h1 className="text-2xl font-bold">
-              Welcome back, {user?.firstName}! 👋
-            </h1>
-            <p className="text-indigo-100 mt-1">
-              You are leading {stats.totalTeams} team(s) with {stats.totalMembers} members
-            </p>
-          </div>
-          <div className="mt-3 md:mt-0 flex flex-wrap gap-2">
-            <Link
-              to="/teamleader/milestones/create"
-              className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition text-sm"
-            >
-              + Create Milestone
+      <PageHeader
+        title={`Welcome back, ${user?.firstName}`}
+        description={`Leading ${stats.totalTeams} team${stats.totalTeams === 1 ? '' : 's'} with ${stats.totalMembers} members.`}
+        actions={
+          <div className="flex flex-wrap gap-2">
+            <Link to="/teamleader/tasks/create" className="btn-primary">Create task</Link>
+            <Link to="/teamleader/milestones/create" className="btn-secondary">
+              Create milestone
             </Link>
-            <Link
-              to="/teamleader/tasks/create"
-              className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition text-sm"
-            >
-              + Create Task
-            </Link>
-            <Link
-              to="/teamleader/meetings/create"
-              className="px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg hover:bg-white/30 transition text-sm"
-            >
-              + Schedule Meeting
-            </Link>
-            <Link
-              to="/teamleader/calendar"
-              className="px-4 py-2 bg-white text-indigo-700 rounded-lg hover:bg-indigo-50 transition text-sm font-medium"
-            >
-              Calendar
+            <Link to="/teamleader/meetings/create" className="btn-secondary">
+              Schedule meeting
             </Link>
           </div>
-        </div>
-      </div>
+        }
+      />
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl shadow-sm p-5 border-l-4 border-indigo-500">
-          <p className="text-sm text-gray-500">Teams</p>
-          <p className="text-2xl font-bold text-gray-900">{stats.totalTeams}</p>
-        </div>
-        <div className="bg-white rounded-xl shadow-sm p-5 border-l-4 border-blue-500">
-          <p className="text-sm text-gray-500">Members</p>
-          <p className="text-2xl font-bold text-blue-600">{stats.totalMembers}</p>
-        </div>
-        <div className="bg-white rounded-xl shadow-sm p-5 border-l-4 border-green-500">
-          <p className="text-sm text-gray-500">Milestones</p>
-          <p className="text-2xl font-bold text-green-600">{stats.totalMilestones}</p>
-          <p className="text-xs text-gray-400">{stats.completedMilestones} completed</p>
-        </div>
-        <div className="bg-white rounded-xl shadow-sm p-5 border-l-4 border-purple-500">
-          <p className="text-sm text-gray-500">Tasks</p>
-          <p className="text-2xl font-bold text-purple-600">{stats.totalTasks}</p>
-          <p className="text-xs text-gray-400">{stats.completedTasks} completed • {stats.overdueTasks} overdue</p>
-        </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <StatCard label="Teams" value={stats.totalTeams} />
+        <StatCard label="Members" value={stats.totalMembers} />
+        <StatCard label="Milestones" value={`${stats.completedMilestones}/${stats.totalMilestones}`} />
+        <StatCard label="Overdue tasks" value={stats.overdueTasks} warn={stats.overdueTasks > 0} />
       </div>
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Teams Section */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl shadow-sm p-5">
+          <div className="surface p-5">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Your Teams</h2>
+              <h2 className="text-lg font-semibold text-ink">Your teams</h2>
               <Link to="/teamleader/teams" className="text-sm text-indigo-600 hover:text-indigo-700">
                 View all →
               </Link>
@@ -197,9 +159,9 @@ const TeamLeaderDashboard = () => {
 
         {/* Upcoming Milestones */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-sm p-5">
+          <div className="surface p-5">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Upcoming Milestones</h2>
+              <h2 className="text-lg font-semibold text-ink">Upcoming milestones</h2>
               <Link to="/teamleader/calendar" className="text-sm text-indigo-600 hover:text-indigo-700">
                 View calendar →
               </Link>
@@ -221,8 +183,10 @@ const TeamLeaderDashboard = () => {
                         {new Date(milestone.deadline).toLocaleDateString()}
                       </span>
                     </div>
-                    <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-indigo-600 h-1.5 rounded-full" style={{ width: '0%' }}></div>
+                    <div className="mt-2">
+                      <p className="text-xs text-gray-500">
+                        {milestone.isCompleted ? 'Completed' : 'Open'}
+                      </p>
                     </div>
                   </Link>
                 ))}
@@ -235,23 +199,23 @@ const TeamLeaderDashboard = () => {
       </div>
 
       {/* Recent Tasks */}
-      <div className="bg-white rounded-xl shadow-sm p-5">
+      <div className="surface p-5">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Recent Tasks</h2>
+          <h2 className="text-lg font-semibold text-ink">Recent tasks</h2>
           <Link to="/teamleader/tasks" className="text-sm text-indigo-600 hover:text-indigo-700">
             View all →
           </Link>
         </div>
         {recentTasks.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full">
+          <div className="table-wrap">
+            <table className="data-table">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase">Task</th>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase">Team</th>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase">Assigned To</th>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="text-left py-3 px-3 text-xs font-medium text-gray-500 uppercase">Deadline</th>
+                  <th>Task</th>
+                  <th>Team</th>
+                  <th>Assigned to</th>
+                  <th>Status</th>
+                  <th>Deadline</th>
                 </tr>
               </thead>
               <tbody>
@@ -272,17 +236,17 @@ const TeamLeaderDashboard = () => {
                         task.status === 'REVIEW' ? 'bg-purple-100 text-purple-700' :
                         'bg-gray-100 text-gray-700'
                       }`}>
-                        {task.status === 'COMPLETED' ? '✅ Done' :
-                         task.status === 'IN_PROGRESS' ? '🔄 In Progress' :
-                         task.status === 'BLOCKED' ? '🚫 Blocked' :
-                         task.status === 'REVIEW' ? '👀 Review' :
-                         '📝 To Do'}
+                        {task.status === 'COMPLETED' ? 'Done' :
+                         task.status === 'IN_PROGRESS' ? 'In progress' :
+                         task.status === 'BLOCKED' ? 'Blocked' :
+                         task.status === 'REVIEW' ? 'Review' :
+                         'To do'}
                       </span>
                     </td>
                     <td className="py-3 px-3 text-sm text-gray-600">
                       {task.deadline ? new Date(task.deadline).toLocaleDateString() : '-'}
                       {task.deadline && new Date(task.deadline) < new Date() && task.status !== 'COMPLETED' && (
-                        <span className="ml-1 text-red-500 text-xs">⚠️</span>
+                        <span className="ml-1 text-red-600 text-xs font-medium">Overdue</span>
                       )}
                     </td>
                   </tr>
@@ -299,8 +263,8 @@ const TeamLeaderDashboard = () => {
 
       <UpcomingMeetings source="my" basePath="/teamleader" />
 
-      <div className="bg-white rounded-xl shadow-sm p-5">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+      <div className="surface p-5">
+        <h2 className="text-lg font-semibold text-ink mb-4">Recent activity</h2>
         <ActivityTimeline limit={8} compact />
       </div>
     </div>

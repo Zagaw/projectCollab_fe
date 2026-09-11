@@ -34,19 +34,19 @@ const InviteMember = ({ teamId, onClose, onInvite }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+    <div className="fixed inset-0 bg-ink/50 flex items-center justify-center z-50 p-4">
+      <div className="surface max-w-2xl w-full max-h-[90vh] flex flex-col">
+        <div className="flex items-start justify-between gap-3 p-4 sm:p-5 border-b border-gray-200">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">Invite Member</h3>
-            <p className="text-sm text-gray-500">
-              Search and select a student to invite to this team
+            <h3 className="text-lg font-semibold text-ink">Invite member</h3>
+            <p className="text-sm text-gray-500 mt-0.5">
+              Search and select a student to invite to this team.
             </p>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1 hover:bg-gray-100 rounded-lg transition"
+            className="p-1 hover:bg-gray-50 rounded-lg transition"
           >
             <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -54,65 +54,54 @@ const InviteMember = ({ teamId, onClose, onInvite }) => {
           </button>
         </div>
 
-        {/* Body - Student Search */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5">
           <StudentSearchList
             selectedUserId={selectedUser?.userId}
             onSelect={handleSelect}
             onClose={onClose}
           />
 
-          {/* Selected Student Preview */}
           {selectedUser && (
-            <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+            <div className="mt-4 p-3 bg-indigo-50 rounded-lg border border-indigo-100">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-semibold text-xs">
                     {selectedUser.firstName?.charAt(0)}{selectedUser.lastName?.charAt(0)}
                   </span>
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">
+                  <p className="font-medium text-ink">
                     {selectedUser.firstName} {selectedUser.lastName}
                   </p>
                   <p className="text-sm text-gray-500">{selectedUser.email}</p>
                 </div>
-                <span className="ml-auto text-xs text-green-600 font-medium">
-                  ✅ Selected
+                <span className="ml-auto text-xs text-indigo-700 font-medium">
+                  Selected
                 </span>
               </div>
             </div>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="flex items-center justify-between p-4 border-t border-gray-200">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 p-4 sm:p-5 border-t border-gray-200">
           <p className="text-sm text-gray-500">
             {selectedUser ? 'Ready to invite' : 'Select a student to invite'}
           </p>
-          <div className="flex gap-3">
+          <div className="flex flex-col-reverse sm:flex-row gap-3">
             <button
+              type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
+              className="btn-secondary"
             >
               Cancel
             </button>
             <button
+              type="button"
               onClick={handleSubmit}
               disabled={!selectedUser || loading}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="btn-primary"
             >
-              {loading ? (
-                <>
-                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  Sending...
-                </>
-              ) : (
-                `Invite ${selectedUser ? selectedUser.firstName : ''}`
-              )}
+              {loading ? 'Sending...' : `Invite ${selectedUser ? selectedUser.firstName : ''}`}
             </button>
           </div>
         </div>
