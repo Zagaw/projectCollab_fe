@@ -8,6 +8,8 @@ import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import DashboardProgress from '../progress/DashboardProgress';
 import { PageHeader, StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { LayoutDashboard, FolderKanban, Users, ListTodo, CircleCheck, Plus } from 'lucide-react';
+import { dashboardGreeting } from '../../utils/userDisplay';
 
 const LecturerDashboard = () => {
   const { user } = useAuth();
@@ -63,18 +65,19 @@ const LecturerDashboard = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={`Welcome back, ${user?.firstName}`}
+        icon={LayoutDashboard}
+        title={dashboardGreeting(user)}
         description="Supervise projects, teams, and student progress."
         actions={
-          <Link to="/lecturer/projects/create" className="btn-primary">Create project</Link>
+          <Link to="/lecturer/projects/create" className="btn-primary"><Plus className="w-4 h-4" strokeWidth={2} />Create project</Link>
         }
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Projects" value={stats.totalProjects} />
-        <StatCard label="Teams" value={stats.totalTeams} />
-        <StatCard label="Tasks" value={stats.totalTasks} />
-        <StatCard label="Completed" value={stats.completedTasks} />
+        <StatCard icon={FolderKanban} label="Projects" value={stats.totalProjects} />
+        <StatCard icon={Users} tone="sky" label="Teams" value={stats.totalTeams} />
+        <StatCard icon={ListTodo} tone="violet" label="Tasks" value={stats.totalTasks} />
+        <StatCard icon={CircleCheck} tone="amber" label="Completed" value={stats.completedTasks} />
       </div>
 
       {/* Recent Projects & Tasks */}

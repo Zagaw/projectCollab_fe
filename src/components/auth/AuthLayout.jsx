@@ -21,7 +21,8 @@ const AuthLayout = ({ children, title, subtitle }) => {
         </div>
       </div>
 
-      <div className="hidden lg:flex lg:w-1/2 bg-ink p-12 flex-col justify-between text-white">
+      <div className="hidden lg:flex lg:w-1/2 bg-ink p-12 flex-col justify-between text-white relative overflow-hidden">
+        <div className="absolute inset-y-0 left-0 w-1.5 bg-indigo-600" aria-hidden />
         <div>
           <img
             src="/collabora-logo.png"

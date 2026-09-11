@@ -4,6 +4,7 @@ import teamApi from '../../api/teamApi';
 import projectApi from '../../api/projectApi';
 import toast from 'react-hot-toast';
 import { PageHeader } from '../common/PageHeader';
+import { Users } from 'lucide-react';
 
 const TeamCreate = () => {
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ const TeamCreate = () => {
   return (
     <div className="max-w-3xl">
       <PageHeader
+        icon={Users}
         title="Create team"
         description={project ? `For project: ${project.title}` : 'Add a team to your project.'}
         actions={

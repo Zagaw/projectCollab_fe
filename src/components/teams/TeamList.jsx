@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import teamApi from '../../api/teamApi';
 import toast from 'react-hot-toast';
 import EmptyState from '../common/EmptyState';
+import { Users } from 'lucide-react';
 
 const TeamList = ({ teams, projectId, onTeamUpdate }) => {
   const [deleteLoading, setDeleteLoading] = useState(null);
@@ -25,6 +26,7 @@ const TeamList = ({ teams, projectId, onTeamUpdate }) => {
   if (teams.length === 0) {
     return (
       <EmptyState
+        icon={Users}
         title="No teams yet"
         description="Create teams to organize your project members."
         actionText="Create first team"

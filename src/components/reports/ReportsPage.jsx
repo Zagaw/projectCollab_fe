@@ -7,6 +7,7 @@ import progressApi from '../../api/progressApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader, StatCard, FilterChips } from '../common/PageHeader';
+import { FileBarChart, Download, Printer } from 'lucide-react';
 import {
   REPORT_TYPES,
   defaultWeeklyRange,
@@ -163,6 +164,7 @@ const ReportsPage = () => {
     <div className="space-y-6">
       <div className="no-print">
         <PageHeader
+          icon={FileBarChart}
           title="Reports"
           description="Preview a report on screen, download CSV, or use Print to save a PDF. Weekly reports cover the last 7 days unless you change the dates."
         />
@@ -170,6 +172,7 @@ const ReportsPage = () => {
 
       {empty ? (
         <EmptyState
+          icon={FileBarChart}
           title={isLecturer ? 'No supervised projects yet' : 'No team to report on'}
           description={
             isLecturer
@@ -267,6 +270,7 @@ const ReportsPage = () => {
                 disabled={generating || !canGenerate}
                 className="btn-primary"
               >
+                <FileBarChart className="w-4 h-4" strokeWidth={2} />
                 {generating ? 'Generating...' : 'Generate preview'}
               </button>
               <button
@@ -275,6 +279,7 @@ const ReportsPage = () => {
                 disabled={!report}
                 className="btn-secondary disabled:opacity-50"
               >
+                <Download className="w-4 h-4" strokeWidth={2} />
                 Download CSV
               </button>
               <button
@@ -283,6 +288,7 @@ const ReportsPage = () => {
                 disabled={!report}
                 className="btn-secondary disabled:opacity-50"
               >
+                <Printer className="w-4 h-4" strokeWidth={2} />
                 Print / Save as PDF
               </button>
             </div>
@@ -316,7 +322,7 @@ const ReportPreview = ({ report }) => (
     {(report.metrics || []).length > 0 && (
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {report.metrics.map((metric) => (
-          <StatCard key={metric.label} label={metric.label} value={metric.value} />
+          <StatCard key={metric.label} icon={FileBarChart} label={metric.label} value={metric.value} />
         ))}
       </div>
     )}

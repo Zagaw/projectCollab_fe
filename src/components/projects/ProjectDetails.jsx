@@ -9,6 +9,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { FolderKanban, Users, Plus } from 'lucide-react';
 import DiscussionList from '../discussions/DiscussionList';
 import ActivityTimeline from '../activity/ActivityTimeline';
 import ProjectFileLibrary from '../files/ProjectFileLibrary';
@@ -116,6 +117,7 @@ const ProjectDetails = () => {
   if (!project) {
     return (
       <EmptyState
+        icon={FolderKanban}
         title="Project not found"
         description="It may have been deleted, or you do not have access."
         actionText="Back to projects"
@@ -148,6 +150,7 @@ const ProjectDetails = () => {
             Edit project
           </Link>
           <Link to={`/lecturer/teams/create?projectId=${projectId}`} className="btn-primary">
+            <Plus className="w-4 h-4" strokeWidth={2} />
             Create team
           </Link>
         </div>
@@ -200,7 +203,7 @@ const ProjectDetails = () => {
 
           <aside className="space-y-4">
             <div className="grid grid-cols-1 gap-3">
-              <StatCard label="Teams" value={teams.length || project.teamCount || 0} />
+              <StatCard icon={Users} label="Teams" value={teams.length || project.teamCount || 0} />
             </div>
             <div className="surface p-5 sm:p-6">
               <h3 className="font-semibold text-ink mb-3">Dates</h3>

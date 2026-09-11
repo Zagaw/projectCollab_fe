@@ -6,6 +6,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { ListTodo, Plus } from 'lucide-react';
 
 const COLUMNS = [
   { id: 'TODO', label: 'To do' },
@@ -97,11 +98,13 @@ const TaskBoard = ({ projectId, teamId }) => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={ListTodo}
         title="Tasks"
         description={`${counts.ALL} total · ${counts.COMPLETED} completed`}
         actions={
           canManage ? (
             <button type="button" onClick={handleCreateTask} className="btn-primary">
+              <Plus className="w-4 h-4" strokeWidth={2} />
               Create task
             </button>
           ) : null
@@ -119,6 +122,7 @@ const TaskBoard = ({ projectId, teamId }) => {
 
       {tasks.length === 0 ? (
         <EmptyState
+          icon={ListTodo}
           title="No tasks yet"
           description={canManage ? 'Create a task to assign work and track status on the board.' : 'Tasks assigned to you will appear here as columns you can update.'}
           actionText={canManage ? 'Create task' : undefined}

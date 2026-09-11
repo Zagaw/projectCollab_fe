@@ -5,6 +5,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { Users } from 'lucide-react';
 
 const StudentTeamList = () => {
   const [teams, setTeams] = useState([]);
@@ -41,12 +42,14 @@ const StudentTeamList = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={Users}
         title="My teams"
         description="Teams you are a member of."
       />
 
       {teams.length === 0 ? (
         <EmptyState
+          icon={Users}
           title="No teams yet"
           description="You haven't been added to any team yet. Check your invitations or wait for a team assignment."
         />

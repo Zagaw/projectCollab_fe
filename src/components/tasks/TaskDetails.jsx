@@ -8,6 +8,7 @@ import TaskPriorityBadge from './TaskPriorityBadge';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import toast from 'react-hot-toast';
+import { ListTodo } from 'lucide-react';
 
 const TaskDetails = () => {
   const { taskId } = useParams();
@@ -128,6 +129,7 @@ const TaskDetails = () => {
   if (!task) {
     return (
       <EmptyState
+        icon={ListTodo}
         title="Task not found"
         description="It may have been deleted, or you do not have access."
         actionText="Back to tasks"

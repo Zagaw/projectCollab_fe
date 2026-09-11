@@ -10,6 +10,8 @@ import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import DashboardProgress from '../progress/DashboardProgress';
 import { PageHeader, StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { LayoutDashboard, ListTodo, CircleCheck, Timer, AlertTriangle, Mail } from 'lucide-react';
+import { dashboardGreeting } from '../../utils/userDisplay';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -91,7 +93,8 @@ const StudentDashboard = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={`Welcome back, ${user?.firstName}`}
+        icon={LayoutDashboard}
+        title={dashboardGreeting(user)}
         description="Overdue work, deadlines, and invitations for today."
         actions={
           <Link to="/student/calendar" className="text-sm font-medium text-indigo-700 hover:text-indigo-800">
@@ -101,11 +104,11 @@ const StudentDashboard = () => {
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
-        <StatCard label="Tasks" value={stats.totalTasks} />
-        <StatCard label="Completed" value={stats.completedTasks} />
-        <StatCard label="In progress" value={stats.inProgressTasks} />
-        <StatCard label="Overdue" value={stats.overdueTasks} warn={stats.overdueTasks > 0} />
-        <StatCard label="Invitations" value={stats.pendingInvitations} warn={stats.pendingInvitations > 0} />
+        <StatCard icon={ListTodo} label="Tasks" value={stats.totalTasks} />
+        <StatCard icon={CircleCheck} tone="sky" label="Completed" value={stats.completedTasks} />
+        <StatCard icon={Timer} tone="violet" label="In progress" value={stats.inProgressTasks} />
+        <StatCard icon={AlertTriangle} label="Overdue" value={stats.overdueTasks} warn={stats.overdueTasks > 0} />
+        <StatCard icon={Mail} tone="amber" label="Invitations" value={stats.pendingInvitations} warn={stats.pendingInvitations > 0} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -4,6 +4,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { FolderKanban } from 'lucide-react';
 
 const STATUS_LABEL = {
   ACTIVE: 'Active',
@@ -52,6 +53,7 @@ const AdminProjectList = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={FolderKanban}
         title="All projects"
         description="Every academic project in the system."
       />
@@ -78,6 +80,7 @@ const AdminProjectList = () => {
 
       {filtered.length === 0 ? (
         <EmptyState
+          icon={FolderKanban}
           title="No projects found"
           description="No projects match this filter."
         />

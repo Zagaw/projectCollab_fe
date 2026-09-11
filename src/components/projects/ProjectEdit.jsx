@@ -4,6 +4,7 @@ import projectApi from '../../api/projectApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import toast from 'react-hot-toast';
 import { PageHeader } from '../common/PageHeader';
+import { FolderKanban } from 'lucide-react';
 
 const toDateInput = (value) => {
   if (!value) return '';
@@ -85,6 +86,7 @@ const ProjectEdit = () => {
   return (
     <div className="max-w-3xl">
       <PageHeader
+        icon={FolderKanban}
         title="Edit project"
         description="Update project information."
         actions={

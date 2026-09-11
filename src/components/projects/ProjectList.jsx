@@ -6,6 +6,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { FolderKanban, Plus } from 'lucide-react';
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
@@ -47,10 +48,12 @@ const ProjectList = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={FolderKanban}
         title="Projects"
         description="Create and manage academic projects your teams work on."
         actions={
           <Link to="/lecturer/projects/create" className="btn-primary">
+            <Plus className="w-4 h-4" strokeWidth={2} />
             Create project
           </Link>
         }
@@ -72,6 +75,7 @@ const ProjectList = () => {
         <LoadingSpinner />
       ) : filteredProjects.length === 0 ? (
         <EmptyState
+          icon={FolderKanban}
           title="No Projects Found"
           description="You haven't created any projects yet. Start by creating your first project."
           actionText="Create Project"

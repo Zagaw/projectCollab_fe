@@ -4,6 +4,7 @@ import milestoneApi from '../../api/milestoneApi';
 import teamApi from '../../api/teamApi';
 import toast from 'react-hot-toast';
 import { PageHeader } from '../common/PageHeader';
+import { Flag } from 'lucide-react';
 
 const TeamLeaderMilestoneCreate = () => {
   const navigate = useNavigate();
@@ -65,6 +66,7 @@ const TeamLeaderMilestoneCreate = () => {
   return (
     <div className="max-w-3xl">
       <PageHeader
+        icon={Flag}
         title="Create milestone"
         description="Set a milestone for your team to achieve."
         actions={

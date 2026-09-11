@@ -12,6 +12,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { FolderKanban, Users } from 'lucide-react';
 
 const TABS = [
   { id: 'overview', label: 'Overview' },
@@ -120,6 +121,7 @@ const StudentProjectDetails = () => {
   if (!project) {
     return (
       <EmptyState
+        icon={FolderKanban}
         title="Project not found"
         description="It may have been deleted, or you do not have access."
         actionText="Back to projects"
@@ -216,7 +218,7 @@ const StudentProjectDetails = () => {
           </div>
 
           <aside className="space-y-4">
-            <StatCard label="Teams" value={teams.length || project.teamCount || 0} />
+            <StatCard icon={Users} label="Teams" value={teams.length || project.teamCount || 0} />
             <div className="surface p-5 sm:p-6">
               <h3 className="font-semibold text-ink mb-3">Dates</h3>
               <dl className="space-y-3 text-sm">

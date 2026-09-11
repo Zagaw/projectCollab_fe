@@ -29,7 +29,7 @@ const TaskCard = ({
 
   return (
     <article
-      className={`${compact ? 'bg-paper border border-gray-200 rounded-xl p-3' : 'surface p-4'} ${overdue ? 'border-red-200' : ''} ${canOpen ? 'hover:border-indigo-200' : ''}`}
+      className={`${compact ? 'bg-gray-50 border border-gray-200 rounded-xl p-3' : 'surface p-4'} ${overdue ? 'border-red-200' : ''} ${canOpen ? 'hover:border-indigo-200' : ''}`}
     >
       <div className="flex items-start justify-between gap-2">
         {href ? (

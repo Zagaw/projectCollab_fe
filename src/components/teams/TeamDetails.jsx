@@ -8,6 +8,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { Users, UserPlus, Mail } from 'lucide-react';
 
 const TeamDetails = () => {
   const { teamId } = useParams();
@@ -81,6 +82,7 @@ const TeamDetails = () => {
   if (!team) {
     return (
       <EmptyState
+        icon={Users}
         title="Team not found"
         description="It may have been deleted, or you do not have access."
         actionText="Go back"
@@ -111,6 +113,7 @@ const TeamDetails = () => {
             onClick={() => setShowInviteModal(true)}
             className="btn-primary"
           >
+            <UserPlus className="w-4 h-4" strokeWidth={2} />
             Invite member
           </button>
         )}
@@ -136,9 +139,9 @@ const TeamDetails = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-3">
-          <StatCard label="Total members" value={team.totalMembers || 0} />
-          <StatCard label="Active members" value={team.activeMembers || 0} />
-          <StatCard label="Pending invites" value={team.pendingMembers || 0} warn={(team.pendingMembers || 0) > 0} />
+          <StatCard icon={Users} label="Total members" value={team.totalMembers || 0} />
+          <StatCard icon={Users} tone="sky" label="Active members" value={team.activeMembers || 0} />
+          <StatCard icon={Mail} label="Pending invites" value={team.pendingMembers || 0} warn={(team.pendingMembers || 0) > 0} />
         </div>
       </div>
 

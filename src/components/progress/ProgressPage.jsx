@@ -7,6 +7,7 @@ import TeamProgressPanel from './TeamProgressPanel';
 import { PageHeader } from '../common/PageHeader';
 import { reportBasePath } from '../reports/reportUtils';
 import toast from 'react-hot-toast';
+import { TrendingUp } from 'lucide-react';
 
 const ProgressPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -54,12 +55,14 @@ const ProgressPage = () => {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon={TrendingUp}
         title="Progress"
         description="Team completion is based on tasks. Member ranking uses tasks completed; comments, files, and discussions are shown beside that score."
       />
 
       {teams.length === 0 ? (
         <EmptyState
+          icon={TrendingUp}
           title="No team progress yet"
           description="Join a team to see task and milestone progress, plus how members are contributing."
         />

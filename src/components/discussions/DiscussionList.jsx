@@ -8,6 +8,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { MessageSquare, Plus } from 'lucide-react';
 
 const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
   const [discussions, setDiscussions] = useState([]);
@@ -126,6 +127,7 @@ const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
 
   const createButton = canCreate && selectedProjectId ? (
     <button type="button" onClick={handleCreateDiscussion} className="btn-primary">
+      <Plus className="w-4 h-4" strokeWidth={2} />
       New discussion
     </button>
   ) : null;
@@ -150,6 +152,7 @@ const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
         </div>
       ) : (
         <PageHeader
+          icon={MessageSquare}
           title="Discussions"
           description={selectedTitle
             ? `${selectedTitle} · ${discussions.length} thread${discussions.length !== 1 ? 's' : ''}`
@@ -179,6 +182,7 @@ const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
 
       {!selectedProjectId && !isEmbedded ? (
         <EmptyState
+          icon={MessageSquare}
           title="Select a project"
           description="Choose a project to view its discussions."
         />
@@ -186,6 +190,7 @@ const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
         <LoadingSpinner />
       ) : discussions.length === 0 ? (
         <EmptyState
+          icon={MessageSquare}
           title="No discussions yet"
           description="Start a conversation about your project. Discuss ideas, share updates, and collaborate with your team."
           actionText={canCreate ? 'Start a discussion' : undefined}

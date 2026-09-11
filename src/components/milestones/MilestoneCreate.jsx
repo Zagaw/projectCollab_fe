@@ -4,6 +4,7 @@ import milestoneApi from '../../api/milestoneApi';
 import teamApi from '../../api/teamApi';
 import toast from 'react-hot-toast';
 import { PageHeader } from '../common/PageHeader';
+import { Flag } from 'lucide-react';
 
 const MilestoneCreate = () => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const MilestoneCreate = () => {
         deadline: new Date(formData.deadline).toISOString()
       });
       toast.success('Milestone created successfully!');
-      navigate(`/milestones/${response.data.milestoneId}`);
+      navigate(`/lecturer/milestones/${response.data.milestoneId}`);
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to create milestone');
     } finally {
@@ -67,6 +68,7 @@ const MilestoneCreate = () => {
   return (
     <div className="max-w-3xl">
       <PageHeader
+        icon={Flag}
         title="Create milestone"
         description="Set a milestone for your team to achieve."
         actions={<button type="button" onClick={() => navigate(-1)} className="btn-secondary">Cancel</button>}

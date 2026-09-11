@@ -6,6 +6,7 @@ import TaskList from '../tasks/TaskList';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import toast from 'react-hot-toast';
+import { Flag, Plus } from 'lucide-react';
 
 const MilestoneDetails = () => {
   const { milestoneId } = useParams();
@@ -75,6 +76,7 @@ const MilestoneDetails = () => {
   if (!milestone) {
     return (
       <EmptyState
+        icon={Flag}
         title="Milestone not found"
         description="It may have been deleted, or you do not have access."
         actionText="Back to milestones"
@@ -113,6 +115,7 @@ const MilestoneDetails = () => {
           </span>
           {canCreateTask && (
             <button type="button" onClick={handleCreateTask} className="btn-primary">
+              <Plus className="w-4 h-4" strokeWidth={2} />
               Create task
             </button>
           )}

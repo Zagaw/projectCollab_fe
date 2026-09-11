@@ -5,6 +5,7 @@ import EmptyState from '../common/EmptyState';
 import { PageHeader } from '../common/PageHeader';
 import ProjectCard from './ProjectCard';
 import toast from 'react-hot-toast';
+import { FolderKanban } from 'lucide-react';
 
 const StudentProjectList = () => {
   const [projects, setProjects] = useState([]);
@@ -56,12 +57,14 @@ const StudentProjectList = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={FolderKanban}
         title="My projects"
         description="Projects you are participating in."
       />
 
       {projects.length === 0 ? (
         <EmptyState
+          icon={FolderKanban}
           title="No projects yet"
           description="You haven't been added to any project team yet."
         />

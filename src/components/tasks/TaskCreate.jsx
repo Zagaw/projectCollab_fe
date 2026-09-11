@@ -6,6 +6,7 @@ import teamApi from '../../api/teamApi';
 import milestoneApi from '../../api/milestoneApi';
 import toast from 'react-hot-toast';
 import { PageHeader } from '../common/PageHeader';
+import { ListTodo } from 'lucide-react';
 
 const TaskCreate = () => {
   const navigate = useNavigate();
@@ -113,6 +114,7 @@ const TaskCreate = () => {
   return (
     <div className="max-w-3xl">
       <PageHeader
+        icon={ListTodo}
         title="Create task"
         description="Add a task to a project team."
         actions={<button type="button" onClick={() => navigate(-1)} className="btn-secondary">Cancel</button>}

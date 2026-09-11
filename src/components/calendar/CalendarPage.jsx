@@ -7,6 +7,7 @@ import teamApi from '../../api/teamApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import { PageHeader, StatCard, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { Calendar, Video, ListTodo, Flag } from 'lucide-react';
 import {
   EVENT_TYPES,
   WEEKDAYS,
@@ -32,15 +33,17 @@ const FILTERS = [
 ];
 
 const eventStyle = (event) => {
+  const typeStyle = EVENT_TYPES[event.type] || EVENT_TYPES.task;
   if (event.overdue) {
     return {
+      ...typeStyle,
       chip: 'bg-red-50 text-red-800',
       dot: 'bg-red-500',
       soft: 'bg-red-50 border-red-100',
       text: 'text-red-700',
     };
   }
-  return EVENT_TYPES[event.type];
+  return typeStyle;
 };
 
 const CalendarPage = () => {
@@ -167,6 +170,7 @@ const CalendarPage = () => {
   return (
     <div className="space-y-5 min-w-0">
       <PageHeader
+        icon={Calendar}
         title="Calendar"
         description={
           isTeamLeader
@@ -202,9 +206,9 @@ const CalendarPage = () => {
       />
 
       <div className="grid grid-cols-3 gap-3">
-        <StatCard label="Meetings" value={monthCounts.meeting} />
-        <StatCard label="Task deadlines" value={monthCounts.task} />
-        <StatCard label="Milestones" value={monthCounts.milestone} />
+        <StatCard icon={Video} label="Meetings" value={monthCounts.meeting} />
+        <StatCard icon={ListTodo} tone="sky" label="Task deadlines" value={monthCounts.task} />
+        <StatCard icon={Flag} tone="violet" label="Milestones" value={monthCounts.milestone} />
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -404,7 +408,7 @@ const EventRow = ({ event, onOpen, compact = false, showDate = false }) => {
               {event.title}
             </p>
             <span className={`shrink-0 text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded ${style.chip}`}>
-              {EVENT_TYPES[event.type].label.split(' ')[0]}
+              {(EVENT_TYPES[event.type] || EVENT_TYPES.task).label.split(' ')[0]}
             </span>
           </div>
           <p className={`text-xs mt-1 ${style.text}`}>

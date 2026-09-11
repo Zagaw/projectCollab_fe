@@ -6,6 +6,7 @@ import ProjectFileLibrary from './ProjectFileLibrary';
 import EmptyState from '../common/EmptyState';
 import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { Files } from 'lucide-react';
 
 const FileLibraryPage = () => {
   const [projects, setProjects] = useState([]);
@@ -64,6 +65,7 @@ const FileLibraryPage = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={Files}
         title="Files"
         description={selectedTitle ? `${selectedTitle} document library` : 'Choose a project to browse its files.'}
       />
@@ -87,6 +89,7 @@ const FileLibraryPage = () => {
 
       {!selectedProjectId ? (
         <EmptyState
+          icon={Files}
           title="Select a project"
           description="Choose a project to view and upload documents."
         />

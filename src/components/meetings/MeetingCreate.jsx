@@ -5,6 +5,7 @@ import teamApi from '../../api/teamApi';
 import toast from 'react-hot-toast';
 import { toApiDateTime } from './meetingUtils';
 import { PageHeader } from '../common/PageHeader';
+import { Video, CalendarPlus } from 'lucide-react';
 
 const MeetingCreate = () => {
   const navigate = useNavigate();
@@ -80,6 +81,7 @@ const MeetingCreate = () => {
   return (
     <div className="max-w-3xl">
       <PageHeader
+        icon={Video}
         title="Schedule meeting"
         description="Share an agenda and an external meeting link. Collabora does not host video calls."
         actions={
@@ -189,6 +191,7 @@ const MeetingCreate = () => {
 
         <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
           <button type="submit" disabled={loading} className="btn-primary flex-1">
+            <CalendarPlus className="w-4 h-4" strokeWidth={2} />
             {loading ? 'Scheduling...' : 'Schedule meeting'}
           </button>
           <button type="button" onClick={() => navigate('/teamleader/meetings')} className="btn-secondary">

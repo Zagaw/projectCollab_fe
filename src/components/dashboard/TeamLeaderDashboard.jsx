@@ -10,6 +10,8 @@ import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import DashboardProgress from '../progress/DashboardProgress';
 import { PageHeader, StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { LayoutDashboard, Users, Flag, AlertTriangle, Plus, CalendarPlus } from 'lucide-react';
+import { dashboardGreeting } from '../../utils/userDisplay';
 
 const TeamLeaderDashboard = () => {
   const { user } = useAuth();
@@ -102,15 +104,17 @@ const TeamLeaderDashboard = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title={`Welcome back, ${user?.firstName}`}
+        icon={LayoutDashboard}
+        title={dashboardGreeting(user)}
         description={`Leading ${stats.totalTeams} team${stats.totalTeams === 1 ? '' : 's'} with ${stats.totalMembers} members.`}
         actions={
           <div className="flex flex-wrap gap-2">
-            <Link to="/teamleader/tasks/create" className="btn-primary">Create task</Link>
+            <Link to="/teamleader/tasks/create" className="btn-primary"><Plus className="w-4 h-4" strokeWidth={2} />Create task</Link>
             <Link to="/teamleader/milestones/create" className="btn-secondary">
               Create milestone
             </Link>
             <Link to="/teamleader/meetings/create" className="btn-secondary">
+              <CalendarPlus className="w-4 h-4" strokeWidth={2} />
               Schedule meeting
             </Link>
           </div>
@@ -118,10 +122,10 @@ const TeamLeaderDashboard = () => {
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Teams" value={stats.totalTeams} />
-        <StatCard label="Members" value={stats.totalMembers} />
-        <StatCard label="Milestones" value={`${stats.completedMilestones}/${stats.totalMilestones}`} />
-        <StatCard label="Overdue tasks" value={stats.overdueTasks} warn={stats.overdueTasks > 0} />
+        <StatCard icon={Users} label="Teams" value={stats.totalTeams} />
+        <StatCard icon={Users} tone="sky" label="Members" value={stats.totalMembers} />
+        <StatCard icon={Flag} tone="violet" label="Milestones" value={`${stats.completedMilestones}/${stats.totalMilestones}`} />
+        <StatCard icon={AlertTriangle} label="Overdue tasks" value={stats.overdueTasks} warn={stats.overdueTasks > 0} />
       </div>
 
       {/* Main Content Grid */}

@@ -5,6 +5,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import PageHeader from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { Mail } from 'lucide-react';
 
 const InvitationList = () => {
   const [invitations, setInvitations] = useState([]);
@@ -49,6 +50,7 @@ const InvitationList = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={Mail}
         title="Invitations"
         description="Review and respond to team invitations."
       />
@@ -57,6 +59,7 @@ const InvitationList = () => {
         <LoadingSpinner />
       ) : invitations.length === 0 ? (
         <EmptyState
+          icon={Mail}
           title="No pending invitations"
           description="You don't have any pending team invitations."
         />

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import projectApi from '../../api/projectApi';
 import toast from 'react-hot-toast';
 import { PageHeader } from '../common/PageHeader';
+import { FolderKanban } from 'lucide-react';
 
 const ProjectCreate = () => {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ const ProjectCreate = () => {
   return (
     <div className="max-w-3xl">
       <PageHeader
+        icon={FolderKanban}
         title="Create project"
         description="Set up a new academic project for your teams."
         actions={

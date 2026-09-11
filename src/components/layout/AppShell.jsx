@@ -32,7 +32,7 @@ const AppShell = ({ homePath, profilePath, roleLabel, sections }) => {
                   onClick={() => setOpen(false)}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition ${
                     active
-                      ? 'bg-white/15 text-white'
+                      ? 'bg-indigo-600 text-white'
                       : 'text-white/70 hover:bg-white/10 hover:text-white'
                   }`}
                 >
@@ -71,26 +71,26 @@ const AppShell = ({ homePath, profilePath, roleLabel, sections }) => {
       </aside>
 
       <div className="lg:pl-64 min-h-screen flex flex-col">
-        <header className="sticky top-0 z-20 bg-ink text-white">
+        <header className="sticky top-0 z-20 bg-white text-ink border-b border-gray-200">
           <div className="h-14 px-3 sm:px-6 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 min-w-0">
               <button
                 type="button"
                 onClick={() => setOpen((value) => !value)}
-                className="lg:hidden p-2 rounded-lg text-white/80 hover:bg-white/10"
+                className="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-ink"
                 aria-label="Open menu"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
-              <span className="hidden sm:inline text-sm text-white/70 truncate">
+              <span className="hidden sm:inline text-sm text-gray-500 truncate">
                 Collaborate. Build. Achieve.
               </span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
-              <NotificationBell tone="ink" />
-              <AvatarMenu profilePath={profilePath} />
+              <NotificationBell tone="light" />
+              <AvatarMenu profilePath={profilePath} tone="light" />
             </div>
           </div>
         </header>

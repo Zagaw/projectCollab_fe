@@ -7,6 +7,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { Users, Plus } from 'lucide-react';
 
 const LecturerTeamList = () => {
   const [teams, setTeams] = useState([]);
@@ -46,10 +47,12 @@ const LecturerTeamList = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={Users}
         title="Teams"
         description="All teams across your projects."
         actions={
           <Link to="/lecturer/projects" className="btn-primary">
+            <Plus className="w-4 h-4" strokeWidth={2} />
             Create team from a project
           </Link>
         }
@@ -57,6 +60,7 @@ const LecturerTeamList = () => {
 
       {teams.length === 0 ? (
         <EmptyState
+          icon={Users}
           title="No teams yet"
           description="Open a project to create its first team."
           actionText="Go to projects"

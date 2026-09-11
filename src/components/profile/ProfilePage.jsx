@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import userApi from '../../api/userApi';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../common/LoadingSpinner';
 import PageHeader from '../common/PageHeader';
+import { UserRound } from 'lucide-react';
+import { getDisplayName, getInitials } from '../../utils/userDisplay';
 
 const ProfilePage = () => {
   const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'password'
+  const ignoreSubmitUntil = useRef(0);
   
   // Profile form state
   const [formData, setFormData] = useState({
@@ -28,19 +31,35 @@ const ProfilePage = () => {
     confirmPassword: ''
   });
 
-  // Load user data
+  const snapshotFromUser = (current) => ({
+    username: current?.username || '',
+    email: current?.email || '',
+    firstName: current?.firstName || '',
+    lastName: current?.lastName || '',
+    phone: current?.phone || '',
+    profileImage: current?.profileImage || ''
+  });
+
   useEffect(() => {
-    if (user) {
-      setFormData({
-        username: user.username || '',
-        email: user.email || '',
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
-        phone: user.phone || '',
-        profileImage: user.profileImage || ''
-      });
+    if (user && !isEditing) {
+      setFormData(snapshotFromUser(user));
     }
-  }, [user]);
+  }, [user, isEditing]);
+
+  const isProfileDirty = () =>
+    JSON.stringify(formData) !== JSON.stringify(snapshotFromUser(user));
+
+  const startEditing = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    ignoreSubmitUntil.current = Date.now() + 400;
+    setIsEditing(true);
+  };
+
+  const cancelEditing = () => {
+    setIsEditing(false);
+    setFormData(snapshotFromUser(user));
+  };
 
   // Handle profile form changes
   const handleChange = (e) => {
@@ -58,11 +77,15 @@ const ProfilePage = () => {
     });
   };
 
-  // Submit profile update
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (!isEditing || Date.now() < ignoreSubmitUntil.current) return;
+    if (!isProfileDirty()) {
+      setIsEditing(false);
+      return;
+    }
 
+    setLoading(true);
     try {
       const response = await userApi.updateProfile(formData);
       updateUser(response.data);
@@ -132,6 +155,7 @@ const ProfilePage = () => {
   return (
     <div className="max-w-3xl space-y-5">
       <PageHeader
+        icon={UserRound}
         title="Profile"
         description="Manage your account settings and preferences."
       />
@@ -140,10 +164,10 @@ const ProfilePage = () => {
         <div className="p-5 sm:p-6 border-b border-gray-200">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center text-xl font-semibold text-indigo-700 shrink-0">
-              {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
+              {getInitials(user)}
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-ink">{user.firstName} {user.lastName}</h2>
+              <h2 className="text-lg font-semibold text-ink">{getDisplayName(user)}</h2>
               <p className="text-sm text-gray-600">{user.email}</p>
               <span className={`inline-block mt-2 px-2.5 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(user.role)}`}>
                 {user.role}
@@ -263,7 +287,7 @@ const ProfilePage = () => {
                 {!isEditing ? (
                   <button
                     type="button"
-                    onClick={() => setIsEditing(true)}
+                    onClick={startEditing}
                     className="btn-primary"
                   >
                     Edit profile
@@ -272,26 +296,14 @@ const ProfilePage = () => {
                   <>
                     <button
                       type="submit"
-                      disabled={loading}
+                      disabled={loading || !isProfileDirty()}
                       className="btn-primary"
                     >
                       {loading ? 'Saving...' : 'Save changes'}
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        setIsEditing(false);
-                        if (user) {
-                          setFormData({
-                            username: user.username || '',
-                            email: user.email || '',
-                            firstName: user.firstName || '',
-                            lastName: user.lastName || '',
-                            phone: user.phone || '',
-                            profileImage: user.profileImage || ''
-                          });
-                        }
-                      }}
+                      onClick={cancelEditing}
                       className="btn-secondary"
                     >
                       Cancel

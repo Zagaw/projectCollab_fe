@@ -3,6 +3,7 @@ import CommentItem from './CommentItem';
 import CommentForm from './CommentForm';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
+import { MessageSquare } from 'lucide-react';
 
 const CommentList = ({
   entityType,
@@ -130,6 +131,7 @@ const CommentList = ({
 
       {visibleComments.length === 0 ? (
         <EmptyState
+          icon={MessageSquare}
           title="No comments yet"
           description={`Be the first to add a comment to this ${entityType}.`}
         />

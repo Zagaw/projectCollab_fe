@@ -7,6 +7,7 @@ import EmptyState from '../common/EmptyState';
 import { PageHeader, StatCard, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 import { formatMeetingTime, statusBadgeClass } from './meetingUtils';
+import { Video, CalendarCheck, CircleCheck, Ban } from 'lucide-react';
 
 const FILTERS = [
   { id: 'upcoming', label: 'Upcoming' },
@@ -87,15 +88,16 @@ const LecturerMeetingMonitor = () => {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon={Video}
         title="Meetings"
         description="Monitor team meetings across your projects. Leaders schedule meetings and store minutes; you can view, RSVP, and open the shared link."
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Meetings" value={stats.total} />
-        <StatCard label="Scheduled" value={stats.scheduled} />
-        <StatCard label="Completed" value={stats.completed} />
-        <StatCard label="Cancelled" value={stats.cancelled} warn={stats.cancelled > 0} />
+        <StatCard icon={Video} label="Meetings" value={stats.total} />
+        <StatCard icon={CalendarCheck} tone="sky" label="Scheduled" value={stats.scheduled} />
+        <StatCard icon={CircleCheck} tone="violet" label="Completed" value={stats.completed} />
+        <StatCard icon={Ban} label="Cancelled" value={stats.cancelled} warn={stats.cancelled > 0} />
       </div>
 
       <div className="surface p-4 space-y-4">
@@ -139,6 +141,7 @@ const LecturerMeetingMonitor = () => {
 
       {filtered.length === 0 ? (
         <EmptyState
+          icon={Video}
           title="No meetings"
           description="Teams have not scheduled meetings for this filter yet."
         />

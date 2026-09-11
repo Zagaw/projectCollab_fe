@@ -8,6 +8,7 @@ import EmptyState from '../common/EmptyState';
 import { PageHeader, StatCard, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import { Flag, Timer, CircleCheck, AlertTriangle, Plus } from 'lucide-react';
 
 const isOverdue = (m) => !m.isCompleted && m.deadline && new Date(m.deadline) < new Date();
 
@@ -140,11 +141,13 @@ const StudentMilestoneView = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={Flag}
         title="Milestones"
         description="Track progress and due dates for your team."
         actions={
           isTeamLeader ? (
             <button type="button" onClick={handleCreateMilestone} className="btn-primary">
+              <Plus className="w-4 h-4" strokeWidth={2} />
               Create milestone
             </button>
           ) : null
@@ -152,10 +155,10 @@ const StudentMilestoneView = () => {
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Milestones" value={counts.ALL} />
-        <StatCard label="In progress" value={counts.IN_PROGRESS} />
-        <StatCard label="Completed" value={counts.COMPLETED} />
-        <StatCard label="Overdue" value={counts.OVERDUE} warn={counts.OVERDUE > 0} />
+        <StatCard icon={Flag} label="Milestones" value={counts.ALL} />
+        <StatCard icon={Timer} tone="sky" label="In progress" value={counts.IN_PROGRESS} />
+        <StatCard icon={CircleCheck} tone="violet" label="Completed" value={counts.COMPLETED} />
+        <StatCard icon={AlertTriangle} label="Overdue" value={counts.OVERDUE} warn={counts.OVERDUE > 0} />
       </div>
 
       <div className="surface p-4 space-y-4">
@@ -196,6 +199,7 @@ const StudentMilestoneView = () => {
 
       {filteredMilestones.length === 0 ? (
         <EmptyState
+          icon={Flag}
           title="No milestones yet"
           description={
             milestones.length === 0

@@ -7,6 +7,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { Files, Upload } from 'lucide-react';
 
 const CATEGORIES = [
   { id: 'ALL', label: 'All' },
@@ -200,6 +201,7 @@ const ProjectFileLibrary = ({ projectId, teamId, teams: teamsProp }) => {
             disabled={uploading || (!projectId && !teamId)}
             className="btn-primary"
           >
+            <Upload className="w-4 h-4" strokeWidth={2} />
             {uploading ? 'Uploading...' : 'Upload file'}
           </button>
         </div>
@@ -209,6 +211,7 @@ const ProjectFileLibrary = ({ projectId, teamId, teams: teamsProp }) => {
         <LoadingSpinner />
       ) : files.length === 0 ? (
         <EmptyState
+          icon={Files}
           title="No files yet"
           description="Use Upload file above to add a report, design, or submission for this project."
         />

@@ -7,6 +7,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader, StatCard, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { ListTodo, Timer, CircleCheck, AlertTriangle, Plus } from 'lucide-react';
 
 const isOverdueTask = (task) =>
   task.status !== 'COMPLETED' && task.deadline && new Date(task.deadline) < new Date();
@@ -115,20 +116,22 @@ const LecturerTaskMonitor = () => {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon={ListTodo}
         title="Task monitoring"
         description="Review every team's tasks in your projects. Filter, then open a task to read comments and files."
         actions={
           <Link to="/lecturer/tasks/create" className="btn-primary">
+            <Plus className="w-4 h-4" strokeWidth={2} />
             Create task
           </Link>
         }
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Tasks" value={counts.ALL} />
-        <StatCard label="In progress / review" value={counts.IN_PROGRESS + counts.REVIEW} />
-        <StatCard label="Completed" value={counts.COMPLETED} />
-        <StatCard label="Overdue / blocked" value={counts.OVERDUE + counts.BLOCKED} warn={counts.OVERDUE + counts.BLOCKED > 0} />
+        <StatCard icon={ListTodo} label="Tasks" value={counts.ALL} />
+        <StatCard icon={Timer} tone="sky" label="In progress / review" value={counts.IN_PROGRESS + counts.REVIEW} />
+        <StatCard icon={CircleCheck} tone="violet" label="Completed" value={counts.COMPLETED} />
+        <StatCard icon={AlertTriangle} label="Overdue / blocked" value={counts.OVERDUE + counts.BLOCKED} warn={counts.OVERDUE + counts.BLOCKED > 0} />
       </div>
 
       <div className="surface p-4 space-y-4">
@@ -214,6 +217,7 @@ const LecturerTaskMonitor = () => {
 
       {filtered.length === 0 ? (
         <EmptyState
+          icon={ListTodo}
           title="No tasks to monitor"
           description="Tasks created for teams in your projects will show up here so you can compare progress without joining the team."
         />

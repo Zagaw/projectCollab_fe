@@ -5,6 +5,7 @@ import projectApi from '../../api/projectApi';
 import EmptyState from '../common/EmptyState';
 import { PageHeader } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { MessageSquare, Plus } from 'lucide-react';
 
 const DiscussionCreate = () => {
   const navigate = useNavigate();
@@ -85,6 +86,7 @@ const DiscussionCreate = () => {
   if (!projectId) {
     return (
       <EmptyState
+        icon={MessageSquare}
         title="Project required"
         description="Select a project first to start a discussion."
         actionText="Go to discussions"
@@ -100,6 +102,7 @@ const DiscussionCreate = () => {
           Back to project
         </button>
         <PageHeader
+          icon={MessageSquare}
           title="Start a discussion"
           description={project ? project.title : 'Share a topic with the project.'}
         />
@@ -142,6 +145,7 @@ const DiscussionCreate = () => {
 
         <div className="flex flex-wrap gap-2 pt-1">
           <button type="submit" disabled={loading} className="btn-primary">
+            <Plus className="w-4 h-4" strokeWidth={2} />
             {loading ? 'Creating...' : 'Create discussion'}
           </button>
           <button type="button" onClick={handleCancel} className="btn-secondary">

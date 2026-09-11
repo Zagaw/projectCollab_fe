@@ -4,6 +4,7 @@ import api from '../../api/axios';
 import projectApi from '../../api/projectApi';
 import toast from 'react-hot-toast';
 import { PageHeader, StatCard } from '../common/PageHeader';
+import { LayoutDashboard, Users, UserCheck, FolderKanban } from 'lucide-react';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -78,15 +79,16 @@ const AdminDashboard = () => {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon={LayoutDashboard}
         title="Admin"
         description="Users, lecturer approval, and campus projects."
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Users" value={stats.totalUsers} />
-        <StatCard label="Pending lecturers" value={stats.pendingLecturers} warn={stats.pendingLecturers > 0} />
-        <StatCard label="Projects" value={stats.totalProjects} />
-        <StatCard label="Teams" value={stats.activeTeams} />
+        <StatCard icon={Users} label="Users" value={stats.totalUsers} />
+        <StatCard icon={UserCheck} label="Pending lecturers" value={stats.pendingLecturers} warn={stats.pendingLecturers > 0} />
+        <StatCard icon={FolderKanban} tone="sky" label="Projects" value={stats.totalProjects} />
+        <StatCard icon={Users} tone="violet" label="Teams" value={stats.activeTeams} />
       </div>
 
       {/* Pending Lecturers Section */}

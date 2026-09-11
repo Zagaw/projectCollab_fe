@@ -2,6 +2,7 @@ import React from 'react';
 import ProgressBar from './ProgressBar';
 import ContributionTable from './ContributionTable';
 import { StatCard } from '../common/PageHeader';
+import { ListTodo, TrendingUp, AlertTriangle, Flag } from 'lucide-react';
 
 const TeamProgressPanel = ({ progress, compact = false, showTable = true }) => {
   if (!progress) return null;
@@ -12,10 +13,10 @@ const TeamProgressPanel = ({ progress, compact = false, showTable = true }) => {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard label="Tasks" value={`${progress.taskCompleted}/${progress.taskTotal || 0}`} />
-        <StatCard label="Task progress" value={`${progress.taskPercent || 0}%`} />
-        <StatCard label="Overdue tasks" value={progress.taskOverdue || 0} warn={progress.taskOverdue > 0} />
-        <StatCard label="Milestones" value={`${progress.milestoneCompleted}/${progress.milestoneTotal || 0}`} />
+        <StatCard icon={ListTodo} label="Tasks" value={`${progress.taskCompleted}/${progress.taskTotal || 0}`} />
+        <StatCard icon={TrendingUp} tone="sky" label="Task progress" value={`${progress.taskPercent || 0}%`} />
+        <StatCard icon={AlertTriangle} label="Overdue tasks" value={progress.taskOverdue || 0} warn={progress.taskOverdue > 0} />
+        <StatCard icon={Flag} tone="violet" label="Milestones" value={`${progress.milestoneCompleted}/${progress.milestoneTotal || 0}`} />
       </div>
       <div className="space-y-4">
         <ProgressBar

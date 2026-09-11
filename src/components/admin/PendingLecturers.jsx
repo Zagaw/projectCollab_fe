@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import PageHeader from '../common/PageHeader';
+import { UserCheck } from 'lucide-react';
 
 const PendingLecturers = () => {
   const [lecturers, setLecturers] = useState([]);
@@ -64,6 +65,7 @@ const PendingLecturers = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={UserCheck}
         title="Pending lecturers"
         description="Review and verify new lecturer accounts."
         actions={
@@ -83,11 +85,13 @@ const PendingLecturers = () => {
 
       {lecturers.length === 0 ? (
         <EmptyState
+          icon={UserCheck}
           title="No pending registrations"
           description="All lecturer registrations have been processed."
         />
       ) : filtered.length === 0 ? (
         <EmptyState
+          icon={UserCheck}
           title="No matching lecturers"
           description="Try a different search term."
         />

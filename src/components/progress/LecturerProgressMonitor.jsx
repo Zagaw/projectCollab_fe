@@ -7,6 +7,7 @@ import ProgressBar from './ProgressBar';
 import TeamProgressPanel from './TeamProgressPanel';
 import { PageHeader, StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { TrendingUp, FolderKanban, Users, AlertTriangle } from 'lucide-react';
 
 const LecturerProgressMonitor = () => {
   const navigate = useNavigate();
@@ -57,15 +58,16 @@ const LecturerProgressMonitor = () => {
   return (
     <div className="space-y-6">
       <PageHeader
+        icon={TrendingUp}
         title="Progress"
         description="Compare task completion across projects and teams. Open a team to see member contributions ranked by tasks completed."
       />
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard label="Projects" value={projects.length} />
-        <StatCard label="Average completion" value={`${avgPercent}%`} />
-        <StatCard label="Teams" value={projects.reduce((sum, project) => sum + (project.teamCount || 0), 0)} />
-        <StatCard label="Teams with overdue tasks" value={overdueTeams} warn={overdueTeams > 0} />
+        <StatCard icon={FolderKanban} label="Projects" value={projects.length} />
+        <StatCard icon={TrendingUp} tone="sky" label="Average completion" value={`${avgPercent}%`} />
+        <StatCard icon={Users} tone="violet" label="Teams" value={projects.reduce((sum, project) => sum + (project.teamCount || 0), 0)} />
+        <StatCard icon={AlertTriangle} label="Teams with overdue tasks" value={overdueTeams} warn={overdueTeams > 0} />
       </div>
 
       <div className="surface p-4 grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -108,6 +110,7 @@ const LecturerProgressMonitor = () => {
 
       {projects.length === 0 ? (
         <EmptyState
+          icon={TrendingUp}
           title="No project progress yet"
           description="Create a project and teams, then students will generate progress as they complete tasks."
         />

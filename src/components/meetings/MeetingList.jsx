@@ -7,6 +7,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { Video, CalendarPlus } from 'lucide-react';
 import { formatMeetingTime, meetingBasePath, statusBadgeClass } from './meetingUtils';
 
 const FILTERS = [
@@ -95,11 +96,13 @@ const MeetingList = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={Video}
         title="Meetings"
         description="Team meetings with an agenda and an external Zoom, Meet, or Teams link."
         actions={
           canCreate ? (
             <button type="button" onClick={() => navigate(createHref)} className="btn-primary">
+              <CalendarPlus className="w-4 h-4" strokeWidth={2} />
               Schedule meeting
             </button>
           ) : null
@@ -140,6 +143,7 @@ const MeetingList = () => {
         <LoadingSpinner />
       ) : meetings.length === 0 ? (
         <EmptyState
+          icon={Video}
           title="No meetings"
           description={
             filter === 'upcoming'

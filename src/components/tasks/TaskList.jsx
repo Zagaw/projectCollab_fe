@@ -6,6 +6,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { ListTodo, Plus } from 'lucide-react';
 
 const TaskList = ({ 
   projectId, 
@@ -104,6 +105,7 @@ const TaskList = ({
             onClick={() => navigate(createPath)}
             className="btn-primary"
           >
+            <Plus className="w-4 h-4" strokeWidth={2} />
             Create task
           </button>
         )}
@@ -123,6 +125,7 @@ const TaskList = ({
 
       {filteredTasks.length === 0 ? (
         <EmptyState
+          icon={ListTodo}
           title="No tasks found"
           description="No tasks match this filter."
           actionText={showCreate ? 'Create first task' : undefined}

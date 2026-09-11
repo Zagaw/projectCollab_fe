@@ -4,6 +4,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader, FilterChips } from '../common/PageHeader';
 import toast from 'react-hot-toast';
+import { Shield } from 'lucide-react';
 
 const ROLES = ['STUDENT', 'TEAM_LEADER', 'LECTURER', 'ADMIN'];
 const STATUSES = ['ACTIVE', 'INACTIVE', 'SUSPENDED', 'PENDING_VERIFICATION'];
@@ -77,6 +78,7 @@ const AdminUserList = () => {
   return (
     <div className="space-y-5">
       <PageHeader
+        icon={Shield}
         title="Users"
         description="Manage roles and account status."
       />
@@ -117,6 +119,7 @@ const AdminUserList = () => {
 
       {filteredUsers.length === 0 ? (
         <EmptyState
+          icon={Shield}
           title="No users found"
           description="No users match these filters."
         />

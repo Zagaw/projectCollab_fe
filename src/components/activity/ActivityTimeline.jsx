@@ -4,6 +4,7 @@ import activityApi from '../../api/activityApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import toast from 'react-hot-toast';
+import { Clock } from 'lucide-react';
 
 const getBasePath = () => {
   const pathname = window.location.pathname;
@@ -75,6 +76,7 @@ const ActivityTimeline = ({ projectId, limit = 50, compact = false }) => {
     }
     return (
       <EmptyState
+        icon={Clock}
         title="No activity yet"
         description="Project actions like tasks, comments, and file uploads will appear here."
       />

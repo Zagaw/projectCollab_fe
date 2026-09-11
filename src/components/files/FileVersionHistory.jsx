@@ -3,6 +3,7 @@ import fileApi from '../../api/fileApi';
 import { formatFileSize, formatDate } from '../../utils/helper';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
+import { Upload } from 'lucide-react';
 
 const FileVersionHistory = ({ file, onClose, onVersionUpdated }) => {
   const { user } = useAuth();
@@ -160,6 +161,7 @@ const FileVersionHistory = ({ file, onClose, onVersionUpdated }) => {
                 onClick={() => setShowUploadForm(!showUploadForm)}
                 className="btn-primary !py-2"
               >
+                <Upload className="w-4 h-4" strokeWidth={2} />
                 Upload new version
               </button>
             )}
@@ -197,6 +199,7 @@ const FileVersionHistory = ({ file, onClose, onVersionUpdated }) => {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <button type="submit" disabled={uploading} className="btn-primary">
+                    <Upload className="w-4 h-4" strokeWidth={2} />
                     {uploading ? 'Uploading...' : 'Upload new version'}
                   </button>
                   <button type="button" onClick={() => setShowUploadForm(false)} className="btn-secondary">

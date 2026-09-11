@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, useRef } from 'react';
 import api from '../api/axios';
+import userApi from '../api/userApi';
 
 const AuthContext = createContext(null);
 
@@ -21,6 +22,15 @@ export const AuthProvider = ({ children }) => {
         const userData = JSON.parse(storedUser);
         setUser(userData);
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+        userApi.getCurrentUser()
+          .then((response) => {
+            const profile = response.data || {};
+            const merged = { ...userData, ...profile };
+            localStorage.setItem('user', JSON.stringify(merged));
+            setUser(merged);
+          })
+          .catch(() => {});
       } catch (error) {
         console.error('Error parsing user data:', error);
         localStorage.removeItem('token');

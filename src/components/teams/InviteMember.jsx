@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import StudentSearchList from '../common/StudentSearchList';
 import toast from 'react-hot-toast';
 import invitationApi from '../../api/invitationApi';
+import { UserPlus } from 'lucide-react';
 
 const InviteMember = ({ teamId, onClose, onInvite }) => {
   const [selectedUser, setSelectedUser] = useState(null);
@@ -101,6 +102,7 @@ const InviteMember = ({ teamId, onClose, onInvite }) => {
               disabled={!selectedUser || loading}
               className="btn-primary"
             >
+              <UserPlus className="w-4 h-4" strokeWidth={2} />
               {loading ? 'Sending...' : `Invite ${selectedUser ? selectedUser.firstName : ''}`}
             </button>
           </div>

@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import toast from 'react-hot-toast';
+import { MessageSquare } from 'lucide-react';
 
 const DiscussionDetails = () => {
   const { discussionId } = useParams();
@@ -127,6 +128,7 @@ const DiscussionDetails = () => {
   if (!projectId) {
     return (
       <EmptyState
+        icon={MessageSquare}
         title="Project required"
         description="Select a project first to view discussions."
         actionText="Go to discussions"
@@ -142,6 +144,7 @@ const DiscussionDetails = () => {
   if (!discussion) {
     return (
       <EmptyState
+        icon={MessageSquare}
         title="Discussion not found"
         description="It may have been deleted, or you do not have access."
         actionText="Back to discussions"

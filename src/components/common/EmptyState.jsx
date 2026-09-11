@@ -1,17 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Inbox } from 'lucide-react';
+import { IconWell } from './PageHeader';
+
+const isGlyph = (value) =>
+  typeof value === 'function' || (value && typeof value === 'object' && !React.isValidElement(value));
 
 const EmptyState = ({ title, description, actionText, actionLink, onAction, icon }) => {
-  const customIcon = icon && typeof icon !== 'string' ? icon : null;
+  const element = React.isValidElement(icon) ? icon : null;
+  const Glyph = !element && isGlyph(icon) && typeof icon !== 'string' ? icon : Inbox;
 
   return (
     <div className="text-center py-14 surface px-6">
-      <div className="mx-auto mb-4 h-12 w-12 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center">
-        {customIcon || (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0l-8 5-8-5" />
-          </svg>
-        )}
+      <div className="mx-auto mb-4 flex justify-center">
+        <IconWell tone="teal" size="lg">
+          {element || <Glyph className="w-6 h-6" strokeWidth={1.75} aria-hidden />}
+        </IconWell>
       </div>
       <h3 className="text-lg font-medium text-ink mb-2">{title}</h3>
       <p className="text-gray-500 max-w-md mx-auto">{description}</p>
