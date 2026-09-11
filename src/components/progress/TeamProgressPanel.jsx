@@ -16,7 +16,7 @@ const TeamProgressPanel = ({ progress, compact = false, showTable = true }) => {
         <StatCard icon={ListTodo} label="Tasks" value={`${progress.taskCompleted}/${progress.taskTotal || 0}`} />
         <StatCard icon={TrendingUp} tone="sky" label="Task progress" value={`${progress.taskPercent || 0}%`} />
         <StatCard icon={AlertTriangle} label="Overdue tasks" value={progress.taskOverdue || 0} warn={progress.taskOverdue > 0} />
-        <StatCard icon={Flag} tone="violet" label="Milestones" value={`${progress.milestoneCompleted}/${progress.milestoneTotal || 0}`} />
+        <StatCard icon={Flag} tone="sand" label="Milestones" value={`${progress.milestoneCompleted}/${progress.milestoneTotal || 0}`} />
       </div>
       <div className="space-y-4">
         <ProgressBar

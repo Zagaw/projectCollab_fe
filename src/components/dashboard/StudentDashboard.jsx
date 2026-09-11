@@ -106,9 +106,9 @@ const StudentDashboard = () => {
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         <StatCard icon={ListTodo} label="Tasks" value={stats.totalTasks} />
         <StatCard icon={CircleCheck} tone="sky" label="Completed" value={stats.completedTasks} />
-        <StatCard icon={Timer} tone="violet" label="In progress" value={stats.inProgressTasks} />
+        <StatCard icon={Timer} tone="sand" label="In progress" value={stats.inProgressTasks} />
         <StatCard icon={AlertTriangle} label="Overdue" value={stats.overdueTasks} warn={stats.overdueTasks > 0} />
-        <StatCard icon={Mail} tone="amber" label="Invitations" value={stats.pendingInvitations} warn={stats.pendingInvitations > 0} />
+        <StatCard icon={Mail} tone="sand" label="Invitations" value={stats.pendingInvitations} warn={stats.pendingInvitations > 0} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

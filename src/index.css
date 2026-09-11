@@ -10,6 +10,13 @@
   --color-accent: #129b8a;
   --color-accent-dark: #0d7c6e;
 
+  --color-sky: #3d8ec9;
+  --color-sky-soft: #e7f3fb;
+  --color-sky-ink: #2f74a8;
+  --color-sand: #c4a574;
+  --color-sand-soft: #f6efe4;
+  --color-sand-ink: #8a6a3b;
+
   --color-gray-50: #eef3f8;
   --color-gray-100: #e4ebf3;
   --color-gray-200: #d5dee9;
@@ -26,6 +33,29 @@
   --color-indigo-600: #129b8a;
   --color-indigo-700: #0d7c6e;
   --color-indigo-900: #0b1f3a;
+
+  --color-sky-50: #e7f3fb;
+  --color-sky-100: #d3eaf7;
+  --color-sky-200: #b5d8ef;
+  --color-sky-500: #3d8ec9;
+  --color-sky-600: #3d8ec9;
+  --color-sky-700: #2f74a8;
+  --color-sky-800: #245f8a;
+
+  --color-amber-50: #f6efe4;
+  --color-amber-100: #f0e4d0;
+  --color-amber-200: #e4d0b0;
+  --color-amber-500: #c4a574;
+  --color-amber-600: #b08d5c;
+  --color-amber-700: #8a6a3b;
+  --color-amber-800: #8a6a3b;
+
+  --color-sand-50: #f6efe4;
+  --color-sand-100: #f0e4d0;
+  --color-sand-500: #c4a574;
+  --color-sand-600: #b08d5c;
+  --color-sand-700: #8a6a3b;
+  --color-sand-800: #6e5530;
 }
 
 @layer base {
@@ -81,6 +111,14 @@
 
   .filter-chip-active {
     @apply bg-indigo-600 text-white border-indigo-600 hover:text-white;
+  }
+
+  .badge-sky {
+    @apply bg-sky-50 text-sky-800;
+  }
+
+  .badge-sand {
+    @apply bg-sand-50 text-sand-800;
   }
 
   .table-wrap {

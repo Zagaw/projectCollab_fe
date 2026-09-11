@@ -130,7 +130,7 @@ const LecturerTaskMonitor = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard icon={ListTodo} label="Tasks" value={counts.ALL} />
         <StatCard icon={Timer} tone="sky" label="In progress / review" value={counts.IN_PROGRESS + counts.REVIEW} />
-        <StatCard icon={CircleCheck} tone="violet" label="Completed" value={counts.COMPLETED} />
+        <StatCard icon={CircleCheck} tone="sand" label="Completed" value={counts.COMPLETED} />
         <StatCard icon={AlertTriangle} label="Overdue / blocked" value={counts.OVERDUE + counts.BLOCKED} warn={counts.OVERDUE + counts.BLOCKED > 0} />
       </div>
 

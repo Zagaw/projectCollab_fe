@@ -124,7 +124,7 @@ const TeamLeaderDashboard = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard icon={Users} label="Teams" value={stats.totalTeams} />
         <StatCard icon={Users} tone="sky" label="Members" value={stats.totalMembers} />
-        <StatCard icon={Flag} tone="violet" label="Milestones" value={`${stats.completedMilestones}/${stats.totalMilestones}`} />
+        <StatCard icon={Flag} tone="sand" label="Milestones" value={`${stats.completedMilestones}/${stats.totalMilestones}`} />
         <StatCard icon={AlertTriangle} label="Overdue tasks" value={stats.overdueTasks} warn={stats.overdueTasks > 0} />
       </div>
 

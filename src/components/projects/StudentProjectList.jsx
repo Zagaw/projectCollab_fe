@@ -76,8 +76,8 @@ const StudentProjectList = () => {
               project={{
                 projectId: project.projectId,
                 title: project.projectTitle,
-                description: project.teamName ? `Your team: ${project.teamName}` : undefined,
               }}
+              teamName={project.teamName}
               detailsTo={`${basePath}/projects/${project.projectId}`}
             />
           ))}

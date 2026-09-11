@@ -3,8 +3,9 @@ import React from 'react';
 const WELL = {
   teal: 'bg-indigo-50 text-indigo-700',
   sky: 'bg-sky-50 text-sky-700',
-  amber: 'bg-amber-50 text-amber-800',
-  violet: 'bg-violet-50 text-violet-700',
+  sand: 'bg-sand-50 text-sand-700',
+  amber: 'bg-sand-50 text-sand-700',
+  violet: 'bg-sand-50 text-sand-700',
   warn: 'bg-red-50 text-red-700',
 };
 

@@ -5,10 +5,10 @@ export const EVENT_TYPES = {
   meeting: {
     id: 'meeting',
     label: 'Meeting',
-    chip: 'bg-indigo-100 text-indigo-800',
-    soft: 'bg-indigo-50 border-indigo-100',
-    dot: 'bg-indigo-500',
-    text: 'text-indigo-700',
+    chip: 'bg-sky-100 text-sky-800',
+    soft: 'bg-sky-50 border-sky-200',
+    dot: 'bg-sky-500',
+    text: 'text-sky-700',
   },
   task: {
     id: 'task',

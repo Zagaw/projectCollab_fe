@@ -66,7 +66,7 @@ const LecturerProgressMonitor = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard icon={FolderKanban} label="Projects" value={projects.length} />
         <StatCard icon={TrendingUp} tone="sky" label="Average completion" value={`${avgPercent}%`} />
-        <StatCard icon={Users} tone="violet" label="Teams" value={projects.reduce((sum, project) => sum + (project.teamCount || 0), 0)} />
+        <StatCard icon={Users} tone="sand" label="Teams" value={projects.reduce((sum, project) => sum + (project.teamCount || 0), 0)} />
         <StatCard icon={AlertTriangle} label="Teams with overdue tasks" value={overdueTeams} warn={overdueTeams > 0} />
       </div>
 

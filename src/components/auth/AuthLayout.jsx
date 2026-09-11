@@ -7,7 +7,13 @@ const AuthLayout = ({ children, title, subtitle }) => {
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
           <div className="mb-8">
-            <Link to="/login" className="inline-flex items-center gap-3 mb-8">
+            <Link
+              to="/"
+              className="block text-sm font-medium text-indigo-700 hover:text-indigo-800 mb-4"
+            >
+              ← Back to home
+            </Link>
+            <Link to="/" className="block mb-8">
               <img
                 src="/collabora-logo.png"
                 alt="Collabora"
@@ -23,6 +29,7 @@ const AuthLayout = ({ children, title, subtitle }) => {
 
       <div className="hidden lg:flex lg:w-1/2 bg-ink p-12 flex-col justify-between text-white relative overflow-hidden">
         <div className="absolute inset-y-0 left-0 w-1.5 bg-indigo-600" aria-hidden />
+        <div className="absolute inset-y-0 left-1.5 w-1 bg-sand" aria-hidden />
         <div>
           <img
             src="/collabora-logo.png"

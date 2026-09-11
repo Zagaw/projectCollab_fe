@@ -76,8 +76,8 @@ const LecturerDashboard = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard icon={FolderKanban} label="Projects" value={stats.totalProjects} />
         <StatCard icon={Users} tone="sky" label="Teams" value={stats.totalTeams} />
-        <StatCard icon={ListTodo} tone="violet" label="Tasks" value={stats.totalTasks} />
-        <StatCard icon={CircleCheck} tone="amber" label="Completed" value={stats.completedTasks} />
+        <StatCard icon={ListTodo} tone="sand" label="Tasks" value={stats.totalTasks} />
+        <StatCard icon={CircleCheck} tone="sky" label="Completed" value={stats.completedTasks} />
       </div>
 
       {/* Recent Projects & Tasks */}

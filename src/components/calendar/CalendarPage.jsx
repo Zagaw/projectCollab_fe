@@ -206,9 +206,9 @@ const CalendarPage = () => {
       />
 
       <div className="grid grid-cols-3 gap-3">
-        <StatCard icon={Video} label="Meetings" value={monthCounts.meeting} />
-        <StatCard icon={ListTodo} tone="sky" label="Task deadlines" value={monthCounts.task} />
-        <StatCard icon={Flag} tone="violet" label="Milestones" value={monthCounts.milestone} />
+        <StatCard icon={Video} tone="sky" label="Meetings" value={monthCounts.meeting} />
+        <StatCard icon={ListTodo} tone="sand" label="Task deadlines" value={monthCounts.task} />
+        <StatCard icon={Flag} tone="sand" label="Milestones" value={monthCounts.milestone} />
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

@@ -96,7 +96,7 @@ const LecturerMeetingMonitor = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard icon={Video} label="Meetings" value={stats.total} />
         <StatCard icon={CalendarCheck} tone="sky" label="Scheduled" value={stats.scheduled} />
-        <StatCard icon={CircleCheck} tone="violet" label="Completed" value={stats.completed} />
+        <StatCard icon={CircleCheck} tone="sand" label="Completed" value={stats.completed} />
         <StatCard icon={Ban} label="Cancelled" value={stats.cancelled} warn={stats.cancelled > 0} />
       </div>
 

@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import PendingVerification from './components/auth/PendingVerification';
+import LandingPage from './components/landing/LandingPage';
 
 // Layout Components
 import StudentLayout from './components/layout/StudentLayout';
@@ -109,10 +110,10 @@ function App() {
         
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/pending-verification" element={<PendingVerification />} />
-          <Route path="/" element={<Navigate to="/login" replace />} />
 
           {/* ===== MAIN DASHBOARD REDIRECT ===== */}
           <Route path="/dashboard" element={
@@ -254,7 +255,7 @@ function App() {
           </Route>
 
           {/* Catch all - redirect to login */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
     </Router>

@@ -88,7 +88,7 @@ const AdminDashboard = () => {
         <StatCard icon={Users} label="Users" value={stats.totalUsers} />
         <StatCard icon={UserCheck} label="Pending lecturers" value={stats.pendingLecturers} warn={stats.pendingLecturers > 0} />
         <StatCard icon={FolderKanban} tone="sky" label="Projects" value={stats.totalProjects} />
-        <StatCard icon={Users} tone="violet" label="Teams" value={stats.activeTeams} />
+        <StatCard icon={Users} tone="sand" label="Teams" value={stats.activeTeams} />
       </div>
 
       {/* Pending Lecturers Section */}

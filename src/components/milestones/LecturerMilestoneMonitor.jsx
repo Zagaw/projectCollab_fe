@@ -125,7 +125,7 @@ const LecturerMilestoneMonitor = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard icon={Flag} label="Milestones" value={counts.ALL} />
         <StatCard icon={Timer} tone="sky" label="In progress" value={counts.IN_PROGRESS} />
-        <StatCard icon={CircleCheck} tone="violet" label="Completed" value={counts.COMPLETED} />
+        <StatCard icon={CircleCheck} tone="sand" label="Completed" value={counts.COMPLETED} />
         <StatCard icon={AlertTriangle} label="Overdue" value={counts.OVERDUE} warn={counts.OVERDUE > 0} />
       </div>
 
