@@ -32,6 +32,7 @@ const LecturerLayout = () => (
         title: 'Review',
         items: [
           { name: 'Progress', icon: 'chart', path: '/lecturer/progress' },
+          { name: 'Insights', icon: 'spark', path: '/lecturer/insights' },
           { name: 'Reports', icon: 'doc', path: '/lecturer/reports' },
         ],
       },

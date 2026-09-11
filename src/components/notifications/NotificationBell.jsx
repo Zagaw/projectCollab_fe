@@ -22,6 +22,9 @@ export const notificationLink = (notification, role) => {
   if (basePath === '/admin') {
     return '/admin/projects';
   }
+  if (notification.type === 'TEAM_AT_RISK' && id) {
+    return `${basePath}/insights?teamId=${id}`;
+  }
   if (type === 'TASK' && id) return `${basePath}/tasks/${id}`;
   if (type === 'MILESTONE' && id) return `${basePath}/milestones/${id}`;
   if (type === 'TEAM' && id) return `${basePath}/teams/${id}`;

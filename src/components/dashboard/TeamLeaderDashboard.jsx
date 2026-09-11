@@ -8,6 +8,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import ActivityTimeline from '../activity/ActivityTimeline';
 import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import DashboardProgress from '../progress/DashboardProgress';
+import NeedsAttentionCard from '../insights/NeedsAttentionCard';
 import { PageHeader, StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 import { LayoutDashboard, Users, Flag, AlertTriangle, Plus, CalendarPlus } from 'lucide-react';
@@ -127,6 +128,8 @@ const TeamLeaderDashboard = () => {
         <StatCard icon={Flag} tone="sand" label="Milestones" value={`${stats.completedMilestones}/${stats.totalMilestones}`} />
         <StatCard icon={AlertTriangle} label="Overdue tasks" value={stats.overdueTasks} warn={stats.overdueTasks > 0} />
       </div>
+
+      <NeedsAttentionCard source="my" />
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

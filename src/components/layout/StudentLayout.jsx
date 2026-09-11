@@ -34,6 +34,7 @@ const StudentLayout = () => (
         title: 'Review',
         items: [
           { name: 'Progress', icon: 'chart', path: '/student/progress' },
+          { name: 'Insights', icon: 'spark', path: '/student/insights' },
           { name: 'Reports', icon: 'doc', path: '/student/reports' },
         ],
       },

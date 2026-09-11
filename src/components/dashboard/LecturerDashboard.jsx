@@ -6,6 +6,7 @@ import taskApi from '../../api/taskApi';
 import LoadingSpinner from '../common/LoadingSpinner';
 import UpcomingMeetings from '../meetings/UpcomingMeetings';
 import DashboardProgress from '../progress/DashboardProgress';
+import NeedsAttentionCard from '../insights/NeedsAttentionCard';
 import { PageHeader, StatCard } from '../common/PageHeader';
 import toast from 'react-hot-toast';
 import { LayoutDashboard, FolderKanban, Users, ListTodo, CircleCheck, Plus } from 'lucide-react';
@@ -79,6 +80,8 @@ const LecturerDashboard = () => {
         <StatCard icon={ListTodo} tone="sand" label="Tasks" value={stats.totalTasks} />
         <StatCard icon={CircleCheck} tone="sky" label="Completed" value={stats.completedTasks} />
       </div>
+
+      <NeedsAttentionCard source="lecturer" />
 
       {/* Recent Projects & Tasks */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

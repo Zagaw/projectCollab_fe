@@ -34,6 +34,7 @@ const TeamLeaderLayout = () => (
         title: 'Review',
         items: [
           { name: 'Progress', icon: 'chart', path: '/teamleader/progress' },
+          { name: 'Insights', icon: 'spark', path: '/teamleader/insights' },
           { name: 'Reports', icon: 'doc', path: '/teamleader/reports' },
         ],
       },

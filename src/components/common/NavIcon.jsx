@@ -13,6 +13,7 @@ import {
   TrendingUp,
   FileBarChart,
   Clock,
+  Sparkles,
 } from 'lucide-react';
 
 const icons = {
@@ -29,6 +30,7 @@ const icons = {
   chart: TrendingUp,
   doc: FileBarChart,
   clock: Clock,
+  spark: Sparkles,
 };
 
 const NavIcon = ({ name, className = 'w-5 h-5' }) => {

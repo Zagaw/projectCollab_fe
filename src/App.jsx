@@ -80,6 +80,7 @@ import CalendarPage from './components/calendar/CalendarPage';
 import ProgressPage from './components/progress/ProgressPage';
 import LecturerProgressMonitor from './components/progress/LecturerProgressMonitor';
 import ReportsPage from './components/reports/ReportsPage';
+import InsightsPage from './components/insights/InsightsPage';
 
 function App() {
   return (
@@ -156,6 +157,7 @@ function App() {
             <Route path="meetings/:meetingId" element={<MeetingDetails />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="progress" element={<ProgressPage />} />
+            <Route path="insights" element={<InsightsPage />} />
             <Route path="reports" element={<ReportsPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
@@ -193,6 +195,7 @@ function App() {
             <Route path="meetings/:meetingId" element={<MeetingDetails />} />
             <Route path="calendar" element={<CalendarPage />} />
             <Route path="progress" element={<ProgressPage />} />
+            <Route path="insights" element={<InsightsPage />} />
             <Route path="reports" element={<ReportsPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
@@ -231,6 +234,7 @@ function App() {
             <Route path="meetings" element={<LecturerMeetingMonitor />} />
             <Route path="meetings/:meetingId" element={<MeetingDetails />} />
             <Route path="progress" element={<LecturerProgressMonitor />} />
+            <Route path="insights" element={<InsightsPage />} />
             <Route path="reports" element={<ReportsPage />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
