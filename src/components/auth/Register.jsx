@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import AuthLayout from './AuthLayout';
+import PasswordField from './PasswordField';
+import { authErrorMessage } from '../../utils/authError';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -16,10 +18,12 @@ const Register = () => {
     role: 'STUDENT',
   });
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState('');
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    setFormError('');
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -28,17 +32,28 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError('');
     setLoading(true);
 
-    // Validation
     if (formData.password.length < 8) {
-      toast.error('Password must be at least 8 characters long');
+      const message = 'Password must be at least 8 characters long';
+      setFormError(message);
+      toast.error(message);
       setLoading(false);
       return;
     }
 
     try {
-      const userData = await register(formData);
+      const payload = {
+        ...formData,
+        username: formData.username.trim(),
+        email: formData.email.trim(),
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        phone: formData.phone.trim() || null,
+        studentId: formData.role === 'LECTURER' ? null : (formData.studentId.trim() || null),
+      };
+      const userData = await register(payload);
       
       // Check if lecturer registration is pending
       if (userData.role === 'LECTURER' && userData.status === 'PENDING_VERIFICATION') {
@@ -65,8 +80,10 @@ const Register = () => {
         }
       }
     } catch (error) {
-      const message = error.response?.data?.error || 'Registration failed. Please try again.';
+      const message = authErrorMessage(error, 'Could not create the account. Check the form and try again.');
+      setFormError(message);
       toast.error(message);
+    } finally {
       setLoading(false);
     }
   };
@@ -77,6 +94,11 @@ const Register = () => {
       subtitle="Join Collabora and start collaborating with your team"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
+        {formError && (
+          <div className="rounded-lg border border-red-100 bg-red-50 px-3.5 py-2.5 text-sm text-red-700" role="alert">
+            {formError}
+          </div>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="firstName" className="label">
@@ -121,8 +143,7 @@ const Register = () => {
             required
             value={formData.username}
             onChange={handleChange}
-            className="field"
-            placeholder="johndoe"
+            className={`field ${formError.toLowerCase().includes('username') ? 'border-red-300' : ''}`}
           />
         </div>
 
@@ -137,8 +158,7 @@ const Register = () => {
             required
             value={formData.email}
             onChange={handleChange}
-            className="field"
-            placeholder="you@example.com"
+            className={`field ${formError.toLowerCase().includes('email') ? 'border-red-300' : ''}`}
           />
         </div>
 
@@ -146,36 +166,38 @@ const Register = () => {
           <label htmlFor="password" className="label">
             Password * (min. 8 characters)
           </label>
-          <input
+          <PasswordField
             id="password"
             name="password"
-            type="password"
+            autoComplete="new-password"
             required
             value={formData.password}
             onChange={handleChange}
-            className="field"
             placeholder="Create a strong password"
+            invalid={Boolean(formError && formError.toLowerCase().includes('password'))}
           />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="studentId" className="label">
-              Student ID
-            </label>
-            <input
-              id="studentId"
-              name="studentId"
-              type="text"
-              value={formData.studentId}
-              onChange={handleChange}
-              className="field"
-              placeholder="STU12345"
-            />
-          </div>
-          <div>
+          {formData.role === 'STUDENT' && (
+            <div>
+              <label htmlFor="studentId" className="label">
+                Student ID <span className="font-normal text-gray-500">(optional)</span>
+              </label>
+              <input
+                id="studentId"
+                name="studentId"
+                type="text"
+                value={formData.studentId}
+                onChange={handleChange}
+                className={`field ${formError.toLowerCase().includes('student id') ? 'border-red-300' : ''}`}
+                placeholder="STU12345"
+              />
+            </div>
+          )}
+          <div className={formData.role === 'STUDENT' ? '' : 'sm:col-span-2'}>
             <label htmlFor="phone" className="label">
-              Phone number
+              Phone number <span className="font-normal text-gray-500">(optional)</span>
             </label>
             <input
               id="phone"
@@ -196,7 +218,10 @@ const Register = () => {
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
-              onClick={() => setFormData({...formData, role: 'STUDENT'})}
+              onClick={() => {
+                setFormError('');
+                setFormData({...formData, role: 'STUDENT'});
+              }}
               className={`px-4 py-2.5 rounded-lg border text-sm font-medium transition ${
                 formData.role === 'STUDENT'
                   ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
@@ -207,7 +232,10 @@ const Register = () => {
             </button>
             <button
               type="button"
-              onClick={() => setFormData({...formData, role: 'LECTURER'})}
+              onClick={() => {
+                setFormError('');
+                setFormData({ ...formData, role: 'LECTURER', studentId: '' });
+              }}
               className={`px-4 py-2.5 rounded-lg border text-sm font-medium transition ${
                 formData.role === 'LECTURER'
                   ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
@@ -218,7 +246,9 @@ const Register = () => {
             </button>
           </div>
           <p className="mt-2 text-xs text-gray-500">
-            Lecturers need to be verified by the system administrator.
+            {formData.role === 'LECTURER'
+              ? 'Lecturer accounts do not need a student ID. An administrator must approve your account before you can use Collabora.'
+              : 'Lecturers need to be verified by the system administrator.'}
           </p>
         </div>
 

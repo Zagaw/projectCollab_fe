@@ -3,17 +3,21 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import AuthLayout from './AuthLayout';
+import PasswordField from './PasswordField';
+import { authErrorMessage } from '../../utils/authError';
 
 const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+  const [formError, setFormError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
+    setFormError('');
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -22,13 +26,13 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError('');
     setLoading(true);
 
     try {
       const userData = await login(formData.email, formData.password);
       toast.success('Welcome back!');
-      
-      // Redirect based on role
+
       switch (userData.role) {
         case 'STUDENT':
           navigate('/student/dashboard', { replace: true });
@@ -50,18 +54,26 @@ const Login = () => {
           navigate('/dashboard', { replace: true });
       }
     } catch (error) {
-      const message = error.response?.data?.error || 'Login failed. Please try again.';
+      const message = authErrorMessage(error, 'Could not sign in. Check your email and password.');
+      setFormError(message);
       toast.error(message);
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <AuthLayout 
-      title="Welcome back" 
+    <AuthLayout
+      title="Welcome back"
       subtitle="Sign in to continue collaborating"
     >
       <form onSubmit={handleSubmit} className="space-y-5">
+        {formError && (
+          <div className="rounded-lg border border-red-100 bg-red-50 px-3.5 py-2.5 text-sm text-red-700" role="alert">
+            {formError}
+          </div>
+        )}
+
         <div>
           <label htmlFor="email" className="label">
             Email address
@@ -74,7 +86,7 @@ const Login = () => {
             required
             value={formData.email}
             onChange={handleChange}
-            className="field"
+            className={`field ${formError ? 'border-red-300' : ''}`}
             placeholder="you@example.com"
           />
         </div>
@@ -83,34 +95,16 @@ const Login = () => {
           <label htmlFor="password" className="label">
             Password
           </label>
-          <input
+          <PasswordField
             id="password"
             name="password"
-            type="password"
             autoComplete="current-password"
             required
             value={formData.password}
             onChange={handleChange}
-            className="field"
             placeholder="Enter your password"
+            invalid={Boolean(formError)}
           />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            />
-            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-              Remember me
-            </label>
-          </div>
-          <Link to="/forgot-password" className="text-sm font-medium text-indigo-600 hover:text-indigo-700">
-            Forgot password?
-          </Link>
         </div>
 
         <button

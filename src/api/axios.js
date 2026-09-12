@@ -27,7 +27,13 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+    const url = String(error.config?.url || '');
+    const isAuthRequest = url.includes('/auth/login') || url.includes('/auth/register');
+    const onAuthPage = window.location.pathname === '/login' || window.location.pathname === '/register';
+
+    // Failed login/register is 401. Do not treat that as a dropped session.
+    if (status === 401 && !isAuthRequest && !onAuthPage) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
