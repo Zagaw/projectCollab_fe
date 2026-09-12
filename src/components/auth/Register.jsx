@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import AuthLayout from './AuthLayout';
 import PasswordField from './PasswordField';
 import { authErrorMessage } from '../../utils/authError';
+import { isValidPhone, normalizePhone, PHONE_ERROR } from '../../utils/phone';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -43,6 +44,13 @@ const Register = () => {
       return;
     }
 
+    if (!isValidPhone(formData.phone)) {
+      setFormError(PHONE_ERROR);
+      toast.error(PHONE_ERROR);
+      setLoading(false);
+      return;
+    }
+
     try {
       const payload = {
         ...formData,
@@ -50,7 +58,7 @@ const Register = () => {
         email: formData.email.trim(),
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
-        phone: formData.phone.trim() || null,
+        phone: normalizePhone(formData.phone) || null,
         studentId: formData.role === 'LECTURER' ? null : (formData.studentId.trim() || null),
       };
       const userData = await register(payload);
@@ -203,11 +211,14 @@ const Register = () => {
               id="phone"
               name="phone"
               type="tel"
+              inputMode="tel"
+              autoComplete="tel"
               value={formData.phone}
               onChange={handleChange}
-              className="field"
-              placeholder="+1234567890"
+              className={`field ${formError.toLowerCase().includes('phone') ? 'border-red-300' : ''}`}
+              placeholder="+959123456789"
             />
+            
           </div>
         </div>
 

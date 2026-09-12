@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import invitationApi from '../../api/invitationApi';
 import InvitationCard from './InvitationCard';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -8,6 +9,8 @@ import toast from 'react-hot-toast';
 import { Mail } from 'lucide-react';
 
 const InvitationList = () => {
+  const [searchParams] = useSearchParams();
+  const focusTeamId = searchParams.get('teamId');
   const [invitations, setInvitations] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -71,6 +74,7 @@ const InvitationList = () => {
               invitation={invitation}
               onAccept={handleAccept}
               onReject={handleReject}
+              highlighted={focusTeamId && String(invitation.teamId) === String(focusTeamId)}
             />
           ))}
         </div>

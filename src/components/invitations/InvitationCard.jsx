@@ -1,8 +1,8 @@
 import React from 'react';
 
-const InvitationCard = ({ invitation, onAccept, onReject }) => {
+const InvitationCard = ({ invitation, onAccept, onReject, highlighted = false }) => {
   return (
-    <article className="surface p-5 flex flex-col">
+    <article className={`surface p-5 flex flex-col ${highlighted ? 'border-indigo-300 ring-1 ring-indigo-200' : ''}`}>
       <div className="flex items-start justify-between gap-3 mb-3">
         <div>
           <h3 className="text-lg font-semibold text-ink">{invitation.teamName}</h3>

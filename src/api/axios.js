@@ -30,7 +30,9 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const url = String(error.config?.url || '');
     const isAuthRequest = url.includes('/auth/login') || url.includes('/auth/register');
-    const onAuthPage = window.location.pathname === '/login' || window.location.pathname === '/register';
+    const onAuthPage = window.location.pathname === '/login'
+      || window.location.pathname === '/register'
+      || window.location.pathname === '/pending-verification';
 
     // Failed login/register is 401. Do not treat that as a dropped session.
     if (status === 401 && !isAuthRequest && !onAuthPage) {

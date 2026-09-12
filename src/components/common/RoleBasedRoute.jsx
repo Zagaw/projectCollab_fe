@@ -17,6 +17,10 @@ const RoleBasedRoute = ({ student, lecturer, teamLeader, admin }) => {
     return <Navigate to="/login" replace />;
   }
 
+  if (user.role === 'LECTURER' && user.status === 'PENDING_VERIFICATION') {
+    return <Navigate to="/pending-verification" replace />;
+  }
+
   // Map user role to component
   const roleMap = {
     'STUDENT': student,

@@ -22,6 +22,12 @@ export const notificationLink = (notification, role) => {
   if (basePath === '/admin') {
     return '/admin/projects';
   }
+  if (notification.type === 'LECTURER_VERIFIED') {
+    return '/lecturer/dashboard';
+  }
+  if (notification.type === 'MEMBER_INVITED') {
+    return id ? `${basePath}/invitations?teamId=${id}` : `${basePath}/invitations`;
+  }
   if (notification.type === 'TEAM_AT_RISK' && id) {
     return `${basePath}/insights?teamId=${id}`;
   }
