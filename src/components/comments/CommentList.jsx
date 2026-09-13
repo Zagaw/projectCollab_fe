@@ -20,7 +20,7 @@ const CommentList = ({
 
   useEffect(() => {
     if (initialComments) {
-      setComments(initialComments);
+      setComments(initialComments.filter((comment) => !comment.parentCommentId));
     }
   }, [initialComments]);
 
@@ -46,8 +46,7 @@ const CommentList = ({
             return comment;
           });
           setComments(updatedComments);
-        } else {
-          // Top-level comment - add to the top
+        } else if (!newComment.parentCommentId) {
           setComments([newComment, ...comments]);
         }
       }
@@ -92,7 +91,7 @@ const CommentList = ({
   };
 
   const handleDelete = (commentId) => {
-    setComments(comments.filter((c) => c.commentId !== commentId));
+    setComments((current) => current.filter((c) => c.commentId !== commentId));
     onCommentDeleted?.(commentId);
   };
 

@@ -151,6 +151,7 @@ function App() {
             <Route path="tasks/:taskId" element={<TaskDetails />} />
             <Route path="invitations" element={<InvitationList />} />
             <Route path="discussions" element={<DiscussionList />} />
+            <Route path="discussions/create" element={<DiscussionCreate />} />
             <Route path="discussions/:discussionId" element={<DiscussionDetails />} />
             <Route path="files" element={<FileLibraryPage />} />
             <Route path="meetings" element={<MeetingList />} />

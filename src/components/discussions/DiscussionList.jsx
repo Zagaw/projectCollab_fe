@@ -26,7 +26,7 @@ const DiscussionList = ({ projectId: projectIdProp, projectTitle }) => {
                    isStudentRoute ? '/student' : '/student';
 
   const isEmbedded = Boolean(projectIdProp);
-  const canCreate = isLecturerRoute || isTeamLeaderRoute;
+  const canCreate = isLecturerRoute || isTeamLeaderRoute || isStudentRoute;
   const [selectedProjectId, setSelectedProjectId] = useState(
     projectIdProp || searchParams.get('projectId') || ''
   );

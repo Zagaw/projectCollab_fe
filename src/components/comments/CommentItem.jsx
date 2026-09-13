@@ -87,19 +87,39 @@ const CommentItem = ({
     }
   };
 
-  // ✅ FIX: Handle reply submission
   const handleReplySubmit = async (formData) => {
     try {
-      // Extract content from formData
-      const content = formData.get('content');
-
-      // Pass to parent with parent comment ID
       await onReply(comment.commentId, formData);
       setShowReplyForm(false);
       toast.success('Reply added');
+      const response = await commentApi.getRepliesForComment(comment.commentId);
+      setReplies(response.data || []);
+      setShowReplies(true);
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to add reply');
     }
+  };
+
+  const handleReplyDeleted = (replyId) => {
+    setReplies((current) => {
+      const next = current.filter((reply) => reply.commentId !== replyId);
+      if (next.length === 0) {
+        setShowReplies(false);
+      }
+      return next;
+    });
+    onUpdate({
+      ...comment,
+      replyCount: Math.max(0, (comment.replyCount || 1) - 1),
+    });
+  };
+
+  const handleReplyUpdated = (updatedReply) => {
+    setReplies((current) =>
+      current.map((reply) =>
+        reply.commentId === updatedReply.commentId ? updatedReply : reply
+      )
+    );
   };
 
   return (
@@ -221,8 +241,8 @@ const CommentItem = ({
               key={reply.commentId}
               comment={reply}
               onReply={onReply}
-              onUpdate={onUpdate}
-              onDelete={onDelete}
+              onUpdate={handleReplyUpdated}
+              onDelete={handleReplyDeleted}
               isReply
             />
           ))}

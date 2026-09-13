@@ -261,10 +261,6 @@ const StudentProjectDetails = () => {
 
       {activeTab === 'comments' && (
         <div className="surface p-5 sm:p-6">
-          <p className="text-sm text-gray-600 mb-4">
-            Project comments are for the whole project. Each comment is labeled with the author's team.
-            Comments and files on a specific task stay on that task's page.
-          </p>
           <CommentList
             entityType="project"
             entityId={projectId}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import teamApi from '../../api/teamApi';
 import invitationApi from '../../api/invitationApi';
 import InviteMember from './InviteMember';
@@ -13,11 +14,11 @@ import { Users, UserPlus, Mail } from 'lucide-react';
 const TeamDetails = () => {
   const { teamId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [team, setTeam] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
 
-  // FIX: Determine base path from current route
   const pathname = window.location.pathname;
   const isLecturerRoute = pathname.includes('/lecturer');
   const isTeamLeaderRoute = pathname.includes('/teamleader');
@@ -91,6 +92,10 @@ const TeamDetails = () => {
     );
   }
 
+  const isThisTeamLeader = team.teamLeader?.userId != null
+    && String(team.teamLeader.userId) === String(user?.userId);
+  const canManageMembers = isLecturerRoute || isThisTeamLeader;
+
   return (
     <div className="space-y-5">
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
@@ -107,7 +112,7 @@ const TeamDetails = () => {
             {team.projectTitle} · {team.totalMembers || 0} members
           </p>
         </div>
-        {(isLecturerRoute || isTeamLeaderRoute) && (
+        {canManageMembers && (
           <button
             type="button"
             onClick={() => setShowInviteModal(true)}
@@ -156,7 +161,7 @@ const TeamDetails = () => {
                   <th>Member</th>
                   <th>Email</th>
                   <th>Status</th>
-                  <th>Actions</th>
+                  {canManageMembers && <th>Actions</th>}
                 </tr>
               </thead>
               <tbody>
@@ -187,9 +192,10 @@ const TeamDetails = () => {
                         {member.status === 'ACTIVE' ? 'Active' : member.status === 'PENDING' ? 'Pending' : member.status}
                       </span>
                     </td>
+                    {canManageMembers && (
                     <td>
                       <div className="flex flex-wrap gap-2">
-                        {(isLecturerRoute || isTeamLeaderRoute) && member.status === 'ACTIVE' && team.teamLeader?.userId !== member.userId && (
+                        {member.status === 'ACTIVE' && team.teamLeader?.userId !== member.userId && (
                           <>
                             {isLecturerRoute && (
                               <button
@@ -209,7 +215,7 @@ const TeamDetails = () => {
                             </button>
                           </>
                         )}
-                        {(isLecturerRoute || isTeamLeaderRoute) && member.status === 'PENDING' && (
+                        {member.status === 'PENDING' && (
                           <button
                             type="button"
                             onClick={() => handleRemoveMember(member.teamMemberId)}
@@ -220,6 +226,7 @@ const TeamDetails = () => {
                         )}
                       </div>
                     </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

@@ -125,11 +125,6 @@ const ProjectFileLibrary = ({ projectId, teamId, teams: teamsProp }) => {
 
   return (
     <div className="space-y-4">
-      <p className="text-sm text-gray-600">
-        This library is for shared project documents (reports, designs, submissions).
-        Files attached to a <span className="font-medium text-ink">task comment</span> stay on that task — they do not appear here.
-      </p>
-
       <div className="surface p-4 space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <FilterChips

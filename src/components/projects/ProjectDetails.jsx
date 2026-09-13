@@ -249,10 +249,6 @@ const ProjectDetails = () => {
 
       {activeTab === 'comments' && (
         <div className="surface p-5 sm:p-6">
-          <p className="text-sm text-gray-600 mb-4">
-            Project comments are for the whole project (announcements, lecturer feedback).
-            Each comment is labeled with the author's team. Task discussion and task files stay on the task page under a milestone.
-          </p>
           <CommentList
             entityType="project"
             entityId={projectId}
