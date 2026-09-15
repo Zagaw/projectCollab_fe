@@ -5,6 +5,7 @@ import TaskCard from './TaskCard';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
 import { PageHeader, FilterChips } from '../common/PageHeader';
+import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { ListTodo, Plus } from 'lucide-react';
 
@@ -21,6 +22,7 @@ const TaskBoard = ({ projectId, teamId }) => {
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState('ALL');
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const pathname = window.location.pathname;
   const isLecturerRoute = pathname.includes('/lecturer');
@@ -151,7 +153,7 @@ const TaskBoard = ({ projectId, teamId }) => {
                         task={task}
                         compact
                         showActions
-                        canDelete={canManage}
+                        canDelete={isLecturerRoute || String(task.teamLeaderUserId) === String(user?.userId)}
                         detailsTo={`${basePath}/tasks/${task.taskId}`}
                         onViewDetails={handleViewDetails}
                         onStatusChange={handleStatusChange}

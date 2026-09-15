@@ -3,12 +3,14 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import taskApi from '../../api/taskApi';
 import teamApi from '../../api/teamApi';
 import milestoneApi from '../../api/milestoneApi';
+import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { PageHeader } from '../common/PageHeader';
 import { ListTodo } from 'lucide-react';
 
 const TeamLeaderTaskCreate = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const teamId = searchParams.get('teamId');
   const milestoneId = searchParams.get('milestoneId');
@@ -30,8 +32,10 @@ const TeamLeaderTaskCreate = () => {
   });
 
   useEffect(() => {
-    fetchMyTeams();
-  }, []);
+    if (user?.userId) {
+      fetchMyTeams();
+    }
+  }, [user?.userId]);
 
   useEffect(() => {
     if (formData.teamId) {
@@ -43,9 +47,13 @@ const TeamLeaderTaskCreate = () => {
   const fetchMyTeams = async () => {
     try {
       const response = await teamApi.getMyTeams();
-      setTeams(response.data);
-      if (teamId) {
-        setFormData(prev => ({ ...prev, teamId }));
+      const ledTeams = (response.data || []).filter(
+        (team) => String(team.teamLeader?.userId) === String(user?.userId)
+      );
+      setTeams(ledTeams);
+      if (teamId && !ledTeams.some((team) => String(team.teamId) === String(teamId))) {
+        toast.error('You can only create tasks for a team you lead.');
+        setFormData((prev) => ({ ...prev, teamId: '', milestoneId: '' }));
       }
     } catch (error) {
       toast.error('Failed to load teams');

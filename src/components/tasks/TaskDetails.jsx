@@ -7,12 +7,14 @@ import TaskStatusBadge from './TaskStatusBadge';
 import TaskPriorityBadge from './TaskPriorityBadge';
 import LoadingSpinner from '../common/LoadingSpinner';
 import EmptyState from '../common/EmptyState';
+import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { ListTodo } from 'lucide-react';
 
 const TaskDetails = () => {
   const { taskId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [task, setTask] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -141,6 +143,9 @@ const TaskDetails = () => {
   const isOverdue = task.deadline && 
     new Date(task.deadline) < new Date() && 
     task.status !== 'COMPLETED';
+  const isThisTeamLeader = task.teamLeaderUserId != null
+    && String(task.teamLeaderUserId) === String(user?.userId);
+  const canManageTask = isLecturerRoute || isThisTeamLeader;
 
   return (
     <div className="space-y-5">
@@ -161,10 +166,12 @@ const TaskDetails = () => {
           {isOverdue && (
             <span className="px-2 py-1 bg-red-50 text-red-700 text-xs font-medium rounded-full">Overdue</span>
           )}
-          <button type="button" onClick={() => setIsEditing(!isEditing)} className="btn-secondary">
-            {isEditing ? 'Cancel' : 'Edit'}
-          </button>
-          {(isTeamLeaderRoute || isLecturerRoute) && (
+          {canManageTask && (
+            <button type="button" onClick={() => setIsEditing(!isEditing)} className="btn-secondary">
+              {isEditing ? 'Cancel' : 'Edit'}
+            </button>
+          )}
+          {canManageTask && (
             <button type="button" onClick={handleDelete} className="btn-danger">Delete</button>
           )}
         </div>

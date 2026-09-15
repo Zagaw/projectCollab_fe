@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import milestoneApi from '../../api/milestoneApi';
 import taskApi from '../../api/taskApi';
 import TaskList from '../tasks/TaskList';
@@ -11,6 +12,7 @@ import { Flag, Plus } from 'lucide-react';
 const MilestoneDetails = () => {
   const { milestoneId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [milestone, setMilestone] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,8 +21,6 @@ const MilestoneDetails = () => {
   const isTeamLeaderRoute = window.location.pathname.includes('/teamleader');
   const isStudentRoute = window.location.pathname.includes('/student');
   const basePath = isLecturerRoute ? '/lecturer' : isTeamLeaderRoute ? '/teamleader' : '/student';
-  const canCreateTask = isLecturerRoute || isTeamLeaderRoute;
-  const canManage = isTeamLeaderRoute;
 
   useEffect(() => {
     fetchMilestoneDetails();
@@ -88,6 +88,11 @@ const MilestoneDetails = () => {
   const isOverdue = milestone.deadline &&
     new Date(milestone.deadline) < new Date() &&
     !milestone.isCompleted;
+
+  const isThisTeamLeader = milestone.teamLeaderUserId != null
+    && String(milestone.teamLeaderUserId) === String(user?.userId);
+  const canCreateTask = isLecturerRoute || isThisTeamLeader;
+  const canManage = isThisTeamLeader;
 
   const statusLabel = milestone.isCompleted ? 'Completed' : isOverdue ? 'Overdue' : 'In progress';
   const statusClass = milestone.isCompleted
